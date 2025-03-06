@@ -1,0 +1,458 @@
+/* Body */
+body {
+    font-family: 'Nunito Sans', sans-serif;
+    background-color: #F8F8F8;
+    margin: 0;
+    padding: 0;
+}
+
+/* Layout */
+.d-flex {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #0B1D46;
+    width: 16%;
+    float: left;
+    height: 100vh;
+    position: fixed;
+    z-index: 11;
+    transition: width 0.3s ease-in-out;
+}
+
+/* logo and title */
+.logo-section{
+    display: flex;
+
+    align-items: center;
+
+}
+.logo-section p{
+    font-size: 0.8vw;
+}
+
+/* Navbar logo */
+.logo {
+    margin: 0px;
+    padding: 0px;
+    height: 5vw;
+    text-align: center;
+    margin-right: 1vw;
+
+}
+
+/* Sidebar Collapsed (Mobile) */
+.sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+
+/* Active Sidebar Link */
+.nav-link.active {
+    background-color: #007bff !important;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+nav ul li{
+    padding-bottom: 1vw;
+}
+
+/* navbar logout btn */
+nav ul li Button {
+    font-size: 20px;
+    background-color: white;
+    padding: 5px 15px;
+    border-radius: 14px;
+    border: 1px solid white;
+    position: absolute;
+    top:90vh;
+    left:4vw;
+}
+
+/* TOP header with searchbar */
+.search-bar {
+    background-color: white;
+    padding: 1.5vw 2vw;
+    box-shadow: 10px 0px 30px 1px #cfcdcd;
+    z-index: 1;
+    width: 85vw;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.search-button {
+    border: none;
+    font-size: 1rem;
+}
+
+.search-input {
+    background-color: #DADADA;
+
+    width: 480px;
+    height: 30px;
+    border: none;
+}
+
+.serch-input {
+    background-color: #DADADA;
+    width: 430px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-radius: 10px;
+    padding: .4em 1em;
+    
+}
+
+.serch-input input:focus {
+    outline: none;
+}
+
+input:focus {
+    border: none;
+}
+
+.search-icon {
+    padding-top: .4em;
+    padding-bottom: .4em;
+    color: #818181;
+}
+
+.current-user-login {
+    margin-right: 3em;
+    margin-top: .5em;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+
+.person-icon {
+
+    font-size: 1vw;
+    padding-right: 1em;
+}
+
+.current-user-login p:nth-child(1) {
+
+    font-weight: bold;
+    margin: 0;
+
+}
+
+.current-user-login p:nth-child(2) {
+    padding-top: 5px;
+    margin: 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+/* Inputs */
+.form-inputs,
+.dropdown {
+    margin-top: 10px;
+    width: 100%;
+    height: 3rem;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+    padding-left: 15px;
+}
+
+/* Main Content */
+.content {
+    width: 85%;
+    background-color: white;
+    float: right;
+    height: 100vh;
+    transition: width 0.3s ease-in-out;
+}
+
+/* Adjust Width When Sidebar is Collapsed */
+.sidebar.collapsed+.content {
+    width: 100%;
+}
+
+/* Sidebar Toggle Button */
+#toggleSidebar {
+    display: none;
+}
+
+
+/* TABLE UI */
+.data-table table {
+    border-collapse: collapse;
+    width: 100%;
+    padding-top: 3rem;
+    margin-bottom: 20px;
+
+}
+
+
+.data-table th {
+    padding: 10px;
+    text-align: center;
+    border: none;
+    background-color: #ECECEC;
+}
+
+.data-table td {
+    /* border-bottom: 1px solid #ddd; */
+    padding: 10px;
+    text-align: left;
+    border: none;
+    font-size: .9em;
+}
+
+
+
+
+/* Style the "Average," "SR," and "ECO" columns as numbers */
+
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5),
+td:nth-child(6) {
+    text-align: center;
+}
+
+.data-table tr {
+    border-bottom: 1px solid rgb(236, 235, 235);
+}
+
+.data-table th {
+    font-size: 1vw;
+    font-weight: 600;
+}
+
+.data-table td {
+    font-size: 1vw;
+    color: #3F4249;
+    text-align: center;
+}
+/* END TABLE UI */
+
+/* FORM UI */
+.add-form .header {
+    padding: 0px 3vw;
+}
+
+.form-container {
+    margin-top: 0.1rem;
+    display: flex;
+    flex-direction: column;
+    line-height: 0.8;
+
+}
+
+.submit {
+    font-size: 1vw;
+    padding: .5vw 2vw;
+    color: #fff;
+    background-color: black;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.row {
+    margin: 1vw 0vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 2vw;
+
+}
+
+::placeholder {
+    padding-left: 10px;
+    color: #C2C2C2;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+.row label {
+    display: block;
+}
+
+
+
+fieldset {
+    border: 2px solid rgb(225, 224, 224);
+    margin: 0px 2vw;
+    border-radius: 2vw;
+    padding: 2vw 0px;
+    margin-bottom: 2vw;
+}
+
+
+
+
+.fileupload-lable {
+    margin-top: 10px;
+    padding-top: 16px;
+    padding-left: 5px;
+    width: 15rem;
+    height: 1.7rem;
+    background-color: #FAFAFA;
+    border: 1px dotted #E3E3E3;
+    border-radius: 4px;
+    color: #3e3d3d;
+
+}
+
+input[type="file"] {
+    position: relative;
+    margin-top: 10px;
+    width: 15rem;
+    height: 3rem;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+}
+
+input[type="file"]::file-selector-button {
+    width: 136px;
+    vertical-align: center;
+    color: transparent;
+
+}
+
+/* Faked label styles and icon */
+input[type="file"]::before {
+    position: absolute;
+    pointer-events: none;
+    top: 13px;
+    left: 19px;
+    height: 22px;
+    width: 20px;
+    content: "";
+    vertical-align: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230964B0'%3E%3Cpath d='M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z'/%3E%3C/svg%3E");
+}
+
+input[type="file"]::after {
+    position: absolute;
+    pointer-events: none;
+    top: 16px;
+    left: 45px;
+    color: #0964b0;
+    content: "Upload File";
+}
+
+/* ------- From Step 1 ------- */
+
+/* file upload button */
+input[type="file"]::file-selector-button {
+    border-radius: 4px;
+    padding: 0 16px;
+    height: 3rem;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+
+    transition: background-color 200ms;
+}
+
+/* file upload button hover state */
+input[type="file"]::file-selector-button:hover {
+    background-color: #f3f4f6;
+}
+
+/* file upload button active state */
+input[type="file"]::file-selector-button:active {
+    background-color: #e5e7eb;
+}
+
+
+/* Input size */
+.r-s {
+    padding: 0;
+    background-color: #FAFAFA;
+    /* border: 1px solid #E3E3E3;
+    border-radius: 4px; */
+}
+
+.checkbox-input {
+    margin: 10px;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+    width: 200px;
+    display: grid;
+    grid-template-columns: 50px 50px 50px 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+.ch-box {
+
+    width: 1.5rem;
+    height: 3rem;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+}
+
+.subs-btns a {
+    padding: 8px 20px;
+    font-size: 1.2vw;
+    color: #fff;
+    background-color: rgb(43, 42, 42);
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+
+}
+
+.allo-subs {
+    justify-content: space-between;
+}
+
+td .submit:hover {
+    color: white;
+}
+/* END of FORM UI */
+
+
+
+
+/* Show Sidebar Toggle on Small Screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .sidebar.collapsed {
+        width: 250px;
+        padding: 10px;
+    }
+
+    #toggleSidebar {
+        display: block;
+    }
+
+    .content {
+        width: 100%;
+    }
+
+    .sidebar.collapsed+.content {
+        width: 100%;
+    }
+}
