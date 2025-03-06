@@ -78,25 +78,9 @@ class StudentController extends Controller
   }
 
 
-  /**
-   * Fetch Batches based on Selected Course & Semester (AJAX Request)
-   */
-  public function getBatches()
-  {
-    if ($this->request->isAJAX()) {
-      $program_id = $this->request->getPost('program_id');
-      $semester_id = $this->request->getPost('semester_id');
-      $batches = $this->batchModel->where('program_id', $program_id)
-        ->where('semester_id', $semester_id)
-        ->findAll();
 
-      return $this->response->setJSON($batches);
-    }
-  }
+  // List Students based on Program, Semester, and Batch
 
-  /**
-   * List Students based on Program, Semester, and Batch
-   */
   public function list()
   {
     $studentModel = new StudentModel();
@@ -127,7 +111,7 @@ class StudentController extends Controller
     $studentQuery = $studentModel->where('program_id', $course_id)
       ->where('semester', $semester_id);
 
-    if (!empty($batch_id) && $batch_id != 0) {
+    if (!empty($batch_id)) {
       $studentQuery->where('batch', $batch_id);
     }
 
@@ -162,14 +146,22 @@ class StudentController extends Controller
    */
   public function bulkDelete()
   {
-    $ids = $this->request->getPost('student_ids');
+    $request = service('request');
+
+    // Get selected student IDs from the AJAX request
+    $input = $request->getJSON();
+    $ids = $input->student_ids ?? [];
+
     if (empty($ids)) {
-      return redirect()->back()->with('error', 'No students selected for deletion.');
+      return $this->response->setJSON(['success' => false, 'message' => 'No students selected for deletion.']);
     }
 
     $this->studentModel->whereIn('id', $ids)->delete();
-    return redirect()->back()->with('success', 'Selected students deleted successfully!');
+
+    return $this->response->setJSON(['success' => true, 'message' => 'Selected students deleted successfully!']);
   }
+
+
 
   /**
    * Download Sample Excel Template

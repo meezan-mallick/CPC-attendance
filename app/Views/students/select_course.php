@@ -96,5 +96,6 @@
 
         });
     </script>
+
 </div>
 <?= $this->endSection(); ?>

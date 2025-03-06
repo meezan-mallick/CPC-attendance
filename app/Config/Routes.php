@@ -78,10 +78,8 @@ $routes->get('coordinators/remove/(:num)/(:num)', 'CoordinatorController::remove
 
 // Routes  for Student Management
 $routes->get('students', 'StudentController::index'); // Course selection
-
 $routes->get('students/list', 'StudentController::list'); // Handles query parameters like ?course=1&semester=1&batch=1
 $routes->get('students/download-sample', 'StudentController::downloadSampleExcel'); // Download Sample Excel (No Parameters)
-
 $routes->get('students/import', 'StudentController::import'); // Import students view
 $routes->post('students/import/(:num)/(:num)/(:num)', 'StudentController::processImport/$1/$2/$3'); // Process student import
 $routes->get('students/delete/(:num)', 'StudentController::delete/$1'); // Delete a student
