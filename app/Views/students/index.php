@@ -9,6 +9,12 @@
             <div class="mb-3">
                 <a href="<?= site_url('students') ?>" class="btn btn-warning">🔙 Back to Course Selection</a>
                 <a href="<?= site_url('students/download-sample') ?>" class="btn btn-success">⬇ Download Sample Excel</a>
+                <a href="<?= site_url('students/add?course=' . $program_id . '&semester=' . $semester . '&batch=' . $batch) ?>"
+                    class="btn btn-success mb-3">
+                    <i class="bi bi-plus-lg"></i> Add Single Student
+                </a>
+
+
             </div>
 
         </div>
@@ -80,6 +86,15 @@
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
+
+
+        <div class="mt-3">
+            <form action="<?= site_url('students/import/' . $program_id . '/' . $semester . '/' . $batch) ?>" method="post" enctype="multipart/form-data">
+                <label>Import Students from Excel:</label>
+                <input type="file" name="student_file" class="form-control" required>
+                <button type="submit" class="btn btn-primary mt-2">📤 Upload & Import</button>
+            </form>
         </div>
     </div>
 </div>

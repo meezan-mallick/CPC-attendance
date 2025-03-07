@@ -26,9 +26,7 @@ class StudentController extends Controller
     $this->batchModel = new BatchModel();
   }
 
-  /**
-   * Select Course and Semester View
-   */
+  // Select Course and Semester View
   public function index()
   {
 
@@ -48,9 +46,7 @@ class StudentController extends Controller
     return view('students/select_course', ['programs' => $programs]);
   }
 
-  /**
-   * Fetch Semesters based on Selected Course (AJAX Request)
-   */
+  // Fetch Semesters based on Selected Course (AJAX Request)
   public function getSemesters()
   {
     if ($this->request->isAJAX()) {
@@ -77,10 +73,7 @@ class StudentController extends Controller
     }
   }
 
-
-
-  // List Students based on Program, Semester, and Batch
-
+  //List Students based on Program, Semester, and Batch
   public function list()
   {
     $studentModel = new StudentModel();
@@ -126,10 +119,45 @@ class StudentController extends Controller
     ]);
   }
 
+  // add single student
+  public function add()
+  {
+    $programModel = new ProgramModel();
+    $data['programs'] = $programModel->findAll(); // Fetch programs for dropdown
 
-  /**
-   * Delete a single student
-   */
+    // Get values from query parameters (if provided)
+    $data['program_id'] = $this->request->getGet('course') ?? '';
+    $data['semester'] = $this->request->getGet('semester') ?? '';
+    $data['batch'] = $this->request->getGet('batch') ?? '';
+
+    return view('students/form', $data);
+  }
+
+
+  // Store single student
+  public function store()
+  {
+    $studentModel = new StudentModel();
+
+    $data = [
+      'full_name' => $this->request->getPost('full_name'),
+      'email' => $this->request->getPost('email'),
+      'mobile_number' => $this->request->getPost('mobile_number'),
+      'program_id' => $this->request->getPost('program_id'),
+      'semester' => $this->request->getPost('semester'),
+      'batch' => $this->request->getPost('batch') ?: 0, // Default batch to 0 if blank
+    ];
+
+    if ($studentModel->insert($data)) {
+      return redirect()->to('/students?course=' . $data['program_id'] . '&semester=' . $data['semester'] . '&batch=' . $data['batch'])
+        ->with('success', 'Student added successfully!');
+    } else {
+      return redirect()->back()->with('error', 'Failed to add student.');
+    }
+  }
+
+
+  // Delete a single student
   public function delete($id)
   {
     $student = $this->studentModel->find($id);
@@ -141,9 +169,7 @@ class StudentController extends Controller
     return redirect()->back()->with('success', 'Student deleted successfully!');
   }
 
-  /**
-   * Bulk Delete students
-   */
+  // Bulk Delete students
   public function bulkDelete()
   {
     $request = service('request');
@@ -161,11 +187,7 @@ class StudentController extends Controller
     return $this->response->setJSON(['success' => true, 'message' => 'Selected students deleted successfully!']);
   }
 
-
-
-  /**
-   * Download Sample Excel Template
-   */
+  // Download Sample Excel Template
   public function downloadSampleExcel()
   {
     $spreadsheet = new Spreadsheet();
@@ -209,9 +231,7 @@ class StudentController extends Controller
     exit;
   }
 
-  /**
-   * Import Students from Excel
-   */
+  // Import Students from Excel
   public function processImport($program_id, $semester, $batch = 0)
   {
     $file = $this->request->getFile('student_file');

@@ -85,3 +85,6 @@ $routes->post('students/import/(:num)/(:num)/(:num)', 'StudentController::proces
 $routes->get('students/delete/(:num)', 'StudentController::delete/$1'); // Delete a student
 $routes->post('students/bulk-delete', 'StudentController::bulkDelete'); // Bulk delete students
 $routes->post('students/getSemesters', 'StudentController::getSemesters'); // Get semesters dynamically based on course
+
+$routes->get('students/add', 'StudentController::add'); // Show Add Student Form
+$routes->post('students/store', 'StudentController::store'); // Store New Student
