@@ -1,7 +1,7 @@
 <?= $this->extend('main') ?>
 <?= $this->section('content') ?>
 
-<div class="container-fluid mt-4">
+<div class="container-fluid mt-2 p-4">
     <div class="container">
         <div>
             <h2>Students List - <?= esc($program_name) ?> (<?= esc($semester) ?> Semester, Batch - <?= esc($batch) ?>)</h2>
@@ -10,7 +10,7 @@
                 <a href="<?= site_url('students') ?>" class="btn btn-warning">🔙 Back to Course Selection</a>
                 <a href="<?= site_url('students/download-sample') ?>" class="btn btn-success">⬇ Download Sample Excel</a>
                 <a href="<?= site_url('students/add?course=' . $program_id . '&semester=' . $semester . '&batch=' . $batch) ?>"
-                    class="btn btn-success mb-3">
+                    class="btn btn-info">
                     <i class="bi bi-plus-lg"></i> Add Single Student
                 </a>
 
