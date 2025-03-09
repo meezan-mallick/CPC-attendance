@@ -71,20 +71,20 @@ $routes->get('colleges/delete/(:num)', 'CollegeController::delete/$1');
 
 
 // Routes for coordinators
-$routes->get('coordinators', 'CoordinatorController::list');
-$routes->get('coordinators/assign', 'CoordinatorController::index');
-$routes->post('coordinators/assign', 'CoordinatorController::assign');
-$routes->get('coordinators/remove/(:num)/(:num)', 'CoordinatorController::removeAssignment/$1/$2');
+$routes->get('coordinators', 'CoordinatorController::list', ['filter' => 'auth']);
+$routes->get('coordinators/assign', 'CoordinatorController::index', ['filter' => 'auth']);
+$routes->post('coordinators/assign', 'CoordinatorController::assign', ['filter' => 'auth']);
+$routes->get('coordinators/remove/(:num)/(:num)', 'CoordinatorController::removeAssignment/$1/$2', ['filter' => 'auth']);
 
 // Routes  for Student Management
-$routes->get('students', 'StudentController::index'); // Course selection
-$routes->get('students/list', 'StudentController::list'); // Handles query parameters like ?course=1&semester=1&batch=1
-$routes->get('students/download-sample', 'StudentController::downloadSampleExcel'); // Download Sample Excel (No Parameters)
-$routes->get('students/import', 'StudentController::import'); // Import students view
-$routes->post('students/import/(:num)/(:num)/(:num)', 'StudentController::processImport/$1/$2/$3'); // Process student import
-$routes->get('students/delete/(:num)', 'StudentController::delete/$1'); // Delete a student
-$routes->post('students/bulk-delete', 'StudentController::bulkDelete'); // Bulk delete students
-$routes->post('students/getSemesters', 'StudentController::getSemesters'); // Get semesters dynamically based on course
+$routes->get('students', 'StudentController::index', ['filter' => 'auth']); // Course selection
+$routes->get('students/list', 'StudentController::list', ['filter' => 'auth']); // Handles query parameters like ?course=1&semester=1&batch=1
+$routes->get('students/download-sample', 'StudentController::downloadSampleExcel', ['filter' => 'auth']); // Download Sample Excel (No Parameters)
+$routes->get('students/import', 'StudentController::import', ['filter' => 'auth']); // Import students view
+$routes->post('students/import/(:num)/(:num)/(:num)', 'StudentController::processImport/$1/$2/$3', ['filter' => 'auth']); // Process student import
+$routes->get('students/delete/(:num)', 'StudentController::delete/$1', ['filter' => 'auth']); // Delete a student
+$routes->post('students/bulk-delete', 'StudentController::bulkDelete', ['filter' => 'auth']); // Bulk delete students
+$routes->post('students/getSemesters', 'StudentController::getSemesters', ['filter' => 'auth']); // Get semesters dynamically based on course
 
-$routes->get('students/add', 'StudentController::add'); // Show Add Student Form
-$routes->post('students/store', 'StudentController::store'); // Store New Student
+$routes->get('students/add', 'StudentController::add', ['filter' => 'auth']); // Show Add Student Form
+$routes->post('students/store', 'StudentController::store', ['filter' => 'auth']); // Store New Student
