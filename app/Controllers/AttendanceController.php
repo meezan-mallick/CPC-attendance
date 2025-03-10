@@ -18,34 +18,33 @@ class AttendanceController extends BaseController
 
     public function allsubjects()
     {
-        $id=$_COOKIE['id'];
+        $id=session()->get('user_id');
        
-        $subjectallocationmodel= new SubjectallocationModel();       
-        $data['subject']=$subjectallocationmodel->getOneFacAllocatedSubjectDetails($id);
-       
-        $coordinatormodel= new CoordinatorModel();
-        $data['coordinator_sub']=$coordinatormodel->getAllCoordinatorSubjects($id);
+        $subjectallocationModel = new SubjectallocationModel();
       
-         return view('attendance-crud/allsubjoffac',$data);
+        $data['subjects']=$subjectallocationModel->getOneFacAllocatedSubjectDetails($id);
+       
+         return view('attendance/subjectlist',$data);
     }
 
-    public function alltopics($p_id,$s_id,$sub_id)
+    public function alltopics($program_id,$semester_number,$subject_id)
     {
-        $id=$_COOKIE['id'];
+        $id=session()->get('user_id');
        
         $timeslotmodel= new TimeslotModel();
         $data['timeslot']=$timeslotmodel->findAll();
         $studentmodel= new Studentmodel();
-        $data['batches'] = $studentmodel->distinct()->select('batch')->where('program_id', $p_id)->where('semester_id', $s_id)->findAll();
-        $data['sub_id']=$sub_id;
+        $data['batches'] = $studentmodel->distinct()->select('batch')->where('program_id', $program_id)->where('semester', $semester_number)->findAll();
        
-        $data['prog_id']=$p_id;
-        $data['sem_id']=$s_id;
+        $data['subject_id']=$subject_id;
+        $data['program_id']=$program_id;
+        $data['semester_number']=$semester_number;
         $topicmodel= new TopicModel();       
-        $data['topics']=$topicmodel->getAllTopics($sub_id);
+        $data['topics']=$topicmodel->getAllTopics($subject_id);
+
         // $data['topics']=$topicmodel->findAll();
        
-        return view('attendance-crud/alltopics',$data);
+          return view('attendance/topics',$data);
     }
 
     public function delete_topic($p_id,$s_id,$sub_id,$t_id)

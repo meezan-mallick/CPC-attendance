@@ -4,8 +4,8 @@
 <div class="container mt-4">
     <h2>Add a New Student</h2>
 
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+    <?php if (session()->getFlashdata('error_import')): ?>
+        <div class="alert alert-danger"><?= session()->getFlashdata('error_import') ?></div>
     <?php endif; ?>
 
     <form action="<?= site_url('students/store') ?>" method="post">

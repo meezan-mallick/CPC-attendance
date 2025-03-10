@@ -5,18 +5,18 @@
 <div class="container-fluid">
 
   <div class="m-4">
-    <div class="header">
-      <div class="heading">
-        <h2>All Subjects</h2>
-      </div>
+      <div class="header">
+          <div class="heading">
+            <h2>All Subjects</h2>
+          </div>
 
-      <div>
+          <div>
 
-        <a href="subjects/add" class="add-p">
-          <button class="btn btn-primary">Add new</button>
-        </a>
+            <a href="subjects/add" class="add-p">
+              <button class="btn btn-primary">Add new</button>
+            </a>
+          </div>
       </div>
-    </div>
     <hr>
     <div style="margin-bottom:1vw;text-align:center">
 

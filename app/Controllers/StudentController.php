@@ -82,7 +82,12 @@ class StudentController extends Controller
     // Fetch query parameters
     $course_id = $this->request->getGet('course');
     $semester_id = $this->request->getGet('semester');
-    $batch_id = $this->request->getGet('batch') ?? 0; // Default batch to 0 if not provided
+    $batch_id=0;
+    if($this->request->getGet('batch')!="")
+    {
+      $batch_id =  $this->request->getGet('batch'); 
+    }
+    // $batch_id =  $this->request->getGet('batch')==""?0:$this->request->getGet('batch'); // Default batch to 0 if not provided
 
     // Validate course and semester
     if (!$course_id || !$semester_id) {
@@ -110,6 +115,7 @@ class StudentController extends Controller
 
     $students = $studentQuery->findAll();
 
+    
     return view('students/index', [
       'students'    => $students,
       'program_id'  => $course_id,
@@ -128,9 +134,10 @@ class StudentController extends Controller
     // Get values from query parameters (if provided)
     $data['program_id'] = $this->request->getGet('course') ?? '';
     $data['semester'] = $this->request->getGet('semester') ?? '';
-    $data['batch'] = $this->request->getGet('batch') ?? '';
+    $data['batch'] = (int)$this->request->getGet('batch')==""?0: $this->request->getGet('batch');
 
-    return view('students/form', $data);
+    
+     return view('students/form', $data);
   }
 
 
@@ -145,15 +152,21 @@ class StudentController extends Controller
       'mobile_number' => $this->request->getPost('mobile_number'),
       'program_id' => $this->request->getPost('program_id'),
       'semester' => $this->request->getPost('semester'),
-      'batch' => $this->request->getPost('batch') ?: 0, // Default batch to 0 if blank
+      'batch' => (int)$this->request->getGet('batch')==""?0: $this->request->getGet('batch'), // Default batch to 0 if blank
     ];
 
-    if ($studentModel->insert($data)) {
-      return redirect()->to('/students?course=' . $data['program_id'] . '&semester=' . $data['semester'] . '&batch=' . $data['batch'])
-        ->with('success', 'Student added successfully!');
-    } else {
-      return redirect()->back()->with('error', 'Failed to add student.');
+    if (!$studentModel->insert($data)) {
+      $errors = $studentModel->errors();
     }
+
+    if (!empty($errors)) {
+      return redirect()->back()->with('error_import', implode(', ', $errors));
+    }
+
+   return redirect()->to('/students?course=' . $data['program_id'] . '&semester=' . $data['semester'] . '&batch=' . $data['batch'])
+        ->with('success', 'Student added successfully!');
+        
+    
   }
 
 

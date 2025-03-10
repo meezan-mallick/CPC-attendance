@@ -7,6 +7,7 @@ use CodeIgniter\Model;
 class TopicModel extends Model{
     
     protected $table = 'topics';
+    protected $primaryKey = 'id';
     protected $allowedFields = [
         'id',
         'topic',
@@ -20,12 +21,11 @@ class TopicModel extends Model{
 
     public function getAllTopics($sub_id) {
         
-        return $this->select('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id, 
-                      (SELECT COUNT(*) FROM students WHERE students.semester_id = subjects.semester_id AND students.batch = topics.batch) AS total_stud, 
+        return $this->select('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id, subjects.semester_number AS semester,
+                      (SELECT COUNT(*) FROM students WHERE students.semester = subjects.semester_number AND students.batch = topics.batch) AS total_stud, 
                       COUNT(DISTINCT CASE WHEN attendance.attendance = "Present" THEN attendance.student_id END) AS total_present')
         ->join('attendance', 'attendance.topic_id = topics.id', 'left')
         ->join('subjects', 'subjects.id = topics.subject_id', 'inner')
-        ->join('semesters', 'semesters.id = subjects.semester_id', 'inner')
         ->groupBy('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id')
         ->where('topics.subject_id',$sub_id)
         ->findAll();

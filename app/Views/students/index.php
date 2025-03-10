@@ -26,6 +26,10 @@
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
         <?php endif; ?>
 
+        <?php if ($errors = session()->getFlashdata('error_import')){?>
+            <div class="alert alert-danger"><?= session()->getFlashdata('error_import') ?></div>
+        <?php } ?>
+        
         <hr>
 
         <!-- Bulk Delete Button -->

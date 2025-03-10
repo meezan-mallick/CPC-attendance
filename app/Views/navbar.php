@@ -49,10 +49,15 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'students') ? 'active' : '' ?>" href="<?= site_url('students') ?>"><i class="bi bi-person-lines-fill me-2"></i>Students</a></li>
     <?php endif; ?>
 
-    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
-      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'Attendance') ? 'active' : '' ?>" href="<?= site_url('programs') ?>"><i class="bi bi-check2-square me-2"></i> Attendance</a></li>
+    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Coordinator'])): ?>
+      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'time-slots') ? 'active' : '' ?>" href="<?= site_url('time-slots') ?>"><i class="bi bi-clock-fill me-2"></i> Time Slot</a></li>
     <?php endif; ?>
 
+    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
+      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'faculty-subjects') ? 'active' : '' ?>" href="<?= site_url('faculty-subjects') ?>"><i class="bi bi-check2-square me-2"></i> Attendance</a></li>
+    <?php endif; ?>
+
+    
     <li class="mt-3">
       <form action="/logout">
         <button class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Logout</button>

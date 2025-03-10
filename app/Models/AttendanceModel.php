@@ -12,7 +12,7 @@ class AttendanceModel extends Model{
         'topic_id',
         'student_id',
         'program_id',
-        'semester_id',
+        'semester_number',
         'subject_id',
         'batch',
         'attendance',

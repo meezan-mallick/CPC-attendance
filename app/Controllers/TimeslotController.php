@@ -19,20 +19,20 @@ class TimeslotController extends BaseController
     public function timeslots()
     {
         $timeslotmodel= new TimeslotModel();
-            $data['timeslot']=$timeslotmodel->findAll();
-        return view('timeslot-crud/alltimeslot',$data);
+        $data['timeslot']=$timeslotmodel->findAll();
+        return view('timeslots/index',$data);
     }
 
     public function add_timeslot()
     {
-        return view('timeslot-crud/addtimeslot');
+        return view('timeslots/add');
     }
 
-    public function update_timeslot($id)
+    public function edit_timeslot($id)
     {
         $timeslotmodel= new TimeslotModel();
         $data['timeslot']=$timeslotmodel->find($id);
-        return view('timeslot-crud/updatetimeslot',$data);
+        return view('timeslots/edit',$data);
     }
 
     public function timeslot_store()
@@ -53,7 +53,7 @@ class TimeslotController extends BaseController
             ];
             $timeslotmodel->save($data);
             
-            return redirect()->to(base_url('/timeslots'));
+            return redirect()->to(base_url('/time-slots'));
         }
         else{
             $data["validation"] = $this->validator;
@@ -81,12 +81,12 @@ class TimeslotController extends BaseController
             ];
             $timeslotmodel->update($id,$data);
             
-            return redirect()->to(base_url('/timeslots'));
+            return redirect()->to(base_url('/time-slots'));
         }
         else{
             $data["validation"] = $this->validator;
            
-            return view('timeslot-crud/addtimeslot',$data);
+            return view('time-slots/edit',$data);
         }
       
     }
@@ -97,7 +97,7 @@ class TimeslotController extends BaseController
         $timeslotmodel = new TimeslotModel();
         $timeslotmodel->delete($id);
         
-        return redirect()->to(base_url('/timeslots'));
+        return redirect()->to(base_url('/time-slots'));
         
       
     }
