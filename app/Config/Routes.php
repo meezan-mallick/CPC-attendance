@@ -38,8 +38,13 @@ $routes->get('users/delete/(:num)', 'UserController::delete/$1', ['filter' => 'a
 $routes->post('users/assign-coordinator/(:num)', 'UserController::assignCoordinator/$1', ['filter' => 'auth']);
 
 //Routes for Subject Allotment (Coordinator Only)
-$routes->get('subjects/assign', 'SubjectController::assign', ['filter' => 'auth']);
-$routes->post('subjects/assign', 'SubjectController::storeAssignment', ['filter' => 'auth']);
+//Routes for Subject Allotment (Coordinator Only)
+$routes->get('subjectsallocation', 'SubjectController::Getassignsubjects', ['filter' => 'auth']);
+$routes->get('subjectsallocation/assign', 'SubjectController::assign', ['filter' => 'auth']);
+$routes->get('subjectsallocation/edit/(:num)', 'SubjectController::editAssignment/$1', ['filter' => 'auth']);
+$routes->get('subjectsallocation/delete/(:num)', 'SubjectController::deleteAssignment/$1', ['filter' => 'auth']);
+$routes->post('subjectsallocation/update/(:num)', 'SubjectController::updateAssignment/$1', ['filter' => 'auth']);
+$routes->post('subjectsallocation/assignstore', 'SubjectController::storeAssignment', ['filter' => 'auth']);
 
 
 

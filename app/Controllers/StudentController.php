@@ -61,7 +61,7 @@ class StudentController extends Controller
       }
 
       // Determine the number of semesters based on program type
-      $semesterCount = ($program['program_type'] == 'Integrated') ? 10 : 4;
+      $semesterCount = ($program['program_type'] == true) ? 10 : 4;
 
       // Generate semester list dynamically
       $semesters = [];

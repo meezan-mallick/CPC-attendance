@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\SubjectModel;
+use App\Models\UserModel;
 use App\Models\ProgramModel;
+use App\Models\SubjectallocationModel;
 use CodeIgniter\Controller;
 
 class SubjectController extends Controller
@@ -137,28 +139,107 @@ class SubjectController extends Controller
         return redirect()->to('/subjects')->with('success', 'Subject deleted successfully.');
     }
 
-    // Subject Allocation
-    public function assign()
-    {
-        $subjectModel = new SubjectModel();
-        $userModel = new UserModel();
+   // Subject Allocation
 
-        $data['subjects'] = $subjectModel->findAll();
-        $data['faculties'] = $userModel->where('role', 'Faculty')->findAll();
+   public function Getassignsubjects() {
+        $subjectallocationModel = new SubjectallocationModel();
 
-        return view('subjects/assign', $data);
+        $data['allocatedsubjects']=$subjectallocationModel->getAllocatedSubjectDetails();
+        return view('subjects/assignsubjects',$data);
     }
 
-    public function storeAssignment()
-    {
-        $subjectModel = new SubjectModel();
+        public function assign()
+        {
+            $subjectModel = new SubjectModel();
+            $userModel = new UserModel();
 
-        $data = [
-            'subject_id'  => $this->request->getPost('subject_id'),
-            'faculty_id'  => $this->request->getPost('faculty_id'),
-        ];
+            $programModel = new ProgramModel();
+            $data['programs'] = $programModel->findAll();
 
-        $subjectModel->insert($data);
-        return redirect()->to('/subjects/assign')->with('success', 'Subject assigned successfully.');
-    }
+            // $data['subjects'] = $subjectModel->findAll();
+            $data['subjects'] = $subjectModel
+                                ->whereNotIn('id', function($builder) {
+                                    $builder->select('subject_id')->from('allocatedsubjects');
+                                })
+                                ->findAll();
+
+            $data['semesters'] = $subjectModel
+                                ->select('program_id, semester_number')
+                                ->groupBy(['program_id', 'semester_number'])
+                                ->findAll();
+                            
+
+            $data['faculties'] = $userModel->where('role', 'Faculty')->findAll();
+
+            return view('subjects/assign', $data);
+        }
+
+        public function storeAssignment()
+        {
+            $subjectallocationModel = new SubjectallocationModel();
+
+            $data = [
+                'subject_id'  => $this->request->getPost('subject_id'),
+                'faculty_id'  => $this->request->getPost('faculty_id'),
+                'program_id'  => $this->request->getPost('program_id'),
+                'semester_number'  => $this->request->getPost('semester_number'),
+            ];
+
+            $subjectallocationModel->insert($data);
+            return redirect()->to('subjectsallocation')->with('success', 'Subject assigned successfully.');
+        }
+
+
+        public function editAssignment($id)
+        {
+            
+            $subjectModel = new SubjectModel();
+            $userModel = new UserModel();
+
+            $programModel = new ProgramModel();
+            $data['programs'] = $programModel->findAll();
+
+            // $data['subjects'] = $subjectModel->findAll();
+            $subjectallocationModel = new SubjectallocationModel();
+            $data['allocatesubject']=$subjectallocationModel->find($id);
+            $data['subjects'] = $subjectModel
+                                ->whereNotIn('id', function($builder) {
+                                    $builder->select('subject_id')->from('allocatedsubjects');
+                                })
+                                ->orWhere('id', $data['allocatesubject']['subject_id'])
+                                ->findAll();
+
+            $data['semesters'] = $subjectModel
+                                ->select('program_id, semester_number')
+                                ->groupBy(['program_id', 'semester_number'])
+                                ->findAll();
+                            
+
+            $data['faculties'] = $userModel->where('role', 'Faculty')->findAll();
+
+            return view('subjects/editassign', $data);
+        }
+
+        public function updateAssignment($id)
+        {
+            $subjectallocationModel = new SubjectallocationModel();
+
+            $data = [
+                'subject_id'  => $this->request->getPost('subject_id'),
+                'faculty_id'  => $this->request->getPost('faculty_id'),
+                'program_id'  => $this->request->getPost('program_id'),
+                'semester_number'  => $this->request->getPost('semester_number'),
+            ];
+
+            $subjectallocationModel->update($id,$data);
+            return redirect()->to('subjectsallocation')->with('success', 'Updated successfully.');
+        }
+
+        public function deleteAssignment($id)
+        {
+            $subjectallocationModel = new SubjectallocationModel();
+
+            $subjectallocationModel->delete($id);
+            return redirect()->to('subjectsallocation')->with('success', 'Deleted successfully.');
+        }
 }

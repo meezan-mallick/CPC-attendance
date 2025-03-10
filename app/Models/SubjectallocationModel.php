@@ -5,40 +5,39 @@ use CodeIgniter\Model;
 
 
 class SubjectallocationModel extends Model{
-    
-    protected $table = 'subjectallocation';
+    protected $table = 'allocatedsubjects';
     protected $allowedFields = [
         'id',
         'faculty_id',
         'program_id',
-        'semester_id',
+        'semester_number',
         'subject_id',
        
     ];
 
     public function getAllocatedSubjectDetails()
     {
-        return $this->select('subjectallocation.id AS id,subjectallocation.program_id,subjectallocation.semester_id,subjectallocation.subject_id, faculties.name AS faculty_name,programs.program_name, semesters.semester,subjects.sub_name')
-                    ->join('faculties', 'subjectallocation.faculty_id = faculties.id', 'inner')
-                    ->join('programs', 'subjectallocation.program_id = programs.id', 'inner')
-                    ->join('semesters', 'subjectallocation.semester_id = semesters.id', 'inner')
-                    ->join('subjects', 'subjectallocation.subject_id = subjects.id', 'inner')
+        return $this->select('allocatedsubjects.id AS id,allocatedsubjects.program_id,allocatedsubjects.semester_number,allocatedsubjects.subject_id, users.full_name AS faculty_name,programs.program_name,subjects.subject_name,colleges.college_code,colleges.college_name')
+                    ->join('users', 'allocatedsubjects.faculty_id = users.id', 'inner')
+                    ->join('programs', 'allocatedsubjects.program_id = programs.id', 'inner')
+                    ->join('colleges', 'colleges.college_code = programs.college_code', 'inner')
+                    ->join('subjects', 'allocatedsubjects.subject_id = subjects.id', 'inner')
                     ->findAll();
     }
 
     public function getOneFacAllocatedSubjectDetails($id)
     {
-        return $this->select('subjectallocation.id AS id,subjectallocation.program_id,subjectallocation.semester_id,subjectallocation.subject_id, faculties.name AS faculty_name,programs.program_name, semesters.semester,subjects.sub_name')
-                    ->join('faculties', 'subjectallocation.faculty_id = faculties.id', 'inner')
-                    ->join('programs', 'subjectallocation.program_id = programs.id', 'inner')
-                    ->join('semesters', 'subjectallocation.semester_id = semesters.id', 'inner')
-                    ->join('subjects', 'subjectallocation.subject_id = subjects.id', 'inner')
-                    ->where('subjectallocation.faculty_id', $id)
+        return $this->select('allocatedsubjects.id AS id,allocatedsubjects.program_id,semester_number,allocatedsubjects.subject_id, users.full_name AS faculty_name,programs.program_name,subjects.subject_name')
+                    ->join('users', 'allocatedsubjects.faculty_id = users.id', 'inner')
+                    ->join('programs', 'allocatedsubjects.program_id = programs.id', 'inner')
+                    ->join('subjects', 'allocatedsubjects.subject_id = subjects.id', 'inner')
+                    ->where('allocatedsubjects.faculty_id', $id)
                     ->findAll();
     }
 
 
    
+
 
    
     

@@ -41,6 +41,9 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'subjects') ? 'active' : '' ?>" href="<?= site_url('subjects') ?>"><i class="bi bi-book-fill me-2"></i> Subjects</a></li>
     <?php endif; ?>
 
+    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator'])): ?>
+      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'subjectsallocation') ? 'active' : '' ?>" href="<?= site_url('subjectsallocation') ?>"><i class="bi bi-book-fill me-2"></i> Subject Allocation</a></li>
+    <?php endif; ?>
 
     <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator'])): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'students') ? 'active' : '' ?>" href="<?= site_url('students') ?>"><i class="bi bi-person-lines-fill me-2"></i>Students</a></li>

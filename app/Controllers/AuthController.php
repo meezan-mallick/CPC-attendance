@@ -29,7 +29,7 @@ class AuthController extends Controller
         }
 
         // Verify password
-        if (!password_verify($password, $user['password'])) {
+        if ($password!=$user['password']) {
             return redirect()->back()->with('message', 'Invalid credentials.');
         }
 
