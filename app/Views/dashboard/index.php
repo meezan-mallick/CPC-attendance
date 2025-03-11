@@ -50,7 +50,8 @@
 
         <!-- Total Programs -->
         <div class="col-md-4 col-sm-6">
-            <div class="card shadow-lg border-0 p-3 text-center text-white bg-info">
+            <div style="background-color: 
+            #734CE4;" class="card shadow-lg border-0 p-3 text-center text-white">
                 <i class="bi bi-mortarboard-fill display-4"></i>
                 <h5 class="mt-2">Total Programs</h5>
                 <h2 class="fw-bold"><?= esc($total_programs) ?></h2>
@@ -59,7 +60,7 @@
 
         <!-- Total Colleges -->
         <div class="col-md-4 col-sm-6">
-            <div class="card shadow-lg border-0 p-3 text-center text-white bg-secondary">
+            <div style="background-color: #35495f;" class="card shadow-lg border-0 p-3 text-center text-white ">
                 <i class="bi bi-building display-4"></i>
                 <h5 class="mt-2">Total Colleges</h5>
                 <h2 class="fw-bold"><?= esc($total_colleges) ?></h2>
