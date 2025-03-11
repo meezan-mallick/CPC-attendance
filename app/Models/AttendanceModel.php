@@ -20,13 +20,13 @@ class AttendanceModel extends Model{
        
     ];
 
-    public function getStudentAttendanceLecture($p_id,$s_id,$sub_id,$t_id,$batch){
-        return $this->select('attendance.id AS att_id,students.id, students.stud_name,students.enroll_no,attendance.attendance')
-        ->join('students', 'students.id = attendance.student_id  AND attendance.topic_id='.(int)$t_id.'', 'right')
+    public function getStudentAttendanceLecture($program_id,$semester_number,$subject_id,$topic_id,$batch){
+        return $this->select('attendance.id AS attendance_id,students.id AS id,students.batch, students.full_name,students.university_enrollment_no,attendance.attendance')
+        ->join('students', 'students.id = attendance.student_id  AND attendance.topic_id='.(int)$topic_id.'', 'right')
         ->join('programs', 'students.program_id = programs.id', 'inner')
-        ->join('semesters', 'students.semester_id = semesters.id', 'inner')
         ->where('students.batch',$batch)
-        ->where('semesters.id',$s_id)
+        ->where('students.semester',$semester_number)
+        ->where('students.program_id',$program_id)
         ->findAll();
     }
 

@@ -37,7 +37,7 @@
               <td class=" text-left"><?= esc($subject['coordinator']) ?></td>
               <td class="text-center"><?= esc($subject['semester_number']) ?></td>
               <td class="text-center">
-                <a class="btn btn-sm btn-warning" href="<?= site_url('topics-list/'. $subject['program_id'].'/'. $subject['semester_number'] .'/'. $subject['id']) ?>">Take Attendance</a> 
+                <a class="btn btn-sm btn-warning" href="<?= site_url('topics-list/'. $subject['program_id'].'/'. $subject['semester_number'] .'/'. $subject['subject_id']) ?>">Take Attendance</a> 
              </td>
             </tr>
           <?php endforeach; ?>

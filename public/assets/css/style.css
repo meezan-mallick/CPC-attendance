@@ -428,6 +428,23 @@ td .submit:hover {
 }
 /* END of FORM UI */
 
+.attendance-edit{
+    display: none;
+    opacity: 0;
+    transform: translateY(10px); /* Start slightly lower */
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+
+.attendance-hover:hover td .attendance-data{
+    display: none;
+}
+
+.attendance-hover:hover td .attendance-edit{
+    display: inline-block;
+    opacity: 1;
+    transform: translateY(0); 
+}
 
 
 

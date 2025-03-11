@@ -23,7 +23,7 @@
 ?>
 <div class="container-fluid">
     <div class="m-4">
-        <form action="<?= site_url('/topics-list/store/(:num)/(:num)/(:num)') ?>" method="POST">
+        <form  action="<?= site_url('topics-list/store/' . $program_id.'/'.$semester_number.'/'.$subject_id) ?>" method="POST">
             <div class="header p-4">
             <a class="btn btn-sm btn-warning" href="<?= site_url('faculty-subjects') ?>">
                 < Back to Program List</a>
@@ -79,7 +79,9 @@
                         </select>
                     </div>
 
-            <?php }?>
+            <?php }else{?>
+                <input type="hidden" id="batch" name="batch" value="0">
+                <?php }?>
 
             <div class="col-md-3 col-12">
             
@@ -112,17 +114,16 @@
 
             <hr>
 
-            <div class="table-wrapper data-table">
+            <div class="table-wrapper data-table ">
             <table>
                 <thead>
 
-                <tr>
+                <tr >
                     <th>ID</th>
                     <th>TOPIC</th>
                     <th>DATE</th>
                     <th>TIME</th>
                     <?php if($flag==true){ echo "<th>BATCH</th>";}?>
-                    <th>BATCH</th>
                     <th>ATTENDANCE</th>
                     <th>Actions</th>
                 </tr>
@@ -130,7 +131,30 @@
 
                 <tbody>
 
-            
+                    <?php foreach ($topics as $t) : ?>
+                        <tr class="attendance-hover">
+                            <td><?= esc($t['id']) ?></td>
+                            <td class="text-center"><?= esc($t['topic']) ?></td>
+                            <td class="text-center"><?= esc($t['date']) ?></td>
+                            <td class="text-center"><?= esc($t['time']) ?></td>
+                            <?php if($flag==true){?><td class="text-center"><?= esc($t['batch']) ?></td><?php }?>
+                            <?php if($t['total_present']=='-'){?>
+                                <td class="text-center">
+                                    <a class="btn btn-sm btn-success" href="<?= site_url('attendance/'. $program_id.'/'. $semester_number .'/'. $subject_id .'/'. $t['id'] . '/' . $t['batch']) ?>">Take Attendance</a> 
+                                </td>
+                            <?php }else{?>
+                                <td class="text-center ">
+                                    <span class="attendance-data"><?= esc($t['total_present']) ?>/<?= esc($t['total_stud']) ?></span>
+                                    <a class="btn btn-sm btn-warning attendance-edit" href="<?= site_url('attendance/'. $program_id.'/'. $semester_number .'/'. $subject_id .'/'. $t['id'] . '/' . $t['batch']) ?>">Edit Attendance</a> 
+                               
+                                </td>
+                            <?php }?>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-warning" href="<?= site_url() ?>">Edit</a> |
+                                <a class="btn btn-sm btn-danger" href="<?= site_url() ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
 
                 </tbody>
             </table>
@@ -138,6 +162,8 @@
         </div>
 </div>
 <script>
- 
+    const today = new Date().toISOString().split('T')[0];
+        // Set the value of the input field with id 'date'
+    $('#date').val(today);
 </script>
 <?= $this->endSection() ?>

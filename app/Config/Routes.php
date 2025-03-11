@@ -110,5 +110,5 @@ $routes->get('/topics-list/delete/(:num)/(:num)/(:num)/(:num)', 'AttendanceContr
 $routes->post('/topics-list/store/(:num)/(:num)/(:num)','AttendanceController::topic_store/$1/$2/$3/$4');
 
 $routes->get('/attendance/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::allstudents/$1/$2/$3/$4/$5');
-$routes->match(['get','post'],'/attendancestore/(:num)/(:num)/(:num)/(:num)/(:num)','AttendanceController::attendance_store/$1/$2/$3/$4/$5');
+$routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)','AttendanceController::attendance_store/$1/$2/$3/$4/$5');
 
