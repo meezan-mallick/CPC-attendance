@@ -1,123 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
+<?= $this->extend('main') ?>
 
-<head>
-  <meta charset="UTF-8">
-  <meta charset="ISO-8859-1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="/assets/css/dashboard.css">
+<?= $this->section('content') ?>
 
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
+<div class="container-fluid">
 
-<body>
-
-  <?php include APPPATH . 'Views/navbar.php'; ?>
-
-
-  <div class="main-wrapper">
-
-    <?php include APPPATH . 'Views/header.php'; ?>
+  <div class="m-4">
     <div class="container add-form">
       <form action="<?= base_url('programs/update/' . $program['id']) ?>" method="Post">
         <div class="header">
-          <div>
-            <h2>Update Program</h2>
-          </div>
-          <div class="submit-btn">
-            <button class="submit" type="submit">
-              Update
-            </button>
-          </div>
+          <a class="btn btn-sm btn-warning" href="<?= site_url('programs') ?>">
+            < Back to Program List</a>
+              <div>
+                <h2>ADD NEW PROGRAM</h2>
+              </div>
+
+              <button class="submit" type="submit">
+                Update
+              </button>
         </div>
+        <hr>
 
-        <!-- {/* PERSONAL DETAILS */} -->
-        <!-- {/* PROGRAM DETAILS */} -->
-        <fieldset>
-          <legend>Program Details</legend>
-          <div class="form-container">
-            <div class="row">
-              <div>
-                <label>College Code:</label>
-                <select class="form-inputs" name="college_code" required>
-                  <option value="">Select College</option>
-                  <?php foreach ($colleges as $college): ?>
-                    <option value="<?= esc($college['college_code']) ?>"
-                      <?= ($college['college_code'] == $program['college_code']) ? 'selected' : '' ?>>
-                      <?= esc($college['college_code']) ?> - <?= esc($college['college_name']) ?>
-                    </option>
-                  <?php endforeach; ?>
-                </select>
-
-              </div>
-              <div>
-
-                <label for="productname">Program Name</label>
-
-                <input
-                  class="form-inputs"
-                  type="text"
-                  name="program_name"
-                  id="program_name"
-                  value="<?= $program['program_name'] ?>"
-                  placeholder="Enter Program Name" />
-              </div>
-              <div>
-                <label>Program Duration:</label>
-                <select class="form-inputs" value="<?= $program['program_duration'] ?>" name="program_duration" required>
-                  <option value="2 Years">2 Years</option>
-                  <option value="5 Years">5 Years</option>
-                </select>
-              </div>
-              <div>
-                <label>Program Type:</label>
-                <select class="form-inputs" value="<?= $program['program_type'] ?>" name="program_type" required onchange="setSemesters()" required>
-                  <option value="1">Integrated</option>
-                  <option value="0">Masters</option>
-                </select>
-              </div>
-
+        <div class="form-container">
+          <div class="row">
+            <div class="col-12 col-md-3">
+              <label>College Code:</label>
+              <select class="form-inputs" name="college_code" required>
+                <option value="">Select College</option>
+                <?php foreach ($colleges as $college): ?>
+                  <option value="<?= esc($college['college_code']) ?>"
+                    <?= ($college['college_code'] == $program['college_code']) ? 'selected' : '' ?>>
+                    <?= esc($college['college_code']) ?> - <?= esc($college['college_name']) ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
 
             </div>
+            <div class="col-12 col-md-3">
 
-            <div class="row">
-              <div>
-                <label>Total Semesters:</label>
-                <input class="form-inputs" type="number" value="<?= $program['total_semesters'] ?>" id="total_semesters_display" readonly>
-                <input type="hidden" value="<?= $program['program_type'] ?>" name="total_semesters" id="total_semesters">
-              </div>
+              <label for="productname">Program Name</label>
+
+              <input
+                class="form-inputs"
+                type="text"
+                name="program_name"
+                id="program_name"
+                value="<?= $program['program_name'] ?>"
+                placeholder="Enter Program Name" />
+            </div>
+            <div class="col-12 col-md-3">
+              <label>Program Duration:</label>
+              <select class="form-inputs" value="<?= $program['program_duration'] ?>" name="program_duration" required>
+                <option value="2 Years">2 Years</option>
+                <option value="5 Years">5 Years</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-3">
+              <label>Program Type:</label>
+              <select class="form-inputs" value="<?= $program['program_type'] ?>" name="program_type" required onchange="setSemesters()" required>
+                <option value="1">Integrated</option>
+                <option value="0">Masters</option>
+              </select>
             </div>
 
-            <?php if (session()->getFlashdata('errors')): ?>
-              <div style="color: red;">
-                <?= implode('<br>', session()->getFlashdata('errors')); ?>
-              </div>
-            <?php endif; ?>
-        </fieldset>
+
+          </div>
+
+          <div class="row">
+
+
+            <div class="col-12 col-md-3">
+              <label>Total Semesters:</label>
+              <input class="form-inputs" type="number" value="<?= $program['total_semesters'] ?>" id="total_semesters_display" readonly>
+              <input type="hidden" value="<?= $program['program_type'] ?>" name="total_semesters" id="total_semesters">
+            </div>
+          </div>
+
+          <?php if (session()->getFlashdata('errors')): ?>
+            <div style="color: red;">
+              <?= implode('<br>', session()->getFlashdata('errors')); ?>
+            </div>
+          <?php endif; ?>
 
       </form>
 
     </div>
 
 
-  </div>
+    <script>
+      function setSemesters() {
+        let type = document.querySelector("select[name='program_type']").value;
+        let semesterCount = type == "1" ? 10 : 4;
+
+        // Display in read-only field
+        document.getElementById("total_semesters_display").value = semesterCount;
+
+        // Store in hidden input for form submission
+        document.getElementById("total_semesters").value = semesterCount;
+      }
+    </script>
 
   </div>
+</div>
 
-  <script>
-    function setSemesters() {
-      let type = document.querySelector("select[name='program_type']").value;
-      let semesterCount = type == "1" ? 10 : 4;
-
-      // Display in read-only field
-      document.getElementById("total_semesters_display").value = semesterCount;
-
-      // Store in hidden input for form submission
-      document.getElementById("total_semesters").value = semesterCount;
-    }
-  </script>
-
-</body>
-
-</html>
+<?= $this->endSection() ?>
