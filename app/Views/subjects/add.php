@@ -8,9 +8,7 @@
     <?php
     if (!empty($programs)) {
     ?>
-      <a href="<?= site_url('subjects') ?>" style="display: inline-block;margin-left:40px; padding: 8px 12px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-        ← Back to Subjects List
-      </a>
+
       <form action="<?= site_url('subjects/store') ?>" method="POST">
         <div class="header p-4">
           <a class="btn btn-sm btn-warning" href="<?= site_url('subjects') ?>">

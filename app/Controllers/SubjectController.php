@@ -15,17 +15,40 @@ class SubjectController extends Controller
         $subjectModel = new SubjectModel();
         $programModel = new ProgramModel();
 
+        // Get logged-in user role and ID
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
+
         // Get filter values from GET request
         $selectedProgram = $this->request->getGet('program_id');
         $selectedSemester = $this->request->getGet('semester_number');
-
-        // Fetch all programs for filter dropdown
-        $data['programs'] = $programModel->findAll();
 
         // Build query with filters
         $query = $subjectModel->select('subjects.*, programs.program_name')
             ->join('programs', 'programs.id = subjects.program_id');
 
+        // Superadmin: See all programs
+        if ($userRole === 'Superadmin') {
+            $data['programs'] = $programModel->findAll();
+        }
+        // Coordinator: See only assigned programs
+        elseif ($userRole === 'Coordinator') {
+            $assignedPrograms = $programModel->whereIn('id', function ($builder) use ($userId) {
+                return $builder->select('program_id')->from('coordinator_programs')->where('user_id', $userId);
+            })->findAll();
+
+            // Convert program objects to array for filtering
+            $data['programs'] = $assignedPrograms;
+            $assignedProgramIds = array_column($assignedPrograms, 'id');
+
+            // Apply restriction in query
+            $query->whereIn('subjects.program_id', $assignedProgramIds);
+        } else {
+            // Unauthorized users are redirected
+            return redirect()->to('/dashboard')->with('error', 'Unauthorized access.');
+        }
+
+        // Apply filters
         if (!empty($selectedProgram)) {
             $query->where('subjects.program_id', $selectedProgram);
         }
@@ -44,9 +67,27 @@ class SubjectController extends Controller
     public function add()
     {
         $programModel = new ProgramModel();
-        $data['programs'] = $programModel->findAll();
+
+        // Get logged-in user role and ID
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
+
+        if ($userRole === 'Superadmin') {
+            // Superadmin sees all programs
+            $data['programs'] = $programModel->findAll();
+        } elseif ($userRole === 'Coordinator') {
+            // Coordinator sees only assigned programs
+            $data['programs'] = $programModel->whereIn('id', function ($builder) use ($userId) {
+                return $builder->select('program_id')->from('coordinator_programs')->where('user_id', $userId);
+            })->findAll();
+        } else {
+            // Unauthorized access
+            return redirect()->to('/dashboard')->with('error', 'Unauthorized access.');
+        }
+
         return view('subjects/add', $data);
     }
+
 
     public function store()
     {
@@ -70,8 +111,6 @@ class SubjectController extends Controller
 
         return redirect()->to('/subjects')->with('success', 'Subject added successfully.');
     }
-
-
 
     public function edit($id)
     {
