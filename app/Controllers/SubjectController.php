@@ -153,28 +153,44 @@ class SubjectController extends Controller
     {
         $subjectModel = new SubjectModel();
         $userModel = new UserModel();
-
         $programModel = new ProgramModel();
-        $data['programs'] = $programModel->findAll();
 
-        // $data['subjects'] = $subjectModel->findAll();
+        // Get logged-in user role and ID
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
+
+        if ($userRole === 'Superadmin') {
+            // Superadmin sees all programs
+            $data['programs'] = $programModel->findAll();
+        } elseif ($userRole === 'Coordinator') {
+            // Coordinator sees only assigned programs
+            $data['programs'] = $programModel->whereIn('id', function ($builder) use ($userId) {
+                return $builder->select('program_id')->from('coordinator_programs')->where('user_id', $userId);
+            })->findAll();
+        } else {
+            // Unauthorized access
+            return redirect()->to('/dashboard')->with('error', 'Unauthorized access.');
+        }
+
+        // Get unallocated subjects
         $data['subjects'] = $subjectModel
             ->whereNotIn('id', function ($builder) {
                 $builder->select('subject_id')->from('allocatedsubjects');
             })
             ->findAll();
 
+        // Fetch semesters dynamically
         $data['semesters'] = $subjectModel
             ->select('program_id, semester_number')
             ->groupBy(['program_id', 'semester_number'])
             ->findAll();
 
-
+        // Fetch faculties and coordinators
         $data['faculties'] = $userModel->whereIn('role', ['Faculty', 'Coordinator'])->findAll();
-
 
         return view('subjects/assign', $data);
     }
+
 
     public function storeAssignment()
     {
