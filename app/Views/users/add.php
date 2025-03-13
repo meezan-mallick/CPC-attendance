@@ -2,7 +2,7 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<div class="container-fluid mt-4">
     <form action="<?= site_url('users/store') ?>" method="POST">
         <div class="header p-2">
             <?php if (session()->getFlashdata('message')): ?>

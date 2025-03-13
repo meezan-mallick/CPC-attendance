@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use CodeIgniter\Controller;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UserController extends Controller
 {
@@ -92,33 +94,93 @@ class UserController extends Controller
         return redirect()->to('/users')->with('success', 'User added successfully.');
     }
 
-
-
-
-
     public function edit($id)
     {
         $userModel = new UserModel();
         $data['user'] = $userModel->find($id);
+
+        if (!$data['user']) {
+            return redirect()->to('/users')->with('error', 'User not found.');
+        }
+
         return view('users/edit', $data);
     }
 
     public function update($id)
     {
+
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+
+        // Debug POST data
+        log_message('debug', 'POST data: ' . print_r($this->request->getPost(), true));
+
         $userModel = new UserModel();
 
-        $data = [
-            'full_name'     => $this->request->getPost('full_name'),
-            'email'         => $this->request->getPost('email'),
-            'mobile_number' => $this->request->getPost('mobile_number'),
-            'designation'   => $this->request->getPost('designation'),
-            'role'          => $this->request->getPost('role'),
-            'status'        => $this->request->getPost('status'),
+        // Fetch existing user data
+        $existingUser = $userModel->find($id);
+
+        if (!$existingUser) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Validation Rules (Updated for Unique Email Check)
+        $rules = [
+            'full_name'        => 'required|max_length[255]',
+            'email'            => "required|valid_email|is_unique[users.email,id,$id]", // Allows updating without uniqueness error
+            'mobile_number'    => 'required|max_length[15]',
+            'designation'      => 'required',
+            'role'             => 'required',
+            'status'           => 'required',
         ];
 
-        $userModel->update($id, $data);
+        if (!$this->validate($rules)) {
+            // Debug validation errors
+            $validation = \Config\Services::validation();
+            $errors = $validation->getErrors();
+
+            return redirect()->back()->with('message', '❌ Validation Failed!')->withInput();
+        }
+
+        // Prepare Data - FIXED: changed address_line_1 to address to match model
+        $data = [
+            'full_name'          => $this->request->getPost('full_name'),
+            'email'              => $this->request->getPost('email'),
+            'mobile_number'      => $this->request->getPost('mobile_number'),
+            'designation'        => $this->request->getPost('designation'),
+            'role'               => $this->request->getPost('role'),
+            'status'             => $this->request->getPost('status'),
+            'dob'                => $this->request->getPost('dob'),
+            'gender'             => $this->request->getPost('gender'),
+            'father_name'        => $this->request->getPost('father_name'),
+            'mother_name'        => $this->request->getPost('mother_name'),
+            'qualification'      => $this->request->getPost('qualification'),
+            'industry_experience' => $this->request->getPost('industry_experience'),
+            'working_experience' => $this->request->getPost('working_experience'),
+            'achievements'       => $this->request->getPost('achievements'),
+            'skillset'           => $this->request->getPost('skillset'),
+            'address'            => $this->request->getPost('address_line_1'), // CHANGED from address_line_1 to address
+            'state'              => $this->request->getPost('state'),
+            'city'               => $this->request->getPost('city'),
+            'country'            => $this->request->getPost('country')
+        ];
+
+        // Handle Password Update (Only if provided)
+        $password = $this->request->getPost('password');
+        if (!empty($password)) {
+            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        // Attempt to Update User
+        if (!$userModel->update($id, $data)) {
+            return redirect()->back()->with('error', '❌ Database Update Failed!');
+        }
+
         return redirect()->to('/users')->with('success', 'User updated successfully.');
     }
+
+
 
     public function delete($id)
     {
@@ -132,5 +194,95 @@ class UserController extends Controller
         $userModel = new UserModel();
         $userModel->update($id, ['role' => 'Coordinator']);
         return redirect()->to('/users')->with('success', 'User assigned as Coordinator.');
+    }
+
+    // Export all user data in excel sheet
+    public function exportUsers()
+    {
+        $userModel = new UserModel();
+        // Fetch all users except Admin
+        $users = $userModel->where('role !=', 'Superadmin')->findAll();
+
+        // Create Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set Column Headers
+        $sheet->setCellValue('A1', 'Sr no')
+            ->setCellValue('B1', 'Full Name')
+            ->setCellValue('C1', 'Email')
+            ->setCellValue('D1', 'Mobile Number')
+            ->setCellValue('E1', 'Role')
+            ->setCellValue('F1', 'Designation')
+            ->setCellValue('G1', 'Date Of Birth')
+            ->setCellValue('H1', 'Gender')
+            ->setCellValue('I1', 'Father Name')
+            ->setCellValue('J1', 'Mother Name')
+            ->setCellValue('K1', 'Qualification')
+            ->setCellValue('L1', 'Industry Experience')
+            ->setCellValue('M1', 'Academic Experience')
+            ->setCellValue('N1', 'Date Of Joining')
+            ->setCellValue('O1', 'Achievements')
+            ->setCellValue('P1', 'skillset')
+            ->setCellValue('Q1', 'Address')
+            ->setCellValue('R1', 'state')
+            ->setCellValue('S1', 'city')
+            ->setCellValue('T1', 'country')
+            ->setCellValue('U1', 'Status')
+            ->setCellValue('V1', 'created_at');
+
+        // Apply Formatting (Bold Headers)
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        ];
+        $sheet->getStyle('A1:V1')->applyFromArray($headerStyle);
+
+        // Populate Data
+        $row = 2;
+        $serialNumber = 1;
+        foreach ($users as $user) {
+            $sheet->setCellValue('A' . $row, $serialNumber)
+                ->setCellValue('B' . $row, $user['full_name'])
+                ->setCellValue('C' . $row, $user['email'])
+                ->setCellValue('D' . $row, $user['mobile_number'])
+                ->setCellValue('E' . $row, $user['role'])
+                ->setCellValue('F' . $row, $user['designation'])
+                ->setCellValue('G' . $row, $user['dob'])
+                ->setCellValue('H' . $row, $user['gender'])
+                ->setCellValue('I' . $row, $user['father_name'])
+                ->setCellValue('J' . $row, $user['mother_name'])
+                ->setCellValue('K' . $row, $user['qualification'])
+                ->setCellValue('L' . $row, $user['industry_experience'])
+                ->setCellValue('M' . $row, $user['working_experience'])
+                ->setCellValue('N' . $row, $user['date_of_joining'])
+                ->setCellValue('O' . $row, $user['achievements'])
+                ->setCellValue('P' . $row, $user['skillset'])
+                ->setCellValue('Q' . $row, $user['address'])
+                ->setCellValue('R' . $row, $user['state'])
+                ->setCellValue('S' . $row, $user['city'])
+                ->setCellValue('T' . $row, $user['country'])
+                ->setCellValue('U' . $row, $user['status'])
+                ->setCellValue('V' . $row, $user['created_at']);
+            $row++;
+            $serialNumber++;
+        }
+
+        // Auto-Resize Columns
+        foreach (range('A', 'V') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Set File Name
+        $fileName = 'Users_Master_Data_' . date('YmdHis') . '.xlsx';
+
+        // Output to Browser
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+        exit;
     }
 }

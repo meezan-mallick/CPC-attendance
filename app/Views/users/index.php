@@ -15,9 +15,11 @@
         <a href="users/add" class="add-p">
           <button class="btn btn-primary">Add new</button>
         </a>
-        <a href="users/add" class="add-p">
-          <button class="btn btn-success">Export Excel</button>
+
+        <a href="<?= site_url('users/export') ?>" class="btn btn-success">
+          <i class="bi bi-file-earmark-excel"></i> Export to Excel
         </a>
+
       </div>
     </div>
     <hr>
@@ -49,7 +51,9 @@
                 <?php endif; ?>
               </td>
               <td>
-                <a href="<?= site_url('users/edit/' . $user['id']) ?>" class="btn btn-sm btn-warning">Edit</a>
+                <a href="<?= site_url('users/edit/' . $user['id']) ?>" class="btn btn-sm btn-primary">
+                  Edit
+                </a>
                 <a href="<?= site_url('users/delete/' . $user['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</a>
               </td>
             </tr>

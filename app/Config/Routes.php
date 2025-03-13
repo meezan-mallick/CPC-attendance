@@ -33,6 +33,8 @@ $routes->post('users/store', 'UserController::store', ['filter' => 'auth']);
 $routes->get('users/edit/(:num)', 'UserController::edit/$1', ['filter' => 'auth']);
 $routes->post('users/update/(:num)', 'UserController::update/$1', ['filter' => 'auth']);
 $routes->get('users/delete/(:num)', 'UserController::delete/$1', ['filter' => 'auth']);
+$routes->get('users/export', 'UserController::exportUsers');
+
 
 //Routes for Assign Coordinatorship (Superadmin Only)
 $routes->post('users/assign-coordinator/(:num)', 'UserController::assignCoordinator/$1', ['filter' => 'auth']);
@@ -97,18 +99,19 @@ $routes->post('students/store', 'StudentController::store', ['filter' => 'auth']
 //time slots
 $routes->get('/time-slots', 'TimeslotController::timeslots');
 $routes->get('/time-slots/add', 'TimeslotController::add_timeslot');
-$routes->post('/time-slots/store','TimeslotController::timeslot_store');
+$routes->post('/time-slots/store', 'TimeslotController::timeslot_store');
 $routes->get('/time-slots/delete/(:num)', 'TimeslotController::delete_timeslot/$1');
 $routes->get('/time-slots/edit/(:num)', 'TimeslotController::edit_timeslot/$1');
-$routes->post('/time-slots/update/(:num)','TimeslotController::update_timeslotstore/$1');
+$routes->post('/time-slots/update/(:num)', 'TimeslotController::update_timeslotstore/$1');
 
 
 // Student Attendance
 $routes->get('/faculty-subjects', 'AttendanceController::allsubjects');
 $routes->get('/topics-list/(:num)/(:num)/(:num)', 'AttendanceController::alltopics/$1/$2/$3/$4');
 $routes->get('/topics-list/delete/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::delete_topic/$1/$2/$3/$4/$5');
-$routes->post('/topics-list/store/(:num)/(:num)/(:num)','AttendanceController::topic_store/$1/$2/$3/$4');
+$routes->post('/topics-list/store/(:num)/(:num)/(:num)', 'AttendanceController::topic_store/$1/$2/$3/$4');
+$routes->get('attendance/export-topics/(:num)/(:num)/(:num)', 'AttendanceController::exportTopics/$1/$2/$3');
+
 
 $routes->get('/attendance/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::allstudents/$1/$2/$3/$4/$5');
-$routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)','AttendanceController::attendance_store/$1/$2/$3/$4/$5');
-
+$routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::attendance_store/$1/$2/$3/$4/$5');
