@@ -71,7 +71,33 @@ class TopicModel extends Model{
     }
 
    
+    
 
+    public function getFacultyTotalLectures(){
+        return $this->select('users.id,users.full_name,programs.id AS program_id, programs.program_name,subjects.semester_number,subjects.id AS subject_id,subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
+            ->join('subjects', 'topics.subject_id = subjects.id', 'left')
+            ->join('programs', 'subjects.program_id = programs.id', 'inner')
+            ->join('allocatedsubjects', 'subjects.id = allocatedsubjects.subject_id', 'left')
+            ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
+            ->groupBy('users.full_name, subjects.subject_name, topics.batch')
+            ->get()
+            ->getResultArray();
+        
+    }
+
+    public function getFacultyTotalLecturesSEDATE($start_date,$end_date){
+        return $this->select('users.id, users.full_name,programs.id AS program_id, programs.program_name, subjects.semester_number,subjects.id AS subject_id, subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
+        ->join('subjects', 'topics.subject_id = subjects.id', 'left')
+        ->join('programs', 'subjects.program_id = programs.id', 'inner')
+        ->join('allocatedsubjects', 'subjects.id = allocatedsubjects.subject_id', 'left')
+        ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
+        ->where('topics.date >=', $start_date) // Start date condition
+        ->where('topics.date <=', $end_date)   // End date condition
+        ->groupBy('users.full_name, subjects.subject_name, topics.batch')
+        ->get()
+        ->getResultArray();
+        
+    }
 }
 
 ?>

@@ -157,8 +157,8 @@ if (count($batches) == 1 && $z == true) {
                                 </td>
                             <?php } ?>
                             <td class="text-center">
-                                <a class="btn btn-sm btn-warning" href="<?= site_url() ?>">Edit</a> |
-                                <a class="btn btn-sm btn-danger" href="<?= site_url() ?>" onclick="return confirm('Are you sure?')">Delete</a>
+                                <a class="btn btn-sm btn-warning" href="<?= site_url('topics-list/edit/'. $program_id.'/'. $semester_number .'/'. $subject_id .'/'. $t['id'])  ?>">Edit</a> |
+                                <a class="btn btn-sm btn-danger" href="<?= site_url('topics-list/delete/'. $program_id.'/'. $semester_number .'/'. $subject_id .'/'. $t['id']) ?>" onclick="return confirm('Are you sure?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
