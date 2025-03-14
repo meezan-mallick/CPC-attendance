@@ -66,6 +66,8 @@ $routes->post('subjects/store', 'SubjectController::store');
 $routes->get('subjects/edit/(:num)', 'SubjectController::edit/$1');
 $routes->post('subjects/update/(:num)', 'SubjectController::update/$1');
 $routes->get('subjects/delete/(:num)', 'SubjectController::delete/$1');
+$routes->post('subjectsallocation/filter', 'SubjectController::filterAllocatedSubjects');
+
 
 
 //Routes for Colleges

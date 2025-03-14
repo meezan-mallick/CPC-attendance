@@ -28,16 +28,21 @@ if (count($batches) == 1 && $z == true) {
                         <div>
                             <h2>ADD NEW TOPIC</h2>
                         </div>
+                        <div>
+                            <button class="btn btn-md btn-dark" type="submit">
+                                Add new topic
+                            </button>
+                            <a href="<?= site_url('attendance/export-topics/' . $program_id . '/' . $semester_number . '/' . $subject_id) ?>"
+                                class="btn btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Export Topics to Excel
+                            </a>
+                        </div>
 
-                        <button class="submit" type="submit">
-                            Add
-                        </button>
-                        <a href="<?= site_url('attendance/export-topics/' . $program_id . '/' . $semester_number . '/' . $subject_id) ?>"
-                            class="btn btn-success mb-3">
-                            <i class="bi bi-file-earmark-excel"></i> Export Topics to Excel
-                        </a>
+
+
 
             </div>
+
             <div class="container">
                 <hr>
             </div>
@@ -98,8 +103,6 @@ if (count($batches) == 1 && $z == true) {
 
                     </select>
                 </div>
-
-
 
 
             </div>

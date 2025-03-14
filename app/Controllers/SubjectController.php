@@ -183,10 +183,84 @@ class SubjectController extends Controller
     public function Getassignsubjects()
     {
         $subjectallocationModel = new SubjectallocationModel();
+        $programModel = new ProgramModel();
+        $userModel = new UserModel();
 
-        $data['allocatedsubjects'] = $subjectallocationModel->getAllocatedSubjectDetails();
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
+
+        $data['allocatedsubjects'] = $subjectallocationModel->getAllocatedSubjectDetails($userRole, $userId);
+
+        if ($userRole === 'Superadmin') {
+            $data['programs'] = $programModel->findAll(); // Show all programs
+        } elseif ($userRole === 'Coordinator') {
+            $data['programs'] = $programModel
+                ->join('coordinator_programs', 'programs.id = coordinator_programs.program_id', 'inner')
+                ->where('coordinator_programs.user_id', $userId)
+                ->findAll(); // Show only assigned programs
+        }
+
+        // Fetch all unique semester numbers
+        $data['semesters'] = $subjectallocationModel->select('semester_number')->groupBy('semester_number')->findAll();
+
+        // Fetch faculty and coordinator names
+        $data['faculties'] = $userModel->whereIn('role', ['Faculty', 'Coordinator'])->findAll();
+
         return view('subjects/assignsubjects', $data);
     }
+
+
+    public function filterAllocatedSubjects()
+    {
+        $subjectallocationModel = new SubjectallocationModel();
+        $program = $this->request->getPost('program');
+        $semester = $this->request->getPost('semester');
+        $faculty = $this->request->getPost('faculty');
+
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
+
+        $query = $subjectallocationModel->select('allocatedsubjects.*, users.full_name AS faculty_name, programs.program_name, subjects.subject_name, colleges.college_code, colleges.college_name')
+            ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
+            ->join('programs', 'allocatedsubjects.program_id = programs.id', 'inner')
+            ->join('colleges', 'colleges.college_code = programs.college_code', 'inner')
+            ->join('subjects', 'allocatedsubjects.subject_id = subjects.id', 'inner');
+
+        if ($userRole === 'Coordinator') {
+            $query->join('coordinator_programs', 'allocatedsubjects.program_id = coordinator_programs.program_id', 'inner')
+                ->where('coordinator_programs.user_id', $userId);
+        }
+
+        if (!empty($program)) {
+            $query->where('allocatedsubjects.program_id', $program);
+        }
+        if (!empty($semester)) {
+            $query->where('allocatedsubjects.semester_number', $semester);
+        }
+        if (!empty($faculty)) {
+            $query->where('users.full_name', $faculty);
+        }
+
+        $filteredSubjects = $query->findAll();
+
+        foreach ($filteredSubjects as $subject) {
+            echo "<tr>
+                <td>{$subject['id']}</td>
+                <td>{$subject['college_code']}</td>
+                <td>{$subject['program_name']}</td>
+                <td>{$subject['semester_number']}</td>
+                <td>{$subject['subject_name']}</td>
+                <td>{$subject['faculty_name']}</td>
+                <td>
+                    <a class='btn btn-sm btn-warning' href='subjectsallocation/edit/{$subject['id']}'>Edit</a> |
+                    <a class='btn btn-sm btn-danger' href='subjectsallocation/delete/{$subject['id']}' onclick='return confirm(\"Are you sure?\")'>Delete</a>
+                </td>
+              </tr>";
+        }
+    }
+
+
+
 
     public function assign()
     {
