@@ -23,9 +23,13 @@
         <label for="program_filter" class="form-label">Filter by Program:</label>
         <select id="program_filter" class="form-select">
           <option value="">All Programs</option>
-          <?php foreach ($programs as $program) : ?>
-            <option value="<?= esc($program['id']) ?>"><?= esc($program['program_name']) ?></option>
-          <?php endforeach; ?>
+          <?php if (!empty($programs)) : ?>
+            <?php foreach ($programs as $program) : ?>
+              <option value="<?= esc($program['id']) ?>"><?= esc($program['program_name']) ?></option>
+            <?php endforeach; ?>
+          <?php else : ?>
+            <option value="">No Assigned Programs</option>
+          <?php endif; ?>
         </select>
       </div>
 
@@ -88,13 +92,27 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(".form-select").change(function() {
-    $.post("<?= site_url('subjectsallocation/filter') ?>", {
-      program: $("#program_filter").val(),
-      semester: $("#semester_filter").val(),
-      faculty: $("#faculty_filter").val()
-    }, function(response) {
-      $("#subject_allocation_table").html(response);
+  $(document).ready(function() {
+    $(".form-select").change(function() {
+      var program = $("#program_filter").val();
+      var semester = $("#semester_filter").val();
+      var faculty = $("#faculty_filter").val();
+
+      $.ajax({
+        url: "<?= site_url('subjectsallocation/filter') ?>",
+        type: "POST",
+        data: {
+          program: program,
+          semester: semester,
+          faculty: faculty
+        },
+        success: function(response) {
+          $("#subject_allocation_table").html(response);
+        },
+        error: function(xhr, status, error) {
+          console.error("AJAX Error: ", xhr.responseText);
+        }
+      });
     });
   });
 </script>

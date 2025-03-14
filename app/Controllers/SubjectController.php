@@ -189,8 +189,10 @@ class SubjectController extends Controller
         $userRole = session()->get('role');
         $userId = session()->get('user_id');
 
+        // Fetch allocated subjects based on user role
         $data['allocatedsubjects'] = $subjectallocationModel->getAllocatedSubjectDetails($userRole, $userId);
 
+        // Filter Programs Based on Role
         if ($userRole === 'Superadmin') {
             $data['programs'] = $programModel->findAll(); // Show all programs
         } elseif ($userRole === 'Coordinator') {
@@ -200,7 +202,7 @@ class SubjectController extends Controller
                 ->findAll(); // Show only assigned programs
         }
 
-        // Fetch all unique semester numbers
+        // Fetch unique semester numbers
         $data['semesters'] = $subjectallocationModel->select('semester_number')->groupBy('semester_number')->findAll();
 
         // Fetch faculty and coordinator names
@@ -208,6 +210,7 @@ class SubjectController extends Controller
 
         return view('subjects/assignsubjects', $data);
     }
+
 
 
     public function filterAllocatedSubjects()
@@ -285,6 +288,8 @@ class SubjectController extends Controller
             return redirect()->to('/dashboard')->with('error', 'Unauthorized access.');
         }
 
+
+
         // Get unallocated subjects
         $data['subjects'] = $subjectModel
             ->whereNotIn('id', function ($builder) {
@@ -328,25 +333,61 @@ class SubjectController extends Controller
         $userModel = new UserModel();
 
         $programModel = new ProgramModel();
-        $data['programs'] = $programModel->findAll();
+        // Get logged-in user role and ID
+        $userRole = session()->get('role');
+        $userId = session()->get('user_id');
 
-        // $data['subjects'] = $subjectModel->findAll();
+        if ($userRole === 'Superadmin') {
+            // Superadmin sees all programs
+            $data['programs'] = $programModel->findAll();
+        } elseif ($userRole === 'Coordinator') {
+            // Coordinator sees only assigned programs
+            $data['programs'] = $programModel->whereIn('id', function ($builder) use ($userId) {
+                return $builder->select('program_id')->from('coordinator_programs')->where('user_id', $userId);
+            })->findAll();
+        } else {
+            // Unauthorized access
+            return redirect()->to('/dashboard')->with('error', 'Unauthorized access.');
+        }
+
+        // Get subject allocation data for the given ID
         $subjectallocationModel = new SubjectallocationModel();
+        $subjectModel = new SubjectModel();
+        $userModel = new UserModel();
+
+        // Get subject allocation data for the given ID
+        $subjectallocationModel = new SubjectallocationModel();
+        $subjectModel = new SubjectModel();
+        $userModel = new UserModel();
+
+        // Fetch the allocated subject
         $data['allocatesubject'] = $subjectallocationModel->find($id);
+
+        if (!$data['allocatesubject']) {
+            return redirect()->to('/subjectsallocation')->with('error', 'Subject allocation not found.');
+        }
+
+        // Fetch subjects that are either unallocated OR the currently allocated subject
         $data['subjects'] = $subjectModel
             ->whereNotIn('id', function ($builder) {
                 $builder->select('subject_id')->from('allocatedsubjects');
             })
-            ->orWhere('id', $data['allocatesubject']['subject_id'])
+            ->orWhere('id', $data['allocatesubject']['subject_id']) // Ensure we include the currently allocated subject
             ->findAll();
 
+        // Fetch unique semesters per program
         $data['semesters'] = $subjectModel
             ->select('program_id, semester_number')
             ->groupBy(['program_id', 'semester_number'])
             ->findAll();
 
+        // Fetch faculties and coordinators
+        $data['faculties'] = $userModel->whereIn('role', ['Faculty', 'Coordinator'])->findAll();
 
-        $data['faculties'] = $userModel->where('role', 'Faculty')->findAll();
+        // Fetch the currently allocated faculty for the selected subject
+        $data['selected_faculty'] = $data['allocatesubject']['faculty_id'];
+
+
 
         return view('subjects/editassign', $data);
     }
