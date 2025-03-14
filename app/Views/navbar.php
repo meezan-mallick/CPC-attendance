@@ -49,7 +49,7 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'students') ? 'active' : '' ?>" href="<?= site_url('students') ?>"><i class="bi bi-person-lines-fill me-2"></i>Students</a></li>
     <?php endif; ?>
 
-    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Coordinator'])): ?>
+    <?php if (in_array(session()->get('role'), ['Superadmin'])): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'time-slots') ? 'active' : '' ?>" href="<?= site_url('time-slots') ?>"><i class="bi bi-clock-fill me-2"></i> Time Slot</a></li>
     <?php endif; ?>
 
@@ -60,9 +60,9 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
     <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'payment-voucher') ? 'active' : '' ?>" href="<?= site_url('payment-voucher') ?>"><i class="bi bi-check2-square me-2"></i> Payment Voucher</a></li>
     <?php endif; ?>
-    <li class="mt-3">
+    <li>
       <form action="/logout">
-        <button class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Logout</button>
+        <button class="btn btn-danger w-100"><i class="bi bi-box-arrow-right"></i> Logout</button>
       </form>
     </li>
 

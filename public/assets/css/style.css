@@ -15,12 +15,47 @@ body {
 /* Sidebar */
 .sidebar {
     background-color: #0B1D46;
-    width: 16%;
+    width: 18%;
     float: left;
-    height: 100vh;
+    /* height: 100vh; */
     position: fixed;
     z-index: 11;
     transition: width 0.3s ease-in-out;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+/* Sidebar Scrollbar - Minimalist Thin Design */
+.sidebar {
+    overflow-y: auto;
+    /* Enables scrolling */
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    /* Color with transparency */
+}
+
+/* Webkit Browsers (Chrome, Edge, Safari) */
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+    /* Very thin scrollbar */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    /* Subtle scrollbar thumb */
+    border-radius: 10px;
+    /* Smooth rounded edges */
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+    /* Slight visibility on hover */
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+    /* Invisible track */
 }
 
 /* logo and title */
@@ -71,9 +106,9 @@ nav ul li Button {
     padding: 5px 15px;
     border-radius: 14px;
     border: 1px solid white;
-    position: absolute;
+    /* position: absolute;
     top:90vh;
-    left:4vw;
+    left:4vw; */
 }
 
 /* TOP header with searchbar */
@@ -82,7 +117,7 @@ nav ul li Button {
     padding: 1.5vw 2vw;
     box-shadow: 10px 0px 30px 1px #cfcdcd;
     z-index: 1;
-    width: 85vw;
+    width: 83vw;
     display: flex;
     justify-content: space-between;
 
@@ -174,7 +209,7 @@ input:focus {
 
 /* Main Content */
 .content {
-    width: 85%;
+    width: 83%;
     background-color: white;
     float: right;
     height: 100vh;
