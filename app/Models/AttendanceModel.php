@@ -30,6 +30,21 @@ class AttendanceModel extends Model{
         ->findAll();
     }
 
+    public function getStudentPresentPerc($stud_id,$sub_id){
+        return $this->select('
+        attendance.id AS att_id, 
+        attendance.id, 
+        COUNT(attendance.attendance) AS total_attendance,
+        SUM(CASE WHEN attendance.attendance = "present" THEN 1 ELSE 0 END) AS total_present,
+        (SUM(CASE WHEN attendance.attendance = "present" THEN 1 ELSE 0 END) * 100 / COUNT(attendance.attendance)) AS present_percentage
+        ')
+        ->where('attendance.student_id', $stud_id)
+        ->where('attendance.subject_id', $sub_id)
+        ->groupBy('attendance.student_id')
+        ->findAll();
+
+    }
+
    
 
 

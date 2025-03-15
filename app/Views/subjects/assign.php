@@ -104,6 +104,8 @@
                 
         $("#subject_id").children().not(':first-child').remove();
                
+       console.log(program);
+       console.log(semester);
        console.log(subject);
        function change_pro() {
         

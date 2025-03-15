@@ -31,6 +31,14 @@ class ExportVoucherController extends BaseController
         {
             $data['lectures']=$topicmodel->getFacultyTotalLecturesSEDATE($start_date,$end_date);
         }
+        else if($start_date!="" && $end_date=="")
+        {
+            $data['lectures']=$topicmodel->getFacultyTotalLecturesStartDATE($start_date);
+        }
+        else if($start_date=="" && $end_date!="")
+        {
+            $data['lectures']=$topicmodel->getFacultyTotalLecturesEndDATE($end_date);
+        }
         else{
             $data['lectures']=$topicmodel->getFacultyTotalLectures();
         }
@@ -53,9 +61,24 @@ class ExportVoucherController extends BaseController
         $program = $programModel->find($program_id);
         if($start_date==0 && $end_date==0)
         {
-            $lectures=$topicmodel->where('subject_id', $subject_id)->where('batch', $batch)->findAll();
+            $lectures=$topicmodel-> ExportFacPaymentVoucherAll($subject_id,$batch);
      
         }
+        else if($start_date!=0 && $end_date==0)
+        {
+            $lectures=$topicmodel-> ExportFacPaymentVoucherStartDate($subject_id,$batch,$start_date);
+     
+        }
+        else if($start_date==0 && $end_date!=0)
+        {
+            $lectures=$topicmodel-> ExportFacPaymentVoucherEndDate($subject_id,$batch,$end_date);
+     
+        }
+        else{
+            $lectures=$topicmodel-> ExportFacPaymentVoucherStartEndDate($subject_id,$batch,$start_date,$end_date);
+     
+        }
+        
  
       
         $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
@@ -114,9 +137,11 @@ class ExportVoucherController extends BaseController
             <thead>
                 <tr>
                     <th style="width:6%;">Sr.</th>
-                    <th style="width: 53%;">Topic Name</th>
+                    <th style="width: 45%;">Topic Name</th>
+                    <th style="width:11%;">Present Students</th>
                     <th style="width: 16%;">Date</th>
-                    <th style="width: 25%;">Time</th>
+                    <th style="width: 22%;">Time</th>
+                    
                 </tr>
             </thead>
             <tbody>';
@@ -124,9 +149,10 @@ class ExportVoucherController extends BaseController
             foreach ($lectures as $topic) {
                 $html .= '<tr>
                             <td style="width:6%;">' . $i++ . '</td>
-                            <td style="width: 53%;">' . $topic['topic'] . '</td>
+                            <td style="width: 45%;">' . $topic['topic'] . '</td>
+                            <td  style="width: 11%;">'.$topic['total_present'].'</td>
                             <td style="width: 16%;">' . $topic['date'] . '</td>
-                            <td style="width: 25%;">' . $topic['time'] . '</td>
+                            <td style="width: 22%;">' . $topic['time'] . '</td>
                         </tr>';
             }
         $html .= '</tbody>
@@ -154,9 +180,9 @@ class ExportVoucherController extends BaseController
         <br>
         <table width="100%">
             <tr>
-                <td style="text-align: center;">____________________<br><b>Resource Person</b></td>
-                <td style="text-align: center;">____________________<br><b>Course Coordinator</b></td>
-                <td style="text-align: center;">____________________<br><b>Director</b></td>
+                <td style="text-align: center;">________________________<br><b>Resource Person</b></td>
+                <td style="text-align: center;">________________________<br><b>Course Coordinator</b></td>
+                <td style="text-align: center;">________________________<br><b>Director</b></td>
             </tr>
         </table>';
     

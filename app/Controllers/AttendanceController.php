@@ -12,6 +12,7 @@ use App\Models\TopicModel;
 use App\Models\SubjectallocationModel;
 use App\Models\TimeslotModel;
 use App\Models\AttendanceModel;
+use App\Models\CollegeModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -354,4 +355,6 @@ class AttendanceController extends BaseController
         }
         return redirect()->to(base_url('/topics-list/' . $program_id . '/' . $semester_number . '/' . $subject_id . '/'));
     }
+
+    
 }
