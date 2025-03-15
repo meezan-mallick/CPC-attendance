@@ -2,27 +2,29 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<!-- Page Content -->
+<div id="content">
+  <div id="user-add" class="container-fluid">
 
-  <div class="m-4">
-    <div class="container add-form">
+
+    <!-- Add new Program -->
+    <div class="row">
       <form action="<?= base_url('programs/update/' . $program['id']) ?>" method="Post">
-        <div class="header">
+        <div class="header d-flex justify-content-between align-items-center">
+          <h2>UPDATE PROGRAM</h2>
+
           <a class="btn btn-sm btn-warning" href="<?= site_url('programs') ?>">
             < Back to Program List</a>
-              <div>
-                <h2>ADD NEW PROGRAM</h2>
-              </div>
 
-              <button class="submit" type="submit">
-                Update
-              </button>
+
+
+
         </div>
         <hr>
 
         <div class="form-container">
-          <div class="row">
-            <div class="col-12 col-md-3">
+          <div class="row pb-md-4">
+            <div class="col-12 col-md-6">
               <label>College Code:</label>
               <select class="form-inputs" name="college_code" required>
                 <option value="">Select College</option>
@@ -35,7 +37,7 @@
               </select>
 
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-6">
 
               <label for="productname">Program Name</label>
 
@@ -47,14 +49,19 @@
                 value="<?= $program['program_name'] ?>"
                 placeholder="Enter Program Name" />
             </div>
-            <div class="col-12 col-md-3">
+
+
+          </div>
+
+          <div class="row">
+            <div class="col-12 col-md-4">
               <label>Program Duration:</label>
               <select class="form-inputs" value="<?= $program['program_duration'] ?>" name="program_duration" required>
                 <option value="2 Years">2 Years</option>
                 <option value="5 Years">5 Years</option>
               </select>
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
               <label>Program Type:</label>
               <select class="form-inputs" value="<?= $program['program_type'] ?>" name="program_type" required onchange="setSemesters()" required>
                 <option value="1">Integrated</option>
@@ -63,12 +70,7 @@
             </div>
 
 
-          </div>
-
-          <div class="row">
-
-
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-4">
               <label>Total Semesters:</label>
               <input class="form-inputs" type="number" value="<?= $program['total_semesters'] ?>" id="total_semesters_display" readonly>
               <input type="hidden" value="<?= $program['program_type'] ?>" name="total_semesters" id="total_semesters">
@@ -80,26 +82,26 @@
               <?= implode('<br>', session()->getFlashdata('errors')); ?>
             </div>
           <?php endif; ?>
-
+          <button class="submit btn btn-primary w-100 mt-4" type="submit">
+            Update
+          </button>
       </form>
-
     </div>
-
-
-    <script>
-      function setSemesters() {
-        let type = document.querySelector("select[name='program_type']").value;
-        let semesterCount = type == "1" ? 10 : 4;
-
-        // Display in read-only field
-        document.getElementById("total_semesters_display").value = semesterCount;
-
-        // Store in hidden input for form submission
-        document.getElementById("total_semesters").value = semesterCount;
-      }
-    </script>
-
   </div>
 </div>
+
+
+<script>
+  function setSemesters() {
+    let type = document.querySelector("select[name='program_type']").value;
+    let semesterCount = type == "1" ? 10 : 4;
+
+    // Display in read-only field
+    document.getElementById("total_semesters_display").value = semesterCount;
+
+    // Store in hidden input for form submission
+    document.getElementById("total_semesters").value = semesterCount;
+  }
+</script>
 
 <?= $this->endSection() ?>

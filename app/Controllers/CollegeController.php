@@ -56,6 +56,8 @@ class CollegeController extends Controller
             'college_name' => $this->request->getPost('college_name'),
         ];
 
+
+
         if (!$collegeModel->update($id, $data)) {
             return redirect()->back()->withInput()->with('errors', $collegeModel->errors());
         }
