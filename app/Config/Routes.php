@@ -121,6 +121,9 @@ $routes->get('/attendance/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceContro
 $routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)','AttendanceController::attendance_store/$1/$2/$3/$4/$5', ['filter' => 'auth']);
 
 // export
+//attendance report
+$routes->get('/attendance-report','ExportAttendanceController::get_allsubjects', ['filter' => 'auth']);
+$routes->post('/attendance-report/export','ExportAttendanceController::export_attendance', ['filter' => 'auth']);
 
 //payment voucher
 $routes->get('/payment-voucher', 'ExportVoucherController::get_lectures', ['filter' => 'auth']);

@@ -58,7 +58,15 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
     <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'payment-voucher') ? 'active' : '' ?>" href="<?= site_url('payment-voucher') ?>"><i class="bi bi-check2-square me-2"></i> Payment Voucher</a></li>
     <?php endif; ?>
+<<<<<<< HEAD
     <li class="mt-4">
+=======
+
+    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
+      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'attendance-report') ? 'active' : '' ?>" href="<?= site_url('attendance-report') ?>"><i class="bi bi-check2-square me-2"></i> Attendance Report</a></li>
+    <?php endif; ?>
+    <li>
+>>>>>>> 7285badaf231dcf7babe084bf296c60d7383a53b
       <form action="/logout">
         <button class="btn btn-danger w-100"><i class="bi bi-box-arrow-right"></i> Logout</button>
       </form>

@@ -98,6 +98,121 @@ class TopicModel extends Model{
         ->getResultArray();
         
     }
+
+    public function getFacultyTotalLecturesStartDATE($start_date){
+        return $this->select('users.id, users.full_name,programs.id AS program_id, programs.program_name, subjects.semester_number,subjects.id AS subject_id, subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
+        ->join('subjects', 'topics.subject_id = subjects.id', 'left')
+        ->join('programs', 'subjects.program_id = programs.id', 'inner')
+        ->join('allocatedsubjects', 'subjects.id = allocatedsubjects.subject_id', 'left')
+        ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
+        ->where('topics.date >=', $start_date) // Start date condition
+        ->groupBy('users.full_name, subjects.subject_name, topics.batch')
+        ->get()
+        ->getResultArray();
+        
+    }
+
+    public function getFacultyTotalLecturesEndDATE($end_date){
+        return $this->select('users.id, users.full_name,programs.id AS program_id, programs.program_name, subjects.semester_number,subjects.id AS subject_id, subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
+        ->join('subjects', 'topics.subject_id = subjects.id', 'left')
+        ->join('programs', 'subjects.program_id = programs.id', 'inner')
+        ->join('allocatedsubjects', 'subjects.id = allocatedsubjects.subject_id', 'left')
+        ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
+        ->where('topics.date <=', $end_date)   
+        ->groupBy('users.full_name, subjects.subject_name, topics.batch')
+        ->get()
+        ->getResultArray();
+        
+    }
+
+
+    public function ExportFacPaymentVoucherAll($subject_id,$batch){
+        return $this->select('
+            topics.id, 
+            topics.topic, 
+            topics.date, 
+            topics.time, 
+            topics.batch, 
+            topics.subject_id, 
+            subjects.semester_number AS semester,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", (SELECT COUNT(*) FROM students WHERE students.semester = subjects.semester_number AND students.batch = topics.batch)) AS total_stud,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", COUNT(DISTINCT CASE WHEN attendance.attendance = "Present" THEN attendance.student_id END)) AS total_present
+        ')
+        ->join('attendance', 'attendance.topic_id = topics.id', 'left')
+        ->join('subjects', 'subjects.id = topics.subject_id', 'inner')
+        ->groupBy('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id')
+        ->where('topics.subject_id', $subject_id)
+        ->where('topics.batch', $batch)
+        ->findAll();
+        
+    }
+
+    public function ExportFacPaymentVoucherStartDate($subject_id,$batch,$start_date){
+        return $this->select('
+            topics.id, 
+            topics.topic, 
+            topics.date, 
+            topics.time, 
+            topics.batch, 
+            topics.subject_id, 
+            subjects.semester_number AS semester,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", (SELECT COUNT(*) FROM students WHERE students.semester = subjects.semester_number AND students.batch = topics.batch)) AS total_stud,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", COUNT(DISTINCT CASE WHEN attendance.attendance = "Present" THEN attendance.student_id END)) AS total_present
+        ')
+        ->join('attendance', 'attendance.topic_id = topics.id', 'left')
+        ->join('subjects', 'subjects.id = topics.subject_id', 'inner')
+        ->groupBy('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id')
+        ->where('topics.subject_id', $subject_id)
+        ->where('topics.date >=', $start_date) // Start date condition
+        ->where('topics.batch', $batch)
+        ->findAll();
+        
+    }
+
+    public function  ExportFacPaymentVoucherEndDate($subject_id,$batch,$end_date){
+        return $this->select('
+            topics.id, 
+            topics.topic, 
+            topics.date, 
+            topics.time, 
+            topics.batch, 
+            topics.subject_id, 
+            subjects.semester_number AS semester,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", (SELECT COUNT(*) FROM students WHERE students.semester = subjects.semester_number AND students.batch = topics.batch)) AS total_stud,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", COUNT(DISTINCT CASE WHEN attendance.attendance = "Present" THEN attendance.student_id END)) AS total_present
+        ')
+        ->join('attendance', 'attendance.topic_id = topics.id', 'left')
+        ->join('subjects', 'subjects.id = topics.subject_id', 'inner')
+        ->groupBy('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id')
+        ->where('topics.subject_id', $subject_id)
+        ->where('topics.date <=', $end_date) // end date condition
+        ->where('topics.batch', $batch)
+        ->findAll();
+        
+    }
+
+    public function  ExportFacPaymentVoucherStartEndDate($subject_id,$batch,$start_date,$end_date){
+        return $this->select('
+            topics.id, 
+            topics.topic, 
+            topics.date, 
+            topics.time, 
+            topics.batch, 
+            topics.subject_id, 
+            subjects.semester_number AS semester,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", (SELECT COUNT(*) FROM students WHERE students.semester = subjects.semester_number AND students.batch = topics.batch)) AS total_stud,
+            IF(topics.id NOT IN (SELECT topic_id FROM attendance), "-", COUNT(DISTINCT CASE WHEN attendance.attendance = "Present" THEN attendance.student_id END)) AS total_present
+        ')
+        ->join('attendance', 'attendance.topic_id = topics.id', 'left')
+        ->join('subjects', 'subjects.id = topics.subject_id', 'inner')
+        ->groupBy('topics.id, topics.topic, topics.date, topics.time, topics.batch, topics.subject_id')
+        ->where('topics.subject_id', $subject_id)
+        ->where('topics.date >=', $start_date) // Start date condition
+        ->where('topics.date <=', $end_date)   // End date condition
+        ->where('topics.batch', $batch)
+        ->findAll();
+        
+    }
 }
 
 ?>

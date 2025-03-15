@@ -87,7 +87,7 @@
               <td><?= esc($subject['subject_code']) ?></td>
               <td><?= esc($subject['subject_name']) ?></td>
               <td><?= esc($subject['credit']) ?></td>
-              <td>FACULTY NAME</td>
+              <td><?= esc($subject['faculty_name']) ?></td>
               <td><?= esc($subject['type']) ?></td>
               <td>
                 <a class="btn btn-sm btn-warning" href="<?= site_url('subjects/edit/' . $subject['id']) ?>">Edit</a> |
