@@ -1,22 +1,20 @@
 <?php
 $current_url = service('uri')->getSegment(1); // Get the first segment of the URL
 ?>
-
 <!-- Sidebar -->
-<nav class="sidebar text-white p-3 vh-100">
-  <section class="logo-section">
-    <img class="logo" src="/assets/Images/Icons/gulogo.png" alt="logo" />
-    <section class="text-left">
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <section class="logo-section">
+      <img class="logo" src="/assets/Images/Icons/gulogo.png" alt="logo" />
+      <section>
 
-      <h5 class=" d-none d-md-block">CPC ORBIT</h5>
-      <p>Center For Professional Courses</p>
+        <h5>CPC ORBIT</h5>
+        <p>GUJARAT UNIVERSITY <br>Ahmedabad - Gujarat</p>
+      </section>
     </section>
-  </section>
+  </div>
 
-  <hr class="bg-light">
-
-
-  <ul class="nav flex-column">
+  <ul class="list-unstyled components">
 
     <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'dashboard') ? 'active' : '' ?>" href="<?= site_url('dashboard') ?>"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
 
@@ -60,20 +58,13 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
     <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'payment-voucher') ? 'active' : '' ?>" href="<?= site_url('payment-voucher') ?>"><i class="bi bi-check2-square me-2"></i> Payment Voucher</a></li>
     <?php endif; ?>
-
-    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator', 'Faculty'])): ?>
-      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'attendance-report') ? 'active' : '' ?>" href="<?= site_url('attendance-report') ?>"><i class="bi bi-check2-square me-2"></i> Attendance Report</a></li>
-    <?php endif; ?>
-    <li>
+    <li class="mt-4">
       <form action="/logout">
         <button class="btn btn-danger w-100"><i class="bi bi-box-arrow-right"></i> Logout</button>
       </form>
     </li>
-
-
   </ul>
-
-
-
-
 </nav>
+
+<!-- Dark overlay when sidebar is active on mobile -->
+<div class="overlay"></div>
