@@ -5,18 +5,18 @@
 <div class="container-fluid">
 
   <div class="m-4">
-      <div class="header">
-          <div class="heading">
-            <h2>All Subjects</h2>
-          </div>
-
-          <div>
-
-            <a href="subjects/add" class="add-p">
-              <button class="btn btn-primary">Add new</button>
-            </a>
-          </div>
+    <div class="header">
+      <div class="heading">
+        <h2>All Subjects</h2>
       </div>
+
+      <div>
+
+        <a href="subjects/add" class="add-p">
+          <button class="btn btn-primary">Add new</button>
+        </a>
+      </div>
+    </div>
     <hr>
     <div style="margin-bottom:1vw;text-align:center">
 
@@ -87,7 +87,7 @@
               <td><?= esc($subject['subject_code']) ?></td>
               <td><?= esc($subject['subject_name']) ?></td>
               <td><?= esc($subject['credit']) ?></td>
-              <td>FACULTY NAME</td>
+              <td><?= esc($subject['faculty_name']) ?></td>
               <td><?= esc($subject['type']) ?></td>
               <td>
                 <a class="btn btn-sm btn-warning" href="<?= site_url('subjects/edit/' . $subject['id']) ?>">Edit</a> |

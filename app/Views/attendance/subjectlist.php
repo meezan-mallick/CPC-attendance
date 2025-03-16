@@ -32,13 +32,13 @@
           <?php foreach ($subjects as $subject) : ?>
             <tr>
               <td><?= esc($subject['id']) ?></td>
-              <td class="text-center"><?= esc($subject['college_name']) ?></td>
+              <td class="text-center"><?= esc($subject['subject_name']) ?></td>
               <td class=" text-left"><?= esc($subject['program_name']) ?></td>
               <td class=" text-left"><?= esc($subject['coordinator']) ?></td>
               <td class="text-center"><?= esc($subject['semester_number']) ?></td>
               <td class="text-center">
-                <a class="btn btn-sm btn-warning" href="<?= site_url('topics-list/'. $subject['program_id'].'/'. $subject['semester_number'] .'/'. $subject['subject_id']) ?>">Take Attendance</a> 
-             </td>
+                <a class="btn btn-sm btn-warning" href="<?= site_url('topics-list/' . $subject['program_id'] . '/' . $subject['semester_number'] . '/' . $subject['subject_id']) ?>">Take Attendance</a>
+              </td>
             </tr>
           <?php endforeach; ?>
 

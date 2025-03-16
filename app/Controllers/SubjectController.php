@@ -24,8 +24,14 @@ class SubjectController extends Controller
         $selectedSemester = $this->request->getGet('semester_number');
 
         // Build query with filters
-        $query = $subjectModel->select('subjects.*, programs.program_name')
-            ->join('programs', 'programs.id = subjects.program_id');
+        // $query = $subjectModel->select('subjects.*, programs.program_name')
+        //     ->join('programs', 'programs.id = subjects.program_id');
+
+        $query = $subjectModel->select('subjects.*, programs.program_name, COALESCE(users.full_name, "-") AS faculty_name')
+            ->join('programs', 'programs.id = subjects.program_id')
+            ->join('allocatedsubjects', 'allocatedsubjects.subject_id = subjects.id', "left")
+            ->join('users', 'allocatedsubjects.faculty_id = users.id', "left");
+
 
         // Superadmin: See all programs
         if ($userRole === 'Superadmin') {

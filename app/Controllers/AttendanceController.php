@@ -12,6 +12,7 @@ use App\Models\TopicModel;
 use App\Models\SubjectallocationModel;
 use App\Models\TimeslotModel;
 use App\Models\AttendanceModel;
+use App\Models\CollegeModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -151,88 +152,79 @@ class AttendanceController extends BaseController
     }
 
 
-    public function edit_topic($program_id,$semester_number,$subject_id,$topic_id)
+    public function edit_topic($program_id, $semester_number, $subject_id, $topic_id)
     {
-        $id=session()->get('user_id');
-       
-        $timeslotmodel= new TimeslotModel();
-        $data['timeslot']=$timeslotmodel->findAll();
-        $studentmodel= new Studentmodel();
+        $id = session()->get('user_id');
+
+        $timeslotmodel = new TimeslotModel();
+        $data['timeslot'] = $timeslotmodel->findAll();
+        $studentmodel = new Studentmodel();
         $data['batches'] = $studentmodel->distinct()->select('batch')->where('program_id', $program_id)->where('semester', $semester_number)->findAll();
-       
-        $data['subject_id']=$subject_id;
-        $data['program_id']=$program_id;
-        $data['semester_number']=$semester_number;
-        $topicmodel= new TopicModel();            
-        $data['topic']=$topicmodel->find($topic_id);
-        return view('attendance/edittopic',$data);     
+
+        $data['subject_id'] = $subject_id;
+        $data['program_id'] = $program_id;
+        $data['semester_number'] = $semester_number;
+        $topicmodel = new TopicModel();
+        $data['topic'] = $topicmodel->find($topic_id);
+        return view('attendance/edittopic', $data);
     }
 
-    public function delete_topic($program_id,$semester_number,$subject_id,$topic_id)
+    public function delete_topic($program_id, $semester_number, $subject_id, $topic_id)
     {
-       
-        $topicmodel= new TopicModel();       
-        $data['topics']=$topicmodel->delete($topic_id);
-        return redirect()->to(base_url('/topics-list/'.$program_id.'/'.$semester_number.'/'.$subject_id.'/'));
-              
+
+        $topicmodel = new TopicModel();
+        $data['topics'] = $topicmodel->delete($topic_id);
+        return redirect()->to(base_url('/topics-list/' . $program_id . '/' . $semester_number . '/' . $subject_id . '/'));
     }
 
     // ---------------------------------------------
 
 
 
-    public function update_topicstore($program_id,$semester_number,$subject_id,$topic_id)
+    public function update_topicstore($program_id, $semester_number, $subject_id, $topic_id)
     {
-        $id=session()->get('user_id');
-       
-        $timeslotmodel= new TimeslotModel();
-        $data['timeslot']=$timeslotmodel->findAll();
-        $studentmodel= new Studentmodel();
+        $id = session()->get('user_id');
+
+        $timeslotmodel = new TimeslotModel();
+        $data['timeslot'] = $timeslotmodel->findAll();
+        $studentmodel = new Studentmodel();
         $data['batches'] = $studentmodel->distinct()->select('batch')->where('program_id', $program_id)->where('semester', $semester_number)->findAll();
-       
-        $data['subject_id']=$subject_id;
-        $data['program_id']=$program_id;
-        $data['semester_number']=$semester_number;
+
+        $data['subject_id'] = $subject_id;
+        $data['program_id'] = $program_id;
+        $data['semester_number'] = $semester_number;
 
 
-        $topicmodel= new TopicModel();       
-        $data['topics']=$topicmodel->findAll();
-       
-       
+        $topicmodel = new TopicModel();
+        $data['topics'] = $topicmodel->findAll();
 
-        $batch=$this->request->getVar('batch');
-        $old_batch=$this->request->getVar('old_batch');
-       
-              
-            if($batch!=$old_batch)
-            {
-               
-                $attendancemodel= new AttendanceModel();
-                $attendancemodel->where('topic_id', $topic_id)->delete();
-        
-             
-                
-            }
-            
-            $tdata = [
-                'topic'=>$this->request->getVar('topic'),
-                'date'=>$this->request->getVar('date'),
-                'time'=>$this->request->getVar('time'),
-                'batch'=>$batch,
-            ];
 
-            if (!$topicmodel->update($topic_id,$tdata)) {
-                $errors = $topicmodel->errors();
-            }
-        
-            if (!empty($errors)) {
+
+        $batch = $this->request->getVar('batch');
+        $old_batch = $this->request->getVar('old_batch');
+
+
+        if ($batch != $old_batch) {
+
+            $attendancemodel = new AttendanceModel();
+            $attendancemodel->where('topic_id', $topic_id)->delete();
+        }
+
+        $tdata = [
+            'topic' => $this->request->getVar('topic'),
+            'date' => $this->request->getVar('date'),
+            'time' => $this->request->getVar('time'),
+            'batch' => $batch,
+        ];
+
+        if (!$topicmodel->update($topic_id, $tdata)) {
+            $errors = $topicmodel->errors();
+        }
+
+        if (!empty($errors)) {
             return redirect()->back()->with('error_import', implode(', ', $errors));
-            }
-            return redirect()->to(base_url('/topics-list/'.$program_id.'/'.$semester_number.'/'.$subject_id.'/'));
-           
-       
-
-       
+        }
+        return redirect()->to(base_url('/topics-list/' . $program_id . '/' . $semester_number . '/' . $subject_id . '/'));
     }
 
 

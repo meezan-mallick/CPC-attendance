@@ -101,10 +101,10 @@ $routes->post('students/store', 'StudentController::store', ['filter' => 'auth']
 //time slots
 $routes->get('/time-slots', 'TimeslotController::timeslots', ['filter' => 'auth']);
 $routes->get('/time-slots/add', 'TimeslotController::add_timeslot', ['filter' => 'auth']);
-$routes->post('/time-slots/store','TimeslotController::timeslot_store', ['filter' => 'auth']);
+$routes->post('/time-slots/store', 'TimeslotController::timeslot_store', ['filter' => 'auth']);
 $routes->get('/time-slots/delete/(:num)', 'TimeslotController::delete_timeslot/$1', ['filter' => 'auth']);
 $routes->get('/time-slots/edit/(:num)', 'TimeslotController::edit_timeslot/$1', ['filter' => 'auth']);
-$routes->post('/time-slots/update/(:num)','TimeslotController::update_timeslotstore/$1', ['filter' => 'auth']);
+$routes->post('/time-slots/update/(:num)', 'TimeslotController::update_timeslotstore/$1', ['filter' => 'auth']);
 
 
 // Student Attendance
@@ -112,18 +112,20 @@ $routes->get('/faculty-subjects', 'AttendanceController::allsubjects', ['filter'
 $routes->get('/topics-list/(:num)/(:num)/(:num)', 'AttendanceController::alltopics/$1/$2/$3/$4', ['filter' => 'auth'], ['filter' => 'auth']);
 $routes->get('/topics-list/delete/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::delete_topic/$1/$2/$3/$4', ['filter' => 'auth']);
 $routes->get('/topics-list/edit/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::edit_topic/$1/$2/$3/$4', ['filter' => 'auth']);
-$routes->post('/topics-list/store/(:num)/(:num)/(:num)','AttendanceController::topic_store/$1/$2/$3/$4', ['filter' => 'auth']);
-$routes->post('/topics-list/update/(:num)/(:num)/(:num)/(:num)','AttendanceController::update_topicstore/$1/$2/$3/$4', ['filter' => 'auth']);
+$routes->post('/topics-list/store/(:num)/(:num)/(:num)', 'AttendanceController::topic_store/$1/$2/$3/$4', ['filter' => 'auth']);
+$routes->post('/topics-list/update/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::update_topicstore/$1/$2/$3/$4', ['filter' => 'auth']);
 $routes->get('attendance/export-topics/(:num)/(:num)/(:num)', 'AttendanceController::exportTopics/$1/$2/$3', ['filter' => 'auth']);
 
 
 $routes->get('/attendance/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::allstudents/$1/$2/$3/$4/$5', ['filter' => 'auth']);
-$routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)','AttendanceController::attendance_store/$1/$2/$3/$4/$5', ['filter' => 'auth']);
+$routes->post('/attendance/store/(:num)/(:num)/(:num)/(:num)/(:num)', 'AttendanceController::attendance_store/$1/$2/$3/$4/$5', ['filter' => 'auth']);
 
 // export
+//attendance report
+$routes->get('/attendance-report', 'ExportAttendanceController::get_allsubjects', ['filter' => 'auth']);
+$routes->post('/attendance-report/export', 'ExportAttendanceController::export_attendance', ['filter' => 'auth']);
+
 
 //payment voucher
 $routes->get('/payment-voucher', 'ExportVoucherController::get_lectures', ['filter' => 'auth']);
 $routes->get('/payment-voucher/export/(:num)/(:num)/(:num)/(:num)/(:segment)/(:segment)', 'ExportVoucherController::export_lec/$1/$2/$3/$4/$5/$6', ['filter' => 'auth']);
-
-
