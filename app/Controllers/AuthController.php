@@ -10,6 +10,11 @@ class AuthController extends Controller
 {
     public function login()
     {
+        // ✅ If user is already logged in, redirect to dashboard
+        if (session()->get('logged_in')) {
+            return redirect()->to('/dashboard');
+        }
+
         return view('auth/login');
     }
 
@@ -30,8 +35,8 @@ class AuthController extends Controller
 
         // Verify password
         if (!password_verify($password, $user['password'])) {
-            if($password!=$user['password']){
-             return redirect()->back()->with('message', 'Invalid credentials.');
+            if ($password != $user['password']) {
+                return redirect()->back()->with('message', 'Invalid credentials.');
             }
         }
 
@@ -47,7 +52,7 @@ class AuthController extends Controller
             }
         }
 
-        // Set session variables
+        // ✅ Set session variables
         session()->set([
             'user_id'           => $user['id'],
             'full_name'         => $user['full_name'],

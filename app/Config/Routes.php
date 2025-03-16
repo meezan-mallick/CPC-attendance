@@ -13,14 +13,14 @@ use CodeIgniter\Router\RouteCollection;
 // $routes->match(['get', 'post'], '/f-login', 'Home::facultylogin');
 
 //Authentication
-$routes->get('/', 'HomeController::index');
+$routes->get('/', 'AuthController::login'); // Redirect root to login
+$routes->get('login', 'AuthController::login'); // Show login page
+$routes->post('login', 'AuthController::attemptLogin'); // Handle login form submission
+$routes->get('logout', 'AuthController::logout'); // Handle logout
+$routes->get('dashboard', 'DashboardController::index'); // Dashboard page
 
-$routes->get('login', 'AuthController::login');
-$routes->post('login', 'AuthController::attemptLogin');
-$routes->get('logout', 'AuthController::logout');
 
 
-$routes->get('dashboard', 'DashboardController::index', ['filter' => 'auth']);
 $routes->get('faculties', 'FacultyController::index', ['filter' => 'auth:Superadmin']);
 $routes->get('programs', 'ProgramController::index', ['filter' => 'auth:Superadmin,Coordinator']);
 $routes->get('subjects', 'SubjectController::index', ['filter' => 'auth:Coordinator,Faculty']);
