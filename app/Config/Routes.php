@@ -40,7 +40,6 @@ $routes->get('users/export', 'UserController::exportUsers');
 $routes->post('users/assign-coordinator/(:num)', 'UserController::assignCoordinator/$1', ['filter' => 'auth']);
 
 //Routes for Subject Allotment (Coordinator Only)
-//Routes for Subject Allotment (Coordinator Only)
 $routes->get('subjectsallocation', 'SubjectController::Getassignsubjects', ['filter' => 'auth']);
 $routes->get('subjectsallocation/assign', 'SubjectController::assign', ['filter' => 'auth']);
 $routes->get('subjectsallocation/edit/(:num)', 'SubjectController::editAssignment/$1', ['filter' => 'auth']);

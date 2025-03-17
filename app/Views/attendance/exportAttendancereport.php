@@ -2,88 +2,86 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<div id="content">
 
-    <form action="/attendance-report/export" method="POST">
-        <div class="m-4">
-            <div class="header">
-                <div class="heading">
-                    <h2>Attendance Report</h2>
-                </div>
-                <div>
+    <form class="p-4" action="/attendance-report/export" method="POST">
+        <div>
+            <div class="header d-flex justify-content-between align-items-center">
+                <h2>Attendance Report</h2>
+                <button class="btn btn-success">
+                    <i class="bi bi-file-earmark-excel"></i> Export Attendance Report
+                </button>
 
-                    <button class="btn btn-success">
-                        <i class="bi bi-file-earmark-excel"></i> Export Attendance Report
-                    </button>
-                </div>
-            </div>
-            <hr>
-
-            <div class="row">
-
-
-                <div class="col-md-3 col-12 mb-3">
-                    <label>College:</label>
-                    <select name="college_code" id="college_code" class="form-inputs c_change">
-                        <?php
-                        foreach ($college as $row) {
-
-                            echo "<option  value=" . $row['college_code'] . ">" . $row['college_name'] . "</option>";
-                        } ?>
-                    </select>
-                </div>
-
-
-
-                <div class="col-md-3 col-12 mb-3">
-                    <label>Program</label>
-                    <select name="program_id" id="pro_id" class="form-inputs p_change">
-                        <?php
-                        foreach ($program as $row) {
-
-                            echo "<option  value=" . $row['id'] . ">" . $row['program_name'] . "</option>";
-                        } ?>
-                    </select>
-                </div>
-
-                <div class="col-md-3 col-12 mb-3">
-                    <label>Semester</label>
-                    <select name="semester_number" id="sem_id" class="form-inputs s_change">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                    </select>
-                </div>
-
-
-
-                <div class="col-md-3 col-12 mb-3">
-                    <label>Subject</label>
-                    <select name="subject_id" id="sub_change" class="form-inputs">
-                        <option value="all">Select Subject</option>
-
-                        <?php
-                        foreach ($subject as $row) {
-                            echo "<option value=" . $row['id'] . ">" . $row['subject_name'] . "</option>";
-                        } ?>
-                    </select>
-                </div>
-
-                <div class="col-md-3 col-12 mb-3">
-                    <label id="batch-l">Batch</label>
-                    <select name="batch" id="batch" class="form-inputs">
-                        <option value="all">Select Batch</option>
-                    </select>
-                </div>
 
             </div>
+        </div>
+        <hr>
+
+        <div class="row">
+
+
+            <!-- <div class="col-md-3 col-12 mb-3">
+                <label>College:</label>
+                <select name="college_code" id="college_code" class="form-inputs c_change">
+                    <?php
+                    foreach ($college as $row) {
+
+                        echo "<option  value=" . $row['college_code'] . ">" . $row['college_name'] . "</option>";
+                    } ?>
+                </select>
+            </div> -->
+
+
+
+            <div class="col-md-3 col-12 mb-3">
+                <label>Program</label>
+                <select name="program_id" id="pro_id" class="form-inputs p_change">
+                    <?php
+                    foreach ($program as $row) {
+
+                        echo "<option  value=" . $row['id'] . ">" . $row['program_name'] . "</option>";
+                    } ?>
+                </select>
+            </div>
+
+            <div class="col-md-3 col-12 mb-3">
+                <label>Semester</label>
+                <select name="semester_number" id="sem_id" class="form-inputs s_change">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
+
+
+            <div class="col-md-3 col-12 mb-3">
+                <label>Subject</label>
+                <select name="subject_id" id="sub_change" class="form-inputs">
+                    <option value="all">Select Subject</option>
+
+                    <?php
+                    foreach ($subject as $row) {
+                        echo "<option value=" . $row['id'] . ">" . $row['subject_name'] . "</option>";
+                    } ?>
+                </select>
+            </div>
+
+            <div class="col-md-3 col-12 mb-3">
+                <label id="batch-l">Batch</label>
+                <select name="batch" id="batch" class="form-inputs">
+                    <option value="all">Select Batch</option>
+                </select>
+            </div>
+
+        </div>
     </form>
 </div>
 

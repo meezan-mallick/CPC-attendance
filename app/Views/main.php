@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/forms.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/tablestyle.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/studentscards.css') ?>">
 
 </head>
 

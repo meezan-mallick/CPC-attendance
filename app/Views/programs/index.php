@@ -17,7 +17,7 @@
     </div>
     <hr>
 
-    <!-- Colleges List -->
+    <!-- Programs List -->
     <div class="row">
       <div class="table-responsive">
         <table id="dataTable" class="table table-hover table-striped table-bordered text-center">

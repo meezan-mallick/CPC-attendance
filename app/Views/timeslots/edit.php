@@ -2,48 +2,46 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
-    <form action="<?= base_url('time-slots/update/'.$timeslot['id'])?>" method="Post">
-        <div class="header p-4">
-            <a class="btn btn-sm btn-warning" href="<?= site_url('time-slots') ?>">
-                < Back to TimeSlots List</a>
-                    <div>
-                        <h2>Update Time Slot</h2>
-                    </div>
+<!-- Page Content -->
+<div id="content">
+    <form class="p-3" action="<?= base_url('time-slots/update/' . $timeslot['id']) ?>" method="Post">
+        <div class="header d-flex justify-content-between align-items-center">
 
-                    <button class="submit" type="submit">
-                        Update
-                    </button>
+            <div>
+                <h2>UPDATE TIME SLOT</h2>
+            </div>
+            <a class="btn btn-sm btn-warning" href="<?= site_url('time-slots') ?>">
+                < Back to Time Slots List</a>
+
+
         </div>
         <div class="container">
             <hr>
         </div>
 
-        <div class="row">
+        <div class="row pb-4">
             <div class="col-md-6 col-12">
                 <label For="start_time">Starting Time</label>
 
                 <input
-                    class="form-inputs"
+                    class="form-control mt-3"
                     type="time"
                     name="start_time"
                     id="start_time"
-                    placeholder="Enter Starting Time" 
-                      value="<?=$timeslot['start_time']?>" required
-                />
+                    placeholder="Enter Starting Time"
+                    value="<?= $timeslot['start_time'] ?>" required />
             </div>
 
             <div class="col-md-6 col-12">
                 <label For="end_time">Ending Time</label>
 
                 <input
-                    class="form-inputs"
+                    class="form-control mt-3"
                     type="time"
                     name="end_time"
                     id="end_time"
-                    placeholder="Enter Ending Time" 
-                    value="<?=$timeslot['end_time']?>" required   
-                />
+                    placeholder="Enter Ending Time"
+                    value="<?= $timeslot['end_time'] ?>" required />
             </div>
 
             <div class="row">
@@ -58,10 +56,14 @@
                 </div>
 
             </div>
+        </div>
+        <button class="submit btn btn-primary w-100" type="submit">
+            UPDATE
+        </button>
 
     </form>
 </div>
 <script>
-   
+
 </script>
 <?= $this->endSection() ?>

@@ -1,7 +1,9 @@
 <?= $this->extend('main') ?>
+
 <?= $this->section('content') ?>
 
-<div class="container mt-4">
+<!-- Page Content -->
+<div id="content">
     <h2>Add a New Student</h2>
 
     <?php if (session()->getFlashdata('error_import')): ?>

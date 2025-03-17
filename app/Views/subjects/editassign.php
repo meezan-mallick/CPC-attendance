@@ -2,38 +2,38 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
-  <form action="<?= base_url('subjectsallocation/update/' . $allocatesubject['id']) ?>" method="POST">
-    <div class="header p-4">
-      <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
-        < Back to Allocated Subject List</a>
-          <div>
-            <h2>EDIT ALLOCATION</h2>
-          </div>
-          <?php if (session()->getFlashdata('errors')): ?>
-            <div style="color: red;">
-              <?= implode('<br>', session()->getFlashdata('errors')); ?>
-            </div>
-          <?php endif; ?>
-          <?php
-          if (isset($validation)) { ?>
-            <div class="row" style="color: crimson;">
-              <?= $validation->listErrors(); ?>
-            </div><?php
-                }
-                  ?>
-          <div class="row" id="sub_error" style="color: crimson;">
+<!-- Page Content -->
+<div id="content">
+  <form class="p-3" action="<?= base_url('subjectsallocation/update/' . $allocatesubject['id']) ?>" method="POST">
+    <div class="header d-flex justify-content-between align-items-center">
 
+      <div>
+        <h2>EDIT ALLOCATION</h2>
+      </div>
+      <div class="row" id="sub_error" style="color: crimson;">
+        <?php if (session()->getFlashdata('errors')): ?>
+          <div style="color: red;">
+            <?= implode('<br>', session()->getFlashdata('errors')); ?>
           </div>
-          <button class="submit" type="submit">
-            Update
-          </button>
+        <?php endif; ?>
+        <?php
+        if (isset($validation)) { ?>
+          <div class="row" style="color: crimson;">
+            <?= $validation->listErrors(); ?>
+          </div><?php
+              }
+                ?>
+      </div>
+      <div>
+        <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
+          < Back to Allocated Subject List</a>
+      </div>
     </div>
     <div class="container">
       <hr>
     </div>
 
-    <div class="row">
+    <div class="row pb-4">
 
       <div class="col-md-3 col-12">
         <label for="faculty">Select Faculty/Coordinator:</label>
@@ -49,6 +49,7 @@
       </div>
 
       <div class=" col-md-3 col-12">
+        <label For="program_id" for="program_id">Program </label>
         <label For="program_id">Program</label>
 
         <select class="form-inputs p_change" name="program_id" id="program_id" required>
@@ -66,9 +67,9 @@
       </div>
 
       <div class="col-md-3 col-12">
-        <label>Semester</label>
+        <label>Semester </label>
         <select class="form-inputs s_change" name="semester_number" id="semester_number" required>
-          <option value="">Select Semester</option>
+          <!-- <option value="">Select Semester</option> -->
           <?php foreach ($semesters as $semester): ?>
             <option value="<?= esc($semester['semester_number']) ?>">
               Semester - <?= esc($semester['semester_number']) ?>
@@ -77,21 +78,26 @@
         </select>
       </div>
 
-
-
       <div class="col-md-3 col-12">
-        <label For="subject_id">Subject</label>
-
+        <label for="subject_id">Subject</label>
         <select class="form-inputs" name="subject_id" id="subject_id" required>
-          <option value="">Select Subject</option>
+          <!-- <option value="">Select Subject</option> -->
           <?php foreach ($subjects as $subject): ?>
-            <option value="<?= esc($subject['id']) ?>">
+            <option value="<?= esc($subject['id']) ?>"
+              <?= (isset($selected_subject) && $selected_subject == $subject['id']) ? 'selected' : '' ?>>
               <?= esc($subject['subject_name']) ?>
             </option>
           <?php endforeach; ?>
         </select>
+
       </div>
 
+    </div>
+
+    <div class="row">
+      <button class="submit btn btn-primary w-100" type="submit">
+        Update
+      </button>
     </div>
 
 

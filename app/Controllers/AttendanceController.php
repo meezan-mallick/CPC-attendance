@@ -284,42 +284,62 @@ class AttendanceController extends BaseController
 
     public function allstudents($program_id, $semester_number, $subject_id, $topic_id, $batch)
     {
+        $studentModel = new StudentModel();
+        $subjectModel = new SubjectModel();
+        $programModel = new ProgramModel();
+        $topicModel = new TopicModel();
+        $attendanceModel = new AttendanceModel();
 
+        // ✅ Fetch topic details (for date & time slot)
+        $topic = $topicModel->find($topic_id);
 
-        $studentmodel = new Studentmodel();
-        // $data['student']=$studentmodel->where('program_id', $p_id)->Where('semester_id', $s_id)->Where('batch', $batch)->findAll();;
+        // ✅ Fetch subject details
+        $subject = $subjectModel->find($subject_id);
 
-        $topicmodel = new TopicModel();
-        $data['topic'] = $topicmodel->find($topic_id);;
+        // ✅ Fetch program details
+        $program = $programModel->find($program_id);
 
-        $data['subject_id'] = $subject_id;
-        $data['batch'] = $batch;
-        $data['program_id'] = $program_id;
-        $data['semester_number'] = $semester_number;
+        // ✅ Fetch students with their attendance records
+        $students = $attendanceModel->getStudentAttendanceLecture($program_id, $semester_number, $subject_id, $topic_id, $batch);
 
-        $attendancemodel = new AttendanceModel();
+        // ✅ Debugging: Print students to check if data exists
+        if (empty($students)) {
+            $students = []; // Set empty array if no students found
+            log_message('error', "No students found for Program: $program_id, Semester: $semester_number, Subject: $subject_id, Topic: $topic_id, Batch: $batch");
+        } else {
+            log_message('info', "Students fetched successfully for Program: $program_id, Semester: $semester_number, Subject: $subject_id, Topic: $topic_id, Batch: $batch");
+        }
 
-        $data['student'] = $attendancemodel->getStudentAttendanceLecture($program_id, $semester_number, $subject_id, $topic_id, $batch);
-
-
-        return view('attendance/students', $data);
+        // ✅ Pass all required data to the view
+        return view('attendance/students', [
+            'program_id' => $program_id,
+            'program' => $program,
+            'subject_id' => $subject_id,
+            'subject' => $subject,
+            'semester_number' => $semester_number,
+            'topic' => $topic,
+            'batch' => $batch,
+            'students' => $students // ✅ Pass students correctly
+        ]);
     }
+
+
+
+
+
+
 
 
     public function attendance_store($program_id, $semester_number, $subject_id, $topic_id, $batch)
     {
-
-        $studentmodel = new Studentmodel();
+        $attendanceModel = new AttendanceModel();
         $studentIds = $this->request->getPost('student_ids');
         $attendanceData = $this->request->getPost('attendance');
-        $att_ids = $this->request->getPost('attendance_ids');
-
-        // Prepare the data for insertion
-        $attendancemodel = new AttendanceModel();
+        $attendanceIds = $this->request->getPost('attendance_ids');
 
         foreach ($studentIds as $studentId) {
-
-            $data = $attendancemodel->where('topic_id', $topic_id)->where('student_id', $studentId)->find();
+            $existingRecord = $attendanceModel->where('topic_id', $topic_id)->where('student_id', $studentId)->first();
+            $attendanceStatus = isset($attendanceData[$studentId]) ? $attendanceData[$studentId] : 'Absent';
 
             $records = [
                 'topic_id' => $topic_id,
@@ -328,22 +348,16 @@ class AttendanceController extends BaseController
                 'subject_id' => $subject_id,
                 'batch' => $batch,
                 'student_id' => $studentId,
-                'attendance' => isset($attendanceData[$studentId]) ? $attendanceData[$studentId] : 'Absent',
+                'attendance' => $attendanceStatus,
             ];
-            if (!empty($data)) {
-                $attendance_id = $att_ids[$studentId];
-                $attendancemodel->update($attendance_id, $records);
+
+            if ($existingRecord) {
+                $attendanceModel->update($existingRecord['id'], $records);
             } else {
-
-                if (!$attendancemodel->insert($records)) {
-                    $errors = $topicmodel->errors();
-                }
-
-                if (!empty($errors)) {
-                    return redirect()->back()->with('errors', implode(', ', $errors));
-                }
+                $attendanceModel->insert($records);
             }
         }
+
         return redirect()->to(base_url('/topics-list/' . $program_id . '/' . $semester_number . '/' . $subject_id . '/'));
     }
 }

@@ -2,38 +2,38 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
-  <form action="<?= site_url('subjectsallocation/assignstore') ?>" method="POST">
-    <div class="header p-4">
-      <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
-        < Back to Allocated Subject List</a>
-          <div>
-            <h2>ALLOCATE SUBJECT</h2>
+<!-- Page Content -->
+<div id="content">
+  <form class="p-md-3" action="<?= site_url('subjectsallocation/assignstore') ?>" method="POST">
+    <div class="header d-flex justify-content-between align-items-center">
+      <div>
+        <h2>ALLOCATE SUBJECT</h2>
+      </div>
+      <div id="sub_error" style="color: crimson;">
+        <?php if (session()->getFlashdata('errors')): ?>
+          <div style="color: red;">
+            <?= implode('<br>', session()->getFlashdata('errors')); ?>
           </div>
-          <?php if (session()->getFlashdata('errors')): ?>
-            <div style="color: red;">
-              <?= implode('<br>', session()->getFlashdata('errors')); ?>
-            </div>
-          <?php endif; ?>
-          <?php
-          if (isset($validation)) { ?>
-            <div class="row" style="color: crimson;">
-              <?= $validation->listErrors(); ?>
-            </div><?php
-                }
-                  ?>
-          <div class="row" id="sub_error" style="color: crimson;">
+        <?php endif; ?>
+        <?php
+        if (isset($validation)) { ?>
+          <div class="row" style="color: crimson;">
+            <?= $validation->listErrors(); ?>
+          </div><?php
+              }
+                ?>
+      </div>
+      <div>
+        <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
+          < Back to Allocated Subject List</a>
+      </div>
 
-          </div>
-          <button class="submit" type="submit">
-            Allocate
-          </button>
     </div>
     <div class="container">
       <hr>
     </div>
 
-    <div class="row">
+    <div class="row pb-4">
 
       <div class="col-md-3 col-12">
         <label For="faculty_id">Faculty</label>
@@ -90,6 +90,12 @@
 
     </div>
 
+    <div class="row">
+      <button class="submit btn btn-primary w-100" type="submit">
+        Allocate
+      </button>
+    </div>
+
 
   </form>
 </div>
@@ -104,8 +110,6 @@
 
   $("#subject_id").children().not(':first-child').remove();
 
-  console.log(program);
-  console.log(semester);
   console.log(subject);
 
   function change_pro() {

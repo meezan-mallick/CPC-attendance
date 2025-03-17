@@ -66,7 +66,16 @@ class ExportVoucherController extends BaseController
             $lectures = $topicmodel->ExportFacPaymentVoucherStartEndDate($subject_id, $batch, $start_date, $end_date);
         }
 
+        // ✅ Fetch the Coordinator Name using SubjectallocationModel
+        $subjectAllocationModel = new SubjectallocationModel();
+        $coordinator = $subjectAllocationModel->select('users.full_name AS coordinator_name')
+            ->join('coordinator_programs', 'allocatedsubjects.program_id = coordinator_programs.program_id', 'inner')
+            ->join('users', 'coordinator_programs.user_id = users.id', 'left')
+            ->where('allocatedsubjects.program_id', $program_id)
+            ->first();
 
+        // ✅ Handle empty coordinator case
+        $coordinator_name = ($coordinator) ? $coordinator['coordinator_name'] : "Not Assigned";
 
         $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
         $pdf->SetCreator(PDF_CREATOR);
@@ -120,7 +129,7 @@ class ExportVoucherController extends BaseController
           
         </div>
 
-        <table border="1" cellpadding="5">
+        <table style="text-align:center" border="1" cellpadding="5">
             <thead>
                 <tr>
                     <th style="width:6%;">Sr.</th>
@@ -136,7 +145,7 @@ class ExportVoucherController extends BaseController
         foreach ($lectures as $topic) {
             $html .= '<tr>
                             <td style="width:6%;">' . $i++ . '</td>
-                            <td style="width: 45%;">' . $topic['topic'] . '</td>
+                            <td style="width: 45%;text-align:left">' . $topic['topic'] . '</td>
                             <td  style="width: 11%;">' . $topic['total_present'] . '</td>
                             <td style="width: 16%;">' . $topic['date'] . '</td>
                             <td style="width: 22%;">' . $topic['time'] . '</td>
@@ -165,11 +174,11 @@ class ExportVoucherController extends BaseController
         </table>
 
         <br>
-        <table width="100%">
+        <table style="padding-top:50px" width="100%">
             <tr>
-                <td style="text-align: center;">________________________<br><b>Resource Person</b></td>
-                <td style="text-align: center;">________________________<br><b>Course Coordinator</b></td>
-                <td style="text-align: center;">________________________<br><b>Director</b></td>
+                <td style="text-align: center;">________________________<br><b>Resource Person</b><br>' . $user['full_name'] . '</td>
+                <td style="text-align: center;">________________________<br><b>Course Coordinator</b> <br> ' . $coordinator_name . '</td>
+                <td style="text-align: center;">________________________<br><b>Director</b><br>Dr Paavan Pandit</td>
             </tr>
         </table>';
 

@@ -75,9 +75,10 @@
                 <?= implode('<br>', session()->getFlashdata('errors')); ?>
               </div>
             <?php endif; ?>
-            <button class="submit btn btn-primary w-100 mt-4" type="submit">
-              ADD NEW PROGRAM
-            </button>
+          </div>
+          <button class="submit btn btn-primary w-100 mt-4" type="submit">
+            ADD NEW PROGRAM
+          </button>
       </form>
     </div>
   </div>

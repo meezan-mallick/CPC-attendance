@@ -202,7 +202,9 @@ class ExportAttendanceController extends BaseController
             $sr = 1;
             foreach ($students as $s) {
                 $sheet->setCellValue('A' . $rowNumber, $sr);
+                $sheet->getStyle('A' . $sr)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->setCellValue('B' . $rowNumber, $s['university_enrollment_no']);
+                $sheet->getStyle('B' . $rowNumber, $s['university_enrollment_no'])->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('B' . $rowNumber)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_NUMBER);
                 $sheet->getColumnDimension('B')->setAutoSize(true);
                 $sheet->setCellValue('C' . $rowNumber, $s['full_name']);
@@ -224,11 +226,11 @@ class ExportAttendanceController extends BaseController
                             $sheet->getStyle($columnLetter . '' . $rowNumber)->applyFromArray([
                                 'font' => [
                                     'bold' => true,
-                                    'color' => ['rgb' => '00B050'], // White text color
+                                    'color' => ['rgb' => '006100'], // White text color
                                 ],
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
-                                    'startColor' => ['rgb' => 'EBF1DE'], // Blue background
+                                    'startColor' => ['rgb' => 'C6EFCE'], // Blue background
                                 ],
 
                             ]);
@@ -238,11 +240,11 @@ class ExportAttendanceController extends BaseController
                             $sheet->getStyle($columnLetter . '' . $rowNumber)->applyFromArray([
                                 'font' => [
                                     'bold' => true,
-                                    'color' => ['rgb' => 'FF0000'], // White text color
+                                    'color' => ['rgb' => '9C0006'], // White text color
                                 ],
                                 'fill' => [
                                     'fillType' => Fill::FILL_SOLID,
-                                    'startColor' => ['rgb' => 'F2DCDB'], // Blue background
+                                    'startColor' => ['rgb' => 'FFC7CE'], // Blue background
                                 ],
 
                             ]);
