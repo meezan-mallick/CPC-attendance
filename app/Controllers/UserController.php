@@ -168,6 +168,13 @@ class UserController extends Controller
             exit();
         }
 
+        // ✅ Check if the current logged-in user is a Faculty or Coordinator
+        $userRole = session()->get('role'); // Get logged-in user's role
+        if ($userRole == 'Faculty' || $userRole == 'Coordinator') {
+            return redirect()->to('/faculty-subjects')->with('message', '✅ Profile updated successfully!');
+        }
+
+        // ✅ Default Redirect for Other Users
         return redirect()->to('/users')->with('message', '✅ User updated successfully!');
     }
 

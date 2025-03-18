@@ -62,6 +62,12 @@ class AuthController extends Controller
             'logged_in'         => true,
         ]);
 
+        $userRole = session()->get('role'); // Get logged-in user's role
+
+        if ($userRole == 'Faculty') {
+            return redirect()->to('/faculty-subjects');
+        }
+
         return redirect()->to('/dashboard');
     }
 
