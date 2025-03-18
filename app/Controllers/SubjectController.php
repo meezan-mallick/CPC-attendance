@@ -99,10 +99,18 @@ class SubjectController extends Controller
     {
         $subjectModel = new SubjectModel();
 
+        $program_id = $this->request->getPost('program_id');
+        $subject_code = $this->request->getPost('subject_code');
+
+        // ✅ Check if Subject Code Already Exists in the Same Program
+        if (!$subjectModel->isUniqueSubjectCode($subject_code, $program_id)) {
+            return redirect()->back()->withInput()->with('errors', '⚠ Subject Code already exists for this Program! Please use a unique code.');
+        }
+
         $data = [
-            'program_id'      => $this->request->getPost('program_id'),
+            'program_id'      => $program_id,
             'semester_number' => $this->request->getPost('semester_number'),
-            'subject_code'    => $this->request->getPost('subject_code'),
+            'subject_code'    => $subject_code,
             'subject_name'    => $this->request->getPost('subject_name'),
             'credit'          => $this->request->getPost('credit'),
             'type'            => $this->request->getPost('type'),
@@ -115,14 +123,12 @@ class SubjectController extends Controller
                 return redirect()->back()->withInput()->with('errors', $subjectModel->errors());
             }
         } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
-            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
-                return redirect()->back()->withInput()->with('errors', '⚠ Subject Code already exists! Please use a unique code.');
-            }
             return redirect()->back()->withInput()->with('errors', '⚠ Database error: ' . $e->getMessage());
         }
 
         return redirect()->to('/subjects')->with('success', 'Subject added successfully.');
     }
+
 
 
     public function edit($id)
@@ -144,16 +150,18 @@ class SubjectController extends Controller
     {
         $subjectModel = new SubjectModel();
 
-        // 🔹 Fetch the existing subject
-        $existingSubject = $subjectModel->find($id);
-        if (!$existingSubject) {
-            return redirect()->to('/subjects')->with('error', 'Subject not found.');
+        $program_id = $this->request->getPost('program_id');
+        $subject_code = $this->request->getPost('subject_code');
+
+        // ✅ Ensure Subject Code is Unique in the Same Program (Excluding Current Record)
+        if (!$subjectModel->isUniqueSubjectCode($subject_code, $program_id, $id)) {
+            return redirect()->back()->withInput()->with('errors', '⚠ Subject Code already exists for this Program! Please use a unique code.');
         }
 
         $data = [
-            'program_id'      => $this->request->getPost('program_id'),
+            'program_id'      => $program_id,
             'semester_number' => $this->request->getPost('semester_number'),
-            'subject_code'    => $this->request->getPost('subject_code'),
+            'subject_code'    => $subject_code,
             'subject_name'    => $this->request->getPost('subject_name'),
             'credit'          => $this->request->getPost('credit'),
             'type'            => $this->request->getPost('type'),
@@ -161,23 +169,17 @@ class SubjectController extends Controller
             'external_marks'  => $this->request->getPost('external_marks'),
         ];
 
-        // 🔹 Define custom validation rules
-        $validationRules = [
-            'subject_code' => "required|max_length[50]|is_unique[subjects.subject_code,id,{$id}]",
-        ];
-
-        // 🔹 Validate the data
-        if (!$this->validate($validationRules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        // 🔹 If validation passes, update the record
-        if (!$subjectModel->update($id, $data)) {
-            return redirect()->back()->withInput()->with('errors', $subjectModel->errors());
+        try {
+            if (!$subjectModel->update($id, $data)) {
+                return redirect()->back()->withInput()->with('errors', $subjectModel->errors());
+            }
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            return redirect()->back()->withInput()->with('errors', '⚠ Database error: ' . $e->getMessage());
         }
 
         return redirect()->to('/subjects')->with('success', 'Subject updated successfully.');
     }
+
 
 
     public function delete($id)
