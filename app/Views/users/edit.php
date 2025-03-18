@@ -2,28 +2,30 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid mt-4">
-    <form action="<?= site_url('users/update/' . $user['id']) ?>" method="post">
-        <div class="header p-2">
-            <?php if (session()->getFlashdata('message')): ?>
-                <div class="alert alert-danger"><?= session()->getFlashdata('message') ?></div>
-            <?php endif; ?>
+<!-- Page Content -->
+<div id="content">
+    <?php if (session()->getFlashdata('message')): ?>
+        <div class="alert alert-success"><?= session()->getFlashdata('message') ?></div>
+    <?php elseif (session()->getFlashdata('error')): ?>
+        <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+    <?php endif; ?>
 
-            <?php if (isset($validation)): ?>
-                <div class="alert alert-danger">
-                    <?= $validation->listErrors(); ?>
-                </div>
-            <?php endif; ?>
+    <?php if (isset($validation)): ?>
+        <div class="alert alert-danger"><?= $validation->listErrors(); ?></div>
+    <?php endif; ?>
+
+    <form class="p-4" action="<?= site_url('users/update/' . $user['id']) ?>" method="post">
+        <?= csrf_field() ?> <!-- CSRF Token for Security -->
+        <div class="header d-flex justify-content-between align-items-center">
+
+            <div>
+                <h2>UPDATE USER</h2>
+            </div>
             <a class="btn btn-sm btn-warning ms-4" href="<?= site_url('users') ?>">
                 < Back to Users List</a>
-                    <div>
-                        <h2>UPDATE USER</h2>
-                    </div>
 
 
-                    <button class="submit" type="submit">
-                        Update
-                    </button>
+
         </div>
         <div class="container">
             <hr>
@@ -136,7 +138,7 @@
 
             <div class="col-md-3 col-12">
                 <label>Address:</label>
-                <textarea name="address_line_1" class="form-inputs" value="<?= esc($user['address']) ?>"></textarea>
+                <textarea name="address" class="form-inputs" value="<?= esc($user['address']) ?>"></textarea>
             </div>
 
         </div>
@@ -167,7 +169,11 @@
 
         </div>
 
-
+        <div class="row">
+            <button class="submit btn btn-primary w-100 mt-5" type="submit">
+                Update
+            </button>
+        </div>
 
     </form>
 </div>

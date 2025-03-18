@@ -108,63 +108,40 @@ class UserController extends Controller
 
     public function update($id)
     {
-
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
-
-        // Debug POST data
-        log_message('debug', 'POST data: ' . print_r($this->request->getPost(), true));
-
         $userModel = new UserModel();
-
-        // Fetch existing user data
         $existingUser = $userModel->find($id);
 
         if (!$existingUser) {
             return redirect()->back()->with('error', 'User not found.');
         }
 
-        // Validation Rules (Updated for Unique Email Check)
-        $rules = [
-            'full_name'        => 'required|max_length[255]',
-            'email'            => "required|valid_email|is_unique[users.email,id,$id]", // Allows updating without uniqueness error
-            'mobile_number'    => 'required|max_length[15]',
-            'designation'      => 'required',
-            'role'             => 'required',
-            'status'           => 'required',
+        // Prepare Data - Convert empty values to NULL
+        $fields = [
+            'full_name',
+            'email',
+            'mobile_number',
+            'designation',
+            'role',
+            'status',
+            'dob',
+            'gender',
+            'father_name',
+            'mother_name',
+            'qualification',
+            'industry_experience',
+            'working_experience',
+            'achievements',
+            'skillset',
+            'address',
+            'state',
+            'city',
+            'country'
         ];
 
-        if (!$this->validate($rules)) {
-            // Debug validation errors
-            $validation = \Config\Services::validation();
-            $errors = $validation->getErrors();
-
-            return redirect()->back()->with('message', '❌ Validation Failed!')->withInput();
+        $data = [];
+        foreach ($fields as $field) {
+            $data[$field] = trim($this->request->getPost($field)) !== '' ? $this->request->getPost($field) : null;
         }
-
-        // Prepare Data - FIXED: changed address_line_1 to address to match model
-        $data = [
-            'full_name'          => $this->request->getPost('full_name'),
-            'email'              => $this->request->getPost('email'),
-            'mobile_number'      => $this->request->getPost('mobile_number'),
-            'designation'        => $this->request->getPost('designation'),
-            'role'               => $this->request->getPost('role'),
-            'status'             => $this->request->getPost('status'),
-            'dob'                => $this->request->getPost('dob'),
-            'gender'             => $this->request->getPost('gender'),
-            'father_name'        => $this->request->getPost('father_name'),
-            'mother_name'        => $this->request->getPost('mother_name'),
-            'qualification'      => $this->request->getPost('qualification'),
-            'industry_experience' => $this->request->getPost('industry_experience'),
-            'working_experience' => $this->request->getPost('working_experience'),
-            'achievements'       => $this->request->getPost('achievements'),
-            'skillset'           => $this->request->getPost('skillset'),
-            'address'            => $this->request->getPost('address_line_1'), // CHANGED from address_line_1 to address
-            'state'              => $this->request->getPost('state'),
-            'city'               => $this->request->getPost('city'),
-            'country'            => $this->request->getPost('country')
-        ];
 
         // Handle Password Update (Only if provided)
         $password = $this->request->getPost('password');
@@ -172,13 +149,34 @@ class UserController extends Controller
             $data['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
 
+        // 🔍 DEBUG: Print the sanitized data before update
+        log_message('debug', 'Sanitized Data before update: ' . print_r($data, true));
+
         // Attempt to Update User
-        if (!$userModel->update($id, $data)) {
-            return redirect()->back()->with('error', '❌ Database Update Failed!');
+        $db = \Config\Database::connect();
+        $builder = $db->table('users');
+        $query = $builder->where('id', $id)->update($data);
+
+        if (!$query) {
+            $error = $db->error();
+
+            // 🔍 DEBUG: Print and log database error
+            log_message('error', '❌ Database Error: ' . print_r($error, true));
+            echo "<pre>Database Error: ";
+            print_r($error);
+            echo "</pre>";
+            exit();
         }
 
-        return redirect()->to('/users')->with('success', 'User updated successfully.');
+        return redirect()->to('/users')->with('message', '✅ User updated successfully!');
     }
+
+
+
+
+
+
+
 
 
 

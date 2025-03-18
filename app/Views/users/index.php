@@ -4,6 +4,11 @@
 
 <!-- Page Content -->
 <div id="content">
+  <?php if (session()->getFlashdata('message')): ?>
+    <div class="alert alert-success"><?= session()->getFlashdata('message') ?></div>
+  <?php elseif (session()->getFlashdata('error')): ?>
+    <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+  <?php endif; ?>
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
