@@ -25,4 +25,49 @@ class ProgramModel extends Model
             'checkCollegeCode' => 'The selected college code does not exist.',
         ]
     ];
+
+    public function getAssignedProgramsandSubs($id)
+    {
+        $db = \Config\Database::connect();
+
+        // Get program IDs from coordinator_programs
+        $subQueryCoordinator = $db->table('coordinator_programs')
+            ->select('program_id')
+            ->where('user_id', $id)
+            ->getCompiledSelect();
+
+        // Get program IDs from allocatedsubjects
+        $subQueryAllocated = $db->table('allocatedsubjects')
+            ->select('program_id')
+            ->where('faculty_id', $id)
+            ->getCompiledSelect();
+
+        // Fetch all program details
+        return $db->table('programs p')
+            ->select('p.*')
+            ->where("p.id IN ($subQueryCoordinator)", null, false)
+            ->orWhere("p.id IN ($subQueryAllocated)", null, false)
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getFacultyAssignedProgramsandSubs($id)
+    {
+        $db = \Config\Database::connect();
+
+       
+        // Get program IDs from allocatedsubjects
+        $subQueryAllocated = $db->table('allocatedsubjects')
+            ->select('program_id')
+            ->where('faculty_id', $id)
+            ->getCompiledSelect();
+
+        // Fetch all program details
+        return $db->table('programs p')
+            ->select('p.*')
+            ->orWhere("p.id IN ($subQueryAllocated)", null, false)
+            ->get()
+            ->getResultArray();
+    }
+
 }

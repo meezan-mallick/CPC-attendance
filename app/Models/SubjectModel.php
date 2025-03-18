@@ -31,4 +31,49 @@ class SubjectModel extends Model
         'internal_marks'  => 'required|integer',
         'external_marks'  => 'required|integer',
     ];
+
+
+    public function getCoordinatorSubjects($userId){
+        $db = \Config\Database::connect();
+
+        // Subquery to fetch subject IDs from allocatedsubjects
+        $subQueryAllocated = $db->table('allocatedsubjects')
+            ->select('subject_id')
+            ->where('faculty_id', $userId)
+            ->getCompiledSelect();
+    
+        // Subquery to fetch program IDs from coordinator_programs
+        $subQueryCoordinator = $db->table('coordinator_programs')
+            ->select('program_id')
+            ->where('user_id', $userId)
+            ->getCompiledSelect();
+    
+        return $db->table('subjects s')
+            ->select('s.*') // Select all columns from subjects
+            ->where("s.id IN ($subQueryAllocated)", null, false) // Use raw query string
+            ->orWhere("s.program_id IN ($subQueryCoordinator)", null, false) // Use raw query string
+            ->get()
+            ->getResultArray();
+        
+    }
+
+    public function getFacultySubjects($userId){
+        $db = \Config\Database::connect();
+
+        // Subquery to fetch subject IDs from allocatedsubjects
+        $subQueryAllocated = $db->table('allocatedsubjects')
+            ->select('subject_id')
+            ->where('faculty_id', $userId)
+            ->getCompiledSelect();
+    
+        
+    
+        return $db->table('subjects s')
+            ->select('s.*') // Select all columns from subjects
+            ->where("s.id IN ($subQueryAllocated)", null, false) // Use raw query string
+            ->get()
+            ->getResultArray();
+        
+    }
 }
+

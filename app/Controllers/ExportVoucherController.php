@@ -66,6 +66,8 @@ class ExportVoucherController extends BaseController
             $lectures = $topicmodel->ExportFacPaymentVoucherStartEndDate($subject_id, $batch, $start_date, $end_date);
         }
 
+        $y=date("Y");
+
         // ✅ Fetch the Coordinator Name using SubjectallocationModel
         $subjectAllocationModel = new SubjectallocationModel();
         $coordinator = $subjectAllocationModel->select('users.full_name AS coordinator_name')
@@ -109,7 +111,7 @@ class ExportVoucherController extends BaseController
         </div>
          <table width="100%">
             <tr>
-                <td><strong>Ref:</strong> CPC/Accounts/_______/2024</td>
+                <td><strong>Ref:</strong> CPC/Accounts/_______/'.$y.'</td>
                 <td align="right"><strong>Date:</strong> ' . $date . '</td>
             </tr>
         </table>

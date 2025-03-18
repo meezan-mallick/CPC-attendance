@@ -9,7 +9,17 @@
       <div>
         <h2>ALLOCATE SUBJECT</h2>
       </div>
-      <div id="sub_error" style="color: crimson;">
+      
+      <div>
+        <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
+          < Back to Allocated Subject List</a>
+      </div>
+
+    </div>
+    <div class="container">
+      <hr>
+    </div>
+    <div id="sub_error" style="color: crimson;">
         <?php if (session()->getFlashdata('errors')): ?>
           <div style="color: red;">
             <?= implode('<br>', session()->getFlashdata('errors')); ?>
@@ -23,15 +33,7 @@
               }
                 ?>
       </div>
-      <div>
-        <a class="btn btn-sm btn-warning" href="<?= site_url('subjectsallocation') ?>">
-          < Back to Allocated Subject List</a>
-      </div>
-
-    </div>
-    <div class="container">
-      <hr>
-    </div>
+    
 
     <div class="row pb-4">
 
@@ -51,8 +53,8 @@
       <div class=" col-md-3 col-12">
               <label For="program_id">Program</label>
 
-              <select class="form-inputs p_change" name="program_id" id="program_id" required>
-                <option value="">Select Program</option>
+              <select class="form-inputs p_change" name="program_id" id="pro_id" required>
+               
                 <?php foreach ($programs as $program): ?>
                   <option value="<?= esc($program['id']) ?>" data-semesters="<?= esc($program['total_semesters']) ?>">
                     <?= esc($program['program_name']) ?>
@@ -63,8 +65,7 @@
 
       <div class="col-md-3 col-12">
         <label>Semester</label>
-        <select class="form-inputs s_change" name="semester_number" id="semester_number" required>
-          <option value="">Select Semester</option>
+        <select class="form-inputs s_change" name="semester_number" id="sem_id" required>
           <?php foreach ($semesters as $semester): ?>
             <option value="<?= esc($semester['semester_number']) ?>">
               Semester - <?= esc($semester['semester_number']) ?>
@@ -78,7 +79,7 @@
       <div class="col-md-3 col-12">
         <label For="subject_id">Subject</label>
 
-        <select class="form-inputs" name="subject_id" id="subject_id" required>
+        <select class="form-inputs" name="subject_id" id="sub_change" required>
           <option value="">Select Subject</option>
           <?php foreach ($subjects as $subject): ?>
             <option value="<?= esc($subject['id']) ?>">
@@ -101,92 +102,88 @@
 </div>
 <script>
   // PHP data as a JavaScript variable
-  const program = <?php echo json_encode($programs); ?>;
-  const semester = <?php echo json_encode($semesters); ?>;
-  const subject = <?php echo json_encode($subjects); ?>;
-  // Check the data in the browser console
+ 
+    const program = <?php echo json_encode($programs); ?>;
+    const semester = <?php echo json_encode(range(1, 10)); ?>;
+    const subject = <?php echo json_encode($subjects); ?>;
+ 
 
-  $("#semester_number").children().not(':first-child').remove();
-
-  $("#subject_id").children().not(':first-child').remove();
-
-  console.log(subject);
-
-  function change_pro() {
+   
 
 
-    $p_id = $('#program_id').val();
-    $s_id = $('#semester_number').val();
-    if ($p_id != "") {
-      $("#semester_number").children().not(':first-child').remove();
+    function change_pro() {
 
-      $arr = [];
-      // console.log($p_id);
-      $("#subject_id").children().not(':first-child').remove();
-      subject.forEach(row => {
 
-        if ($p_id == row['program_id']) {
-          $arr.push(row['semester_number']);
-        }
-      });
+        $p_id = $('#pro_id').val();
+        $s_id = $('#sem_id').val();
 
-      $arr = $arr.filter((item, index) => $arr.indexOf(item) === index);
+        $("#sem_id").children().remove();
 
-      semester.forEach(row => {
-        $k1 = row['semester_number'];
-        $arr.forEach(e => {
-          $k = e;
-          if ($k == $k1) {
-            $("#semester_number").append("<option value=" + row['semester_number'] + ">Semester - " + row['semester_number'] + "</option>");
+        $arr = [];
+        // console.log($p_id);
+        $("#sub_change").children().remove();
+        subject.forEach(row => {
 
-          }
-
+            if ($p_id == row['program_id']) {
+                $arr.push(row['semester_number']);
+            }
         });
 
+        $arr = $arr.filter((item, index) => $arr.indexOf(item) === index);
+
+        semester.forEach(row => {
+            $k1 = row;
+            $arr.forEach(e => {
+                $k = e;
+                if ($k == $k1) {
+                    $("#sem_id").append("<option value=" + $k1 + ">" + $k1 + "</option>");
+
+                }
+
+            });
 
 
-      });
-      console.log($arr);
+
+        });
+        console.log($arr);
+       
     }
 
-  }
 
+    function change_sem() {
+        $p_id = $('#pro_id').val();
+        $s_id = $('#sem_id').val();
 
-  function change_sem() {
-    $p_id = $('#program_id').val();
-    $s_id = $('#semester_number').val();
+        // console.log($p_id);
+        $("#sub_change").children().remove();
+        $("#sub_change").append("<option value='all'> Select Subject </option>");
 
-    if ($p_id != "" && $s_id != "") {
-      // console.log($p_id);
-      $("#subject_id").children().not(':first-child').remove();
-      subject.forEach(row => {
+        subject.forEach(row => {
+            if ($p_id == row['program_id'] && $s_id == row['semester_number']) {
+                $("#sub_change").append("<option value=" + row['id'] + ">" + row['subject_name'] + "</option>");
+            }
+        });
 
-        if ($p_id == row['program_id'] && $s_id == row['semester_number']) {
-          $("#subject_id").append("<option value=" + row['id'] + ">" + row['subject_name'] + "</option>");
-          console.log(row);
+        if ($("#sub_change").children().length < 1) {
+            $("#sub_error").append("<p>Subjects not Available</p>");
+        } else {
+            $("#sub_error").html("");
         }
-
-      });
-
-      if ($("#subject_id").children().length < 1) {
-        $("#sub_error").append("<p>Subjects not Available</p>");
-      } else {
-        $("#sub_error").html("");
-      }
     }
-  }
 
-
-  change_pro();
-  change_sem();
-  $(".s_change").change(function() {
-    change_sem();
-  });
-
-  $(".p_change").change(function() {
+    
     change_pro();
     change_sem();
-  });
+    $(".s_change").change(function() {
+        change_sem();
+    });
+
+    $(".p_change").change(function() {
+        change_pro();
+        change_sem();
+    });
+
+   
 </script>
 
 <?= $this->endSection() ?>

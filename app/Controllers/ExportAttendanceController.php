@@ -14,6 +14,7 @@ use App\Models\TimeslotModel;
 use App\Models\AttendanceModel;
 use App\Models\CollegeModel;
 use App\Models\UserModel;
+use App\Models\CoordinatorProgramModel;
 
 
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
@@ -29,18 +30,49 @@ class ExportAttendanceController extends BaseController
     public function get_allsubjects()
     {
         $id = session()->get('user_id');
+        $role=session()->get('role');
+      
+        if($role=="Coordinator")
+        {
+            $collegeModel = new CollegeModel();
+            $data['college'] = $collegeModel-> getAssignedColleges($id);
+            $programmodel = new ProgramModel();
+            $data['program'] = $programmodel->getAssignedProgramsandSubs($id); // Get array of assigned program IDs
+            
+            $subjectModel = new SubjectModel();
+            $data['subject'] = $subjectModel->getCoordinatorSubjects($id);
+            $studentModel = new StudentModel();
+            $data['batch'] = $studentModel->select('program_id,semester,batch')->distinct()->findAll();
+       
 
-        $collegeModel = new CollegeModel();
-        $data['college'] = $collegeModel->findAll();
-        $programmodel = new ProgramModel();
-        $data['program'] = $programmodel->findAll();
-        $subjectModel = new SubjectModel();
-        $data['subject'] = $subjectModel->findAll();
+        }
+        else if($role=="Faculty")
+        {
+            $collegeModel = new CollegeModel();
+            $data['college'] = $collegeModel->getFacultyAssignedColleges($id);
+            $programmodel = new ProgramModel();
+            $data['program'] = $programmodel->getFacultyAssignedProgramsandSubs($id); // Get array of assigned program IDs
+            
+            $subjectModel = new SubjectModel();
+            $data['subject'] = $subjectModel->getFacultySubjects($id);
+            $studentModel = new StudentModel();
+            $data['batch'] = $studentModel->select('program_id,semester,batch')->distinct()->findAll();
+        }
+        else{
+        // Superadmin  
+            $collegeModel = new CollegeModel();
+            $data['college'] = $collegeModel->findAll();
+            $programmodel = new ProgramModel();
+            $data['program'] = $programmodel->findAll();
+            $subjectModel = new SubjectModel();
+            $data['subject'] = $subjectModel->findAll();
+            $studentModel = new StudentModel();
+            $data['batch'] = $studentModel->select('program_id,semester,batch')->distinct()->findAll();
+       
 
-        $studentModel = new StudentModel();
-        $data['batch'] = $studentModel->select('program_id,semester,batch')->distinct()->findAll();
-
-        return view('attendance/exportAttendancereport', $data);
+        }
+       
+         return view('attendance/exportAttendancereport', $data);
     }
 
     public function ExcelHeader($lastColumn, $sheet, $program, $semester_number, $batch)
@@ -69,7 +101,10 @@ class ExportAttendanceController extends BaseController
 
     public function export_attendance()
     {
+        $allSubjects = explode(',', $this->request->getPost('all_subjects')); // Convert string to array
 
+       
+        
 
         $p_id = $this->request->getVar('program_id');
         $semester_number = $this->request->getVar('semester_number');
@@ -99,10 +134,16 @@ class ExportAttendanceController extends BaseController
 
         if ($sub_id == "all") {
 
-            $subjects = $subjectmodel->where('program_id', $p_id)->Where('semester_number', $semester_number)->findAll();
-            foreach ($subjects as $key) {
-                array_push($columns, $key['subject_name']);
+            foreach ($allSubjects as $k) {
+                if($k!="all")
+                {
+                    $subject = $subjectmodel->find($k);
+                   array_push($columns, $subject['subject_name']);
+                    
+                }
+              
             }
+           
 
 
 
@@ -133,10 +174,14 @@ class ExportAttendanceController extends BaseController
                 $sheet->setCellValue('C' . $rowNumber, $s['full_name']);
 
                 $columnLetter = 'D';
-                foreach ($subjects as $sub) {
+                foreach ($allSubjects as $sub_id) {
+                    if($sub_id=="all")
+                    {
+                        continue;
+                    }
                     $attendancemodel = new AttendanceModel();
 
-                    $stud_attendance = $attendancemodel->getStudentPresentPerc($s['id'], $sub['id']);
+                    $stud_attendance = $attendancemodel->getStudentPresentPerc($s['id'], $sub_id);
                     $per = "0";
                     if (!empty($stud_attendance)) {
                         $per = $stud_attendance[0]['present_percentage'];

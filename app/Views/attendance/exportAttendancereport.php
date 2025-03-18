@@ -20,7 +20,7 @@
         <div class="row">
 
 
-            <!-- <div class="col-md-3 col-12 mb-3">
+            <div class="col-md-3 col-12 mb-3">
                 <label>College:</label>
                 <select name="college_code" id="college_code" class="form-inputs c_change">
                     <?php
@@ -29,7 +29,7 @@
                         echo "<option  value=" . $row['college_code'] . ">" . $row['college_name'] . "</option>";
                     } ?>
                 </select>
-            </div> -->
+            </div>
 
 
 
@@ -67,12 +67,21 @@
                 <select name="subject_id" id="sub_change" class="form-inputs">
                     <option value="all">Select Subject</option>
 
+
                     <?php
+                     
                     foreach ($subject as $row) {
                         echo "<option value=" . $row['id'] . ">" . $row['subject_name'] . "</option>";
+                       
                     } ?>
                 </select>
+                <input type="hidden" name="all_subjects" id="all_subjects">
+
             </div>
+
+        </div>
+        <div class="row">
+
 
             <div class="col-md-3 col-12 mb-3">
                 <label id="batch-l">Batch</label>
@@ -95,6 +104,21 @@
     // Check the data in the browser console
 
 
+    function getOptions(selector) {
+                    let optionsArray = [];
+                    $(selector + " option").each(function () {
+                        optionsArray.push($(this).val());
+                    });
+                    return optionsArray.join(",");
+    }
+
+    function set_subs() {
+        $("#all_subjects").val('');
+        $("#all_subjects").val(getOptions("#sub_change"));
+   
+    }
+   
+    
     function change_college() {
         $c_id = $('#college_code').val();
         $p_id = $('#pro_id').val();
@@ -122,6 +146,7 @@
         $s_id = $('#sem_id').val();
 
         $count = 0;
+        $chck_zro=0;
         $flag = false;
         $("#batch").children().remove();
         $("#batch").append("<option value='all'>Select Batch</option>");
@@ -134,9 +159,11 @@
                     $count++;
                     $flag = true;
                 }
+                $chck_zro++;
             }
-        });
-        if ($flag) {
+              
+       });
+        if ($flag ||  $chck_zro==0) {
             $("#batch").hide();
             $("#batch-l").hide();
         } else {
@@ -209,19 +236,24 @@
     change_college();
     change_pro();
     change_sem();
+    set_subs() ;
     $(".s_change").change(function() {
         change_sem();
+        change_batch();
+        set_subs(); 
     });
 
     $(".p_change").change(function() {
         change_pro();
         change_sem();
+        set_subs(); 
     });
 
     $(".c_change").change(function() {
         change_college();
         change_pro();
         change_sem();
+        set_subs(); 
     });
 </script>
 <?= $this->endSection() ?>
