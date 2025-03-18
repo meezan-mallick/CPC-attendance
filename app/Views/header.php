@@ -30,7 +30,11 @@
                <span> ( <?= session()->get('role') ?> )</span>
              </a>
              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-               <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+               <li>
+                 <a class="dropdown-item" href="<?= site_url('users/edit/' . session()->get('user_id')) ?>">
+                   <i class="fas fa-user me-2"></i> Profile
+                 </a>
+               </li>
                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
                <li>
                  <hr class="dropdown-divider">

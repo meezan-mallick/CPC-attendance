@@ -16,7 +16,9 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
 
   <ul class="list-unstyled components">
 
-    <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'dashboard') ? 'active' : '' ?>" href="<?= site_url('dashboard') ?>"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+    <?php if (in_array(session()->get('role'), ['Superadmin', 'Coordinator'])): ?>
+      <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'dashboard') ? 'active' : '' ?>" href="<?= site_url('dashboard') ?>"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+    <?php endif; ?>
 
     <?php if (session()->get('role') == 'Superadmin'): ?>
       <li class="nav-item"><a class="nav-link text-white <?= ($current_url == 'coordinators') ? 'active' : '' ?>" href="<?= site_url('coordinators') ?>"><i class="bi bi-person-badge-fill me-2"></i>Manage Coordinator</a></li>

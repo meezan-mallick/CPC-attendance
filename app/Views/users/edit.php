@@ -55,7 +55,8 @@
             </div>
 
             <div class="col-md-3 col-12">
-                <label>Password:</label>
+                <label>Password</label>
+                <label class="text-danger">(Leave blank to keep the same):</label>
                 <input type="password" name="password" class="form-inputs" placeholder="Enter Password">
             </div>
 
