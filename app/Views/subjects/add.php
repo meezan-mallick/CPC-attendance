@@ -15,13 +15,16 @@
       ?>
 
         <form action="<?= site_url('subjects/store') ?>" method="Post">
+
+          <?php if (session()->getFlashdata('errors')): ?>
+            <div class="alert alert-danger">
+              <?= session()->getFlashdata('errors'); ?>
+            </div>
+          <?php endif; ?>
+
           <div class="header d-flex justify-content-between align-items-center">
             <h2>ADD NEW SUBJECT</h2>
-            <?php if (session()->getFlashdata('errors')): ?>
-              <div style="color: red;">
-                <?= implode('<br>', session()->getFlashdata('errors')); ?>
-              </div>
-            <?php endif; ?>
+
             <?php
             if (isset($validation)) { ?>
               <div class="row" style="color: crimson;">

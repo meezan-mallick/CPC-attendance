@@ -110,13 +110,20 @@ class SubjectController extends Controller
             'external_marks'  => $this->request->getPost('external_marks'),
         ];
 
-        if (!$subjectModel->insert($data)) {
-            print_r($subjectModel->errors());
-            exit(); // Stop execution to check errors
+        try {
+            if (!$subjectModel->insert($data)) {
+                return redirect()->back()->withInput()->with('errors', $subjectModel->errors());
+            }
+        } catch (\CodeIgniter\Database\Exceptions\DatabaseException $e) {
+            if (strpos($e->getMessage(), 'Duplicate entry') !== false) {
+                return redirect()->back()->withInput()->with('errors', '⚠ Subject Code already exists! Please use a unique code.');
+            }
+            return redirect()->back()->withInput()->with('errors', '⚠ Database error: ' . $e->getMessage());
         }
 
         return redirect()->to('/subjects')->with('success', 'Subject added successfully.');
     }
+
 
     public function edit($id)
     {
@@ -217,8 +224,6 @@ class SubjectController extends Controller
         return view('subjects/assignsubjects', $data);
     }
 
-
-
     public function filterAllocatedSubjects()
     {
         $subjectallocationModel = new SubjectallocationModel();
@@ -268,9 +273,6 @@ class SubjectController extends Controller
         }
     }
 
-
-
-
     public function assign()
     {
         $subjectModel = new SubjectModel();
@@ -315,7 +317,6 @@ class SubjectController extends Controller
         return view('subjects/assign', $data);
     }
 
-
     public function storeAssignment()
     {
         $subjectallocationModel = new SubjectallocationModel();
@@ -330,7 +331,6 @@ class SubjectController extends Controller
         $subjectallocationModel->insert($data);
         return redirect()->to('subjectsallocation')->with('success', 'Subject assigned successfully.');
     }
-
 
     public function editAssignment($id)
     {
