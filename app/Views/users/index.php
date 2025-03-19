@@ -42,7 +42,7 @@
                 <td><?= esc($user['id']) ?></td>
                 <td class="fw-bold"><?= esc($user['full_name']) ?></td>
                 <td><?= esc($user['email']) ?></td>
-                <td>
+                <td >
                   <?= esc($user['role']) ?>
                   <!-- <?php if ($user['role'] === 'Faculty'): ?>
                     <a href="<?= site_url('users/assign-coordinator/' . $user['id']) ?>" class="btn btn-sm btn-warning">Make Coordinator</a>

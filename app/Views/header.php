@@ -23,6 +23,11 @@
              <a class="nav-link" href="#"><i class="fas fa-envelope me-2"></i><span
                  class="d-inline d-lg-none ms-2">Messages</span></a>
            </li>
+           <li class="nav-item">
+             <a class="nav-link" href="#"><button id="darkModeToggle" class="btn btn-sm btn-outline-secondary">
+                 🌙 Dark Mode
+               </button></a>
+           </li>
            <li class="nav-item dropdown">
              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                aria-expanded="false">

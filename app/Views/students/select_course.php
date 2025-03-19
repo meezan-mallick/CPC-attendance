@@ -7,7 +7,7 @@
     <div class="container mt-4">
         <h2 class="mb-4">Select Course, Semester, and Batch</h2>
 
-        <div class="card shadow p-4">
+        <div class="shadow p-4">
             <form action="<?= base_url('students/list') ?>" method="GET">
                 <div class="row">
                     <!-- Course Dropdown -->

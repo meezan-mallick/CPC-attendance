@@ -4,15 +4,13 @@ $current_url = service('uri')->getSegment(1); // Get the first segment of the UR
 <!-- Sidebar -->
 <nav id="sidebar">
   <div class="sidebar-header">
-    <section class="logo-section">
-      <img class="logo" src="/assets/Images/Icons/gulogo.png" alt="logo" />
-      <section>
-
-        <h5>CPC ORBIT</h5>
-        <p>GUJARAT UNIVERSITY <br>Ahmedabad - Gujarat</p>
-      </section>
-    </section>
+    <img src="/assets/Images/Icons/gulogo.png" alt="Logo" class="logo">
+    <div>
+      <div class="sidebar-title">CPC ORBIT</div>
+      <div class="sidebar-description">GUJARAT UNIVERSITY <br>Ahmedabad - Gujarat</div>
+    </div>
   </div>
+
 
   <ul class="list-unstyled components">
 

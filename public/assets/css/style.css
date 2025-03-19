@@ -4,8 +4,7 @@
 body {
     overflow-x: hidden;
     background-color: #f8f9fa;
-
-    /* Height of navbar */
+    color: #333;
 }
 
 /* ==========================================
@@ -45,60 +44,59 @@ body {
 }
 
 /* ==========================================
-   📌 SIDEBAR STYLING (Minimal Scroll)
+   📌 SIDEBAR STYLING (Including Logo Section)
 ========================================== */
-/* ✅ Sidebar Styling */
 #sidebar {
     position: fixed;
-    top: 56px; /* Below navbar */
-    left: -250px; /* Off-canvas for mobile */
+    top: 56px;
+    left: -250px;
     width: 250px;
-    height: calc(100vh - 56px); /* Full height */
+    height: calc(100vh - 56px);
     background-color: #061435;
     color: white;
-    overflow-y: auto; /* Enable scrolling */
+    overflow-y: auto;
     transition: all 0.3s ease-in-out;
     z-index: 1030;
 }
 
-/* ✅ Transparent, Minimalist Scrollbar */
-#sidebar {
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: #061435 #061435;; /* No visible scrollbar */
-}
-
-/* ✅ Webkit Browsers (Chrome, Edge, Safari) */
-#sidebar::-webkit-scrollbar {
-    width: 3px; /* Ultra-thin scrollbar */
-}
-
-#sidebar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1); /* Almost invisible */
-    border-radius: 10px;
-    transition: background 0.3s ease-in-out;
-}
-
-#sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3); /* Visible only on hover */
-}
-
-#sidebar::-webkit-scrollbar-track {
-    background: transparent; /* No track color */
-}
-
-
-/* Sidebar Active (Visible) */
 #sidebar.active {
     left: 0;
 }
 
-/* Sidebar Header */
+/* ✅ Sidebar Header (Including Logo Section) */
 #sidebar .sidebar-header {
+    display: flex;
+    align-items: center;
     padding: 15px;
     background-color: #0B1D46;
 }
 
-/* Sidebar Navigation */
+/* ✅ Sidebar Logo (Align Left) */
+#sidebar .logo {
+    height: 50px;
+    /* Adjust size as needed */
+    width: auto;
+    max-width: 80px;
+    margin-right: 10px;
+    /* Space between logo & text */
+}
+
+/* ✅ Sidebar Title & Description (Align Right) */
+#sidebar .sidebar-title {
+    flex-grow: 1;
+    /* Take remaining space */
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#sidebar .sidebar-description {
+    color: #ddd;
+    font-size: 0.9em;
+    margin-top: 3px;
+}
+
+/* ✅ Sidebar Navigation */
 #sidebar ul.components {
     padding: 20px 0;
     margin: 0 10px;
@@ -112,12 +110,10 @@ body {
     text-decoration: none;
 }
 
-/* Sidebar Hover Effects */
 .nav-item:hover {
     background-color: #152c62;
 }
 
-/* Active Link Styling */
 .nav-link.active {
     background-color: #007bff !important;
     color: white !important;
@@ -125,39 +121,10 @@ body {
 }
 
 /* ==========================================
-   📌 LOGO & TITLE STYLING
-========================================== */
-.logo-section {
-    display: flex;
-    align-items: center;
-    text-align: center;
-}
-
-.logo-section h5 {
-    position: relative;
-    left: 3vw;
-    top: 2vw;
-    text-align: center;
-}
-
-.logo-section p {
-    position: relative;
-    left: 4vw;
-    top: 2vw;
-    font-size: 3vw;
-}
-
-/* Navbar Logo */
-.logo {
-    height: 17vw;
-}
-
-/* ==========================================
    📌 CONTENT STYLING
 ========================================== */
 #content {
     width: 100%;
-    /* Full width by default for mobile */
     padding: 20px;
     min-height: calc(100vh - 56px);
     transition: all 0.3s;
@@ -165,38 +132,15 @@ body {
 }
 
 /* ==========================================
-   📌 OVERLAY WHEN SIDEBAR IS ACTIVE (MOBILE)
-========================================== */
-.overlay {
-    display: none;
-    position: fixed;
-    top: 56px;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1025;
-    opacity: 0;
-    transition: all 0.5s ease;
-}
-
-.overlay.active {
-    display: block;
-    opacity: 1;
-}
-
-/* ==========================================
    📌 RESPONSIVE STYLING
 ========================================== */
 @media (min-width: 768px) {
-
-    /* Show sidebar by default on desktop */
     #sidebar {
         left: 0;
     }
 
     #sidebar.hidden {
         left: -250px;
-        /* Hide sidebar when toggled */
     }
 
     #content {
@@ -208,37 +152,8 @@ body {
         width: 100%;
         margin-left: 0;
     }
-
-    /* Hide overlay on desktop */
-    .overlay {
-        display: none !important;
-    }
-
-    /* Logo & Title Adjustments for Desktop */
-    .logo-section h5 {
-        position: relative;
-        top: 0.6vw;
-        left: 0;
-        text-align: center;
-    }
-
-    .logo-section p {
-        position: relative;
-        left: 0;
-        top: 1vw;
-        font-size: 0.7vw;
-    }
-
-    .logo {
-        margin: 0;
-        padding: 0;
-        height: 5vw;
-        text-align: center;
-        margin-right: 1vw;
-    }
 }
 
-/* Ensure navbar-nav takes full width on mobile */
 @media (max-width: 991.98px) {
     .navbar-nav {
         width: 100%;
@@ -254,23 +169,342 @@ body {
 }
 
 /* ==========================================
-   📌 CARD STYLING
+   📌 FORM & INPUT STYLING
 ========================================== */
-.card {
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+input:focus {
+    border: none;
 }
 
-.card-header {
-    font-weight: bold;
-    background-color: #f8f9fa;
+#content .form-inputs,
+#content .dropdown {
+    margin-top: 10px;
+    width: 100%;
+    height: 3rem;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+    padding-left: 15px;
 }
 
 /* ==========================================
-   📌 DROPDOWN MENU ALIGNMENT FIX
+   📌 STUDENT CARDS STYLING
 ========================================== */
-.dropdown-menu-end {
-    right: 0;
-    left: auto;
+/* ==========================================
+   📌 STUDENT CARD STYLING (Light Mode)
+========================================== */
+.student-card {
+    background-color: #f8f9fa;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* ✅ Present (Green) */
+.student-card.present {
+    background-color: #c3e6cb;
+    border-color: #28a745;
+}
+
+/* ✅ Absent (Light Pink) */
+.student-card.absent {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+/* ✅ Status Label */
+.student-card .status-label {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* ==========================================
+   📌 DARK MODE STUDENT CARD
+========================================== */
+.dark-mode .student-card {
+    background-color: #1e1e1e !important;
+    border: 2px solid #444 !important;
+    color: white !important;
+}
+
+/* ✅ Dark Mode Present */
+.dark-mode .student-card.present {
+    background-color: #265d2b !important;
+    border-color: #28a745 !important;
+}
+
+/* ✅ Dark Mode Absent */
+.dark-mode .student-card.absent {
+    background-color: #5d1d1f !important;
+    border-color: #dc3545 !important;
+}
+
+/* ✅ Dark Mode Status Label */
+.dark-mode .student-card .status-label {
+    color: #ddd !important;
+}
+@media (max-width: 768px) {
+    .student-card {
+        padding: 10px;
+    }
+}
+/* ==========================================
+   📌 TABLE STYLING (Default Light Mode)
+========================================== */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: #343a40;
+    color: white;
+}
+
+.table tbody tr {
+    background-color: #ffffff;
+    /* Default Light Mode */
+    color: #333;
+}
+
+/* ✅ Hover Effect in Light Mode */
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1 !important;
+}
+
+/* ==========================================
+   📌 FORCE DARK MODE TABLE FIX
+========================================== */
+.dark-mode .table {
+    background-color: #242424 !important;
+    color: white !important;
+    border-color: #555 !important;
+}
+
+/* ✅ Force Table Rows to Dark in Dark Mode */
+.dark-mode .table tbody tr {
+    background-color: #1e1e1e !important;
+    color: white !important;
+}
+
+/* ✅ Ensure ALL table rows take Dark Mode */
+.dark-mode .table tbody tr td {
+    background-color: #1e1e1e !important;
+    color: white !important;
+}
+
+/* ✅ Fix Striped Table in Dark Mode */
+.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2a2a2a !important;
+}
+
+/* ✅ Table Hover in Dark Mode */
+.dark-mode .table-hover tbody tr:hover {
+    background-color: #333 !important;
+}
+
+/* ✅ Ensure Table Borders are Dark */
+.dark-mode .table-bordered {
+    border-color: #666 !important;
+}
+
+/* ✅ Ensure Dark Mode Applies to Table Container */
+.dark-mode .table-responsive {
+    background-color: #242424 !important;
+}
+/* ==========================================
+   📌 DARK MODE STYLES
+========================================== */
+.dark-mode {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+}
+
+/* ✅ Navbar in Dark Mode */
+.dark-mode .navbar {
+    background-color: #1e1e1e !important;
+    border-bottom: 1px solid #333;
+}
+
+/* ✅ Sidebar in Dark Mode */
+.dark-mode #sidebar {
+    background-color: #1e1e1e !important;
+    color: white;
+}
+
+.dark-mode #sidebar .sidebar-header {
+    background-color: #2c2c2c;
+}
+
+.dark-mode #sidebar ul li a {
+    color: #ddd;
+}
+
+.dark-mode #sidebar ul li a:hover {
+    background-color: #343a40;
+}
+
+/* ✅ Active Sidebar Link */
+.dark-mode .nav-link.active {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+/* ✅ Content Background in Dark Mode */
+.dark-mode #content {
+    background-color: #181818 !important;
+    color: white !important;
+}
+
+/* ✅ Tables in Dark Mode */
+.dark-mode .table {
+    background-color: #242424 !important;
+    color: white !important;
+    border-color: #444 !important;
+}
+
+.dark-mode .table thead {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.dark-mode .table-hover tbody tr:hover {
+    background-color: #2a2a2a !important;
+}
+
+/* ✅ Forms, Inputs, Textareas in Dark Mode */
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+    background-color: #222 !important;
+    color: white !important;
+    border: 1px solid #555 !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    color: #bbb !important;
+}
+
+.dark-mode input:focus,
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+    border-color: #007bff !important;
+    outline: none !important;
+}
+
+/* ✅ Buttons in Dark Mode */
+.dark-mode .btn {
+    background-color: #444;
+    color: white;
+    border-color: #666;
+}
+
+.dark-mode .btn:hover {
+    background-color: #666;
+}
+
+/* ✅ Alerts & Modals in Dark Mode */
+.dark-mode .alert {
+    background-color: #2c2c2c;
+    color: white;
+    border-color: #444;
+}
+
+.dark-mode .modal-content {
+    background-color: #222;
+    color: white;
+}
+
+/* ✅ Prevent White Flash */
+html.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+
+
+
+/* ==========================================
+   📌 FOOTER STYLING
+========================================== */
+footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #ddd;
+    background-color: #f8f9fa;
+}
+
+/* ✅ Dark Mode Footer */
+.dark-mode footer {
+    background-color: #1e1e1e !important;
+    color: #ccc !important;
+    border-top: 1px solid #444 !important;
+}
+
+/* ✅ Footer Links in Dark Mode */
+.dark-mode footer a {
+    color: #4da3ff !important;
+    /* Lighter blue for visibility */
+    text-decoration: none;
+}
+
+.dark-mode footer a:hover {
+    text-decoration: underline;
+}
+
+
+/* ==========================================
+   📌 SIDEBAR SCROLLBAR (Minimalist & Simple)
+========================================== */
+#sidebar {
+    scrollbar-width: thin;
+    /* For Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    /* Light thumb, invisible track */
+}
+
+/* ✅ WebKit Browsers (Chrome, Edge, Safari) */
+#sidebar::-webkit-scrollbar {
+    width: 5px;
+    /* Thin scrollbar */
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    /* Light thumb */
+    border-radius: 10px;
+    transition: background 0.3s ease-in-out;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+    /* Slightly visible on hover */
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: transparent;
+    /* Invisible track */
+}
+
+/* ==========================================
+   📌 DARK MODE SIDEBAR SCROLLBAR
+========================================== */
+.dark-mode #sidebar {
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+    /* Dark Mode Thumb */
+}
+
+.dark-mode #sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    /* Very faint */
+}
+
+.dark-mode #sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+    /* Slightly visible on hover */
 }

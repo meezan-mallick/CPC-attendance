@@ -13,6 +13,17 @@
     <!-- boostrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+    <head>
+        <script>
+            // Apply Dark Mode instantly before page load
+            (function() {
+                if (localStorage.getItem("darkMode") === "enabled") {
+                    document.documentElement.classList.add("dark-mode");
+                }
+            })();
+        </script>
+    </head>
+
 
     <!-- jquery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -23,9 +34,9 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/forms.css') ?>">
+    <!-- <link rel="stylesheet" href="<?= base_url('assets/css/forms.css') ?>">
     <link rel="stylesheet" href="<?= base_url('assets/css/tablestyle.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/studentscards.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/studentscards.css') ?>"> -->
 
 </head>
 
@@ -42,9 +53,11 @@
         <?= $this->renderSection('content') ?>
     <?php endif; ?>
 
-    <footer style="text-align: center; padding: 10px; font-size: 14px; color: #666; background: #f8f9fa; border-top: 1px solid #ddd;">
-        © <?= date('Y'); ?> CPC-ORBIT Attendance System | Version 1.0.0 | Developed by <a href="https://github.com/meezan-mallick" target="_blank" style="color: #007bff; text-decoration: none;">Meezan Mallick</a>
+    <footer>
+        © <?= date('Y'); ?> CPC-ORBIT Attendance System | Version 1.0.0 |
+        Developed by <a href="https://github.com/meezan-mallick" target="_blank">Meezan Mallick</a>
     </footer>
+
 </body>
 
 </html>
@@ -86,6 +99,33 @@
         $(".dataTables_paginate").addClass("pagination-lg justify-content-center ");
     });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const darkModeToggle = document.getElementById("darkModeToggle");
+        const body = document.documentElement; // Apply to the entire HTML document
+
+        // Apply Dark Mode instantly if enabled
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark-mode");
+            darkModeToggle.innerHTML = "☀️ Light Mode";
+        }
+
+        // Toggle Dark Mode on button click
+        darkModeToggle.addEventListener("click", function() {
+            body.classList.toggle("dark-mode");
+
+            if (body.classList.contains("dark-mode")) {
+                localStorage.setItem("darkMode", "enabled");
+                darkModeToggle.innerHTML = "☀️ Light Mode";
+            } else {
+                localStorage.setItem("darkMode", "disabled");
+                darkModeToggle.innerHTML = "🌙 Dark Mode";
+            }
+        });
+    });
+</script>
+
 
 
 </body>
