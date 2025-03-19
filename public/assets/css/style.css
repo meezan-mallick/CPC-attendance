@@ -6,9 +6,8 @@ body {
     background-color: #f8f9fa;
     color: #333;
 }
-
-/* ==========================================
-   📌 NAVBAR STYLING
+/* ========================================== 
+   📌 NAVBAR STYLING (TOP HEADER)
 ========================================== */
 .navbar {
     position: fixed;
@@ -17,16 +16,33 @@ body {
     height: 56px;
     z-index: 1040;
     padding: 0 1rem;
+
 }
 
+/* ✅ Navbar Brand */
 .navbar-brand {
-    font-size: 1.4vw;
+    font-size: 1.3rem;
     font-weight: bold;
+    color: white !important;
 }
 
-/* Mobile Navbar Fix */
+/* ✅ Navbar Items */
+.navbar-nav .nav-link {
+    color: white !important;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    transition: 0.3s;
+}
+
+/* ✅ Navbar Hover Effect */
+/* .navbar-nav .nav-link:hover {
+    color: #f8d210 !important;
+} */
+
+/* ✅ Mobile Navbar Background Fix */
 .navbar-collapse {
-    background-color: #343a40;
+    background-color: #061435;
+    /* Keep same as navbar */
     padding: 1rem;
     position: absolute;
     top: 56px;
@@ -35,6 +51,7 @@ body {
     z-index: 1035;
 }
 
+/* ✅ Fix Background Color on Large Screens */
 @media (min-width: 992px) {
     .navbar-collapse {
         position: static;
@@ -43,6 +60,42 @@ body {
     }
 }
 
+/* ✅ User Profile Dropdown */
+.navbar .nav-item.dropdown a {
+    /* color: white !important; */
+    background-color: transparent;
+}
+
+
+/* ✅ Dropdown Hover Effect */
+/* .navbar .dropdown-menu {
+    background-color: black !important;
+    color: black !important;
+} */
+.navbar .dropdown-menu a {
+
+    color: black !important;
+}
+.navbar .dropdown-menu .dropdown-item:hover {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+
+/* ✅ Navbar Mobile Responsiveness */
+@media (max-width: 991px) {
+    .navbar-nav {
+        width: 100%;
+    }
+
+    .nav-item {
+        padding: 0.25rem 0;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
 /* ==========================================
    📌 SIDEBAR STYLING (Including Logo Section)
 ========================================== */
@@ -186,9 +239,6 @@ input:focus {
     padding-left: 15px;
 }
 
-/* ==========================================
-   📌 STUDENT CARDS STYLING
-========================================== */
 /* ==========================================
    📌 STUDENT CARD STYLING (Light Mode)
 ========================================== */
@@ -396,15 +446,14 @@ input:focus {
 }
 
 /* ✅ Buttons in Dark Mode */
-.dark-mode .btn {
+/* .dark-mode .btn {
     background-color: #444;
     color: white;
     border-color: #666;
-}
+} */
 
-.dark-mode .btn:hover {
-    background-color: #666;
-}
+/* .dark-mode .btn:hover {PROFILE SECTION STYLING
+} */
 
 /* ✅ Alerts & Modals in Dark Mode */
 .dark-mode .alert {
@@ -507,4 +556,155 @@ footer {
 .dark-mode #sidebar::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
     /* Slightly visible on hover */
+}
+
+/* ==========================================
+   📌 LOGIN FORM STYLING
+========================================== */
+.login-container {
+    width: 40vw;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container h1 {
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+/* ✅ Login Form Table Adjustments */
+.login-container table tr:nth-child(odd) td {
+    padding-top: 30px;
+}
+
+.login-container table tr td label {
+    font-size: 17px;
+    letter-spacing: 1px;
+}
+
+/* ✅ Form Inputs */
+/* .form-inputs,
+.dropdown {
+    margin-top: 10px;
+    width: 15rem;
+    height: 3rem;
+    background-color: #FAFAFA;
+    border: 1px solid #E3E3E3;
+    border-radius: 4px;
+    padding: 0px 20px;
+} */
+
+::placeholder {
+    padding-left: 0px;
+    color: #C2C2C2;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+/* ✅ Prevent Number Input Spinner */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ✅ Login Button */
+.login-container td button {
+    font-size: 20px;
+    letter-spacing: 1px;
+    background-color: black;
+    color: white;
+    width: 100%;
+    padding: 10px 30px;
+}
+
+/* ✅ Center Text */
+.login-container td p {
+    text-align: center;
+}
+
+.login-container td p a {
+    font-size: inherit;
+    text-align: center;
+    width: 100%;
+    letter-spacing: 1px;
+}
+
+/* ✅ Remove Padding on Last Table Row */
+.login-container table tr:last-child td {
+    padding: 0px;
+}
+
+/* ✅ Link Styling */
+.login-container a {
+    text-decoration: none;
+    color: black;
+}
+
+/* ✅ Error Message */
+.red {
+    color: crimson;
+}
+
+/* ==========================================
+   📌 RESPONSIVE LOGIN FORM
+========================================== */
+@media (max-width: 768px) {
+    .login-container {
+        width: 90vw;
+    }
+
+    .form-inputs {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   📌 DARK MODE LOGIN FORM
+========================================== */
+.dark-mode .login-container {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.dark-mode .form-inputs,
+.dark-mode .dropdown {
+    background-color: #222 !important;
+    color: white !important;
+    border: 1px solid #555 !important;
+}
+
+.dark-mode ::placeholder {
+    color: #bbb !important;
+}
+
+/* ✅ Dark Mode Button */
+.dark-mode .login-container td button {
+    background-color: #007bff !important;
+    color: white !important;
+    border: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.dark-mode .login-container td button:hover {
+    background-color: #0056b3 !important;
+}
+
+/* ✅ Dark Mode Link */
+.dark-mode .login-container a {
+    color: #4da3ff !important;
+}
+
+.dark-mode .login-container a:hover {
+    text-decoration: underline;
+}
+
+/* ✅ Dark Mode Error Message */
+.dark-mode .red {
+    color: #ff6961 !important;
 }

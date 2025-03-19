@@ -21,8 +21,10 @@
             <div>
                 <h2>UPDATE USER</h2>
             </div>
-            <a class="btn btn-sm btn-warning ms-4" href="<?= site_url('users') ?>">
-                < Back to Users List</a>
+            <a class="btn btn-sm btn-warning ms-4" href="<?= $_SERVER['HTTP_REFERER'] ?? site_url('users') ?>">
+                &lt; Back
+            </a>
+
 
 
 

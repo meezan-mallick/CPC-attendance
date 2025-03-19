@@ -13,16 +13,15 @@
     <!-- boostrap icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <head>
-        <script>
-            // Apply Dark Mode instantly before page load
-            (function() {
-                if (localStorage.getItem("darkMode") === "enabled") {
-                    document.documentElement.classList.add("dark-mode");
-                }
-            })();
-        </script>
-    </head>
+    <script>
+        // Apply Dark Mode instantly before page load
+        (function() {
+            if (localStorage.getItem("darkMode") === "enabled") {
+                document.documentElement.classList.add("dark-mode");
+            }
+        })();
+    </script>
+
 
 
     <!-- jquery -->
@@ -34,9 +33,7 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
-    <!-- <link rel="stylesheet" href="<?= base_url('assets/css/forms.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/tablestyle.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/css/studentscards.css') ?>"> -->
+
 
 </head>
 
