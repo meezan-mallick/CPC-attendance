@@ -100,7 +100,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="card-title">Total Lecture Today</h5>
-                                <h3 class="mb-0"><?= esc(number_format($total_faculties)) ?></h3>
+                                <h3 class="mb-0"><?= esc(number_format($totalLecturesToday)) ?></h3>
                             </div>
                             <i class="fa-solid fa-clipboard-list display-4"></i>
                         </div>
@@ -113,7 +113,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="card-title">Total Guest Faculties</h5>
-                                <h3 class="mb-0"><?= esc(number_format($total_subjects)) ?></h3>
+                                <h3 class="mb-0"><?= esc(number_format($totalVisitingFaculty)) ?></h3>
                             </div>
                             <i class="fa-solid fa-user-tie fa-3x text-white"></i>
                         </div>
