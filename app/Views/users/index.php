@@ -32,6 +32,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Designation</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -43,9 +44,28 @@
                 <td><?= esc($user['email']) ?></td>
                 <td>
                   <?= esc($user['role']) ?>
-                  <?php if ($user['role'] === 'Faculty'): ?>
+                  <!-- <?php if ($user['role'] === 'Faculty'): ?>
                     <a href="<?= site_url('users/assign-coordinator/' . $user['id']) ?>" class="btn btn-sm btn-warning">Make Coordinator</a>
-                  <?php endif; ?>
+                  <?php endif; ?> -->
+                </td>
+                <td class="text-center">
+                  <?php
+                  // Define colors for different designations
+                  $designationColors = [
+                    'ASSISTANT PROFESSOR' => 'success',
+                    'TEACHING ASSISTANT' => 'primary',
+                    'TECHNICAL ASSISTANT' => 'warning',
+                    'VISITING FACULTY' => 'danger',
+
+                  ];
+
+                  // Get the appropriate badge class
+                  $badgeClass = isset($designationColors[$user['designation']]) ? $designationColors[$user['designation']] : 'secondary';
+                  ?>
+                  <span class="badge p-2 bg-<?= $badgeClass ?>">
+                    <?= esc($user['designation']) ?>
+                  </span>
+
                 </td>
                 <td class="text-center">
                   <a href="<?= site_url('users/edit/' . $user['id']) ?>" class="btn btn-sm btn-primary">
