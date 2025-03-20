@@ -32,6 +32,25 @@ class SubjectModel extends Model
         'external_marks'  => 'required|integer',
     ];
 
+    /**
+     * ✅ Check if the subject code is unique within the same program
+     * @param string $subject_code
+     * @param int $program_id
+     * @param int|null $exclude_id (For updating, exclude the current subject)
+     * @return bool
+     */
+    public function isUniqueSubjectCode($subject_code, $program_id, $exclude_id = null)
+    {
+        $query = $this->where('subject_code', $subject_code)
+            ->where('program_id', $program_id);
+
+        if ($exclude_id !== null) {
+            $query->where('id !=', $exclude_id);
+        }
+
+        return $query->countAllResults() == 0;
+    }
+
 
     public function getCoordinatorSubjects($userId)
     {
