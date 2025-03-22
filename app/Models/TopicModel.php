@@ -75,16 +75,27 @@ class TopicModel extends Model
 
 
 
-    public function getFacultyTotalLectures()
+    public function getFacultyTotalLectures($userRole,$userId)
     {
-        return $this->select('users.id,users.full_name,programs.id AS program_id, programs.program_name,subjects.semester_number,subjects.id AS subject_id,subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
+         $this->select('users.id,users.full_name,programs.id AS program_id, programs.program_name,subjects.semester_number,subjects.id AS subject_id,subjects.subject_name, topics.batch, COUNT(topics.id) as total_lectures')
             ->join('subjects', 'topics.subject_id = subjects.id', 'left')
             ->join('programs', 'subjects.program_id = programs.id', 'inner')
             ->join('allocatedsubjects', 'subjects.id = allocatedsubjects.subject_id', 'left')
             ->join('users', 'allocatedsubjects.faculty_id = users.id', 'left')
-            ->groupBy('users.full_name, subjects.subject_name, topics.batch')
-            ->get()
-            ->getResultArray();
+            ->groupBy('users.full_name, subjects.subject_name, topics.batch');
+
+            if($userRole=="Coordinator")
+            {
+                $this->join('coordinator_programs', 'coordinator_programs.program_id = programs.id', 'left')
+                ->where('coordinator_programs.user_id', $userId)
+                ->orwhere('allocatedsubjects.faculty_id', $userId);
+            }
+            else if($userRole=="Faculty")
+            {
+                $this->where('allocatedsubjects.faculty_id', $userId);
+            }
+            return $this->get()->getResultArray();
+
     }
 
     public function getFacultyTotalLecturesSEDATE($start_date, $end_date)

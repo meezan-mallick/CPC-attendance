@@ -20,8 +20,9 @@ class ExportVoucherController extends BaseController
 {
     public function get_lectures()
     {
-        $id = session()->get('user_id');
-
+        $userId = session()->get('user_id');
+        $userRole = session()->get('role');
+    
         $start_date = $this->request->getGet('start_date');
         $end_date = $this->request->getGet('end_date');
 
@@ -30,13 +31,13 @@ class ExportVoucherController extends BaseController
         $topicmodel = new TopicModel();
 
         if ($start_date != "" && $end_date != "") {
-            $data['lectures'] = $topicmodel->getFacultyTotalLecturesSEDATE($start_date, $end_date);
+            $data['lectures'] = $topicmodel->getFacultyTotalLecturesSEDATE($start_date, $end_date,$userRole,$userId);
         } else if ($start_date != "" && $end_date == "") {
-            $data['lectures'] = $topicmodel->getFacultyTotalLecturesStartDATE($start_date);
+            $data['lectures'] = $topicmodel->getFacultyTotalLecturesStartDATE($start_date,$userRole,$userId);
         } else if ($start_date == "" && $end_date != "") {
-            $data['lectures'] = $topicmodel->getFacultyTotalLecturesEndDATE($end_date);
+            $data['lectures'] = $topicmodel->getFacultyTotalLecturesEndDATE($end_date,$userRole,$userId);
         } else {
-            $data['lectures'] = $topicmodel->getFacultyTotalLectures();
+            $data['lectures'] = $topicmodel->getFacultyTotalLectures($userRole,$userId);
         }
         return view('Export/fpaymentvoucher', $data);
     }
