@@ -198,6 +198,25 @@ class AttendanceController extends BaseController
         $topicmodel = new TopicModel();
         $data['topics'] = $topicmodel->findAll();
 
+        $ct=$this->request->getVar('custom_time');
+     
+        $time="";
+        if($ct=="true")
+        {
+            $start_time=$this->request->getVar('start_time');
+            $end_time=$this->request->getVar('end_time');
+            
+            $start_time=strlen($start_time)==5?$start_time.":00":$start_time;
+            $end_time=strlen($end_time)==5?$end_time.":00":$end_time;
+             $time=$start_time." - ".$end_time;
+
+            
+            
+        }
+        else{
+            $time=$this->request->getVar('time');
+           
+        }
 
 
         $batch = $this->request->getVar('batch');
@@ -213,7 +232,7 @@ class AttendanceController extends BaseController
         $tdata = [
             'topic' => $this->request->getVar('topic'),
             'date' => $this->request->getVar('date'),
-            'time' => $this->request->getVar('time'),
+            'time' => $time,
             'batch' => $batch,
         ];
 
@@ -245,7 +264,22 @@ class AttendanceController extends BaseController
         $topicmodel = new TopicModel();
         $data['topics'] = $topicmodel->findAll();
 
+       $ct=$this->request->getVar('custom_time');
+     
+        $time="";
+        if($ct=="true")
+        {
+            $start_time=$this->request->getVar('start_time');
+            $end_time=$this->request->getVar('end_time');
 
+            $start_time=strlen($start_time)==5?$start_time.":00":$start_time;
+            $end_time=strlen($end_time)==5?$end_time.":00":$end_time;
+           $time=$start_time." - ".$end_time;
+        }
+        else{
+            $time=$this->request->getVar('time');
+           
+        }
 
         $batch = $this->request->getVar('batch');
 
@@ -255,7 +289,7 @@ class AttendanceController extends BaseController
                 $tdata = [
                     'topic' => $this->request->getVar('topic'),
                     'date' => $this->request->getVar('date'),
-                    'time' => $this->request->getVar('time'),
+                    'time' => $time,
                     'subject_id' => $subject_id,
                     'batch' => $key['batch'],
                 ];
@@ -264,7 +298,7 @@ class AttendanceController extends BaseController
             $tdata = [
                 'topic' => $this->request->getVar('topic'),
                 'date' => $this->request->getVar('date'),
-                'time' => $this->request->getVar('time'),
+                'time' =>$time,
                 'subject_id' => $subject_id,
                 'batch' => $batch,
             ];
