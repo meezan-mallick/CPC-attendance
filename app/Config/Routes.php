@@ -34,6 +34,9 @@ $routes->get('users/edit/(:num)', 'UserController::edit/$1', ['filter' => 'auth'
 $routes->post('users/update/(:num)', 'UserController::update/$1', ['filter' => 'auth']);
 $routes->get('users/delete/(:num)', 'UserController::delete/$1', ['filter' => 'auth']);
 $routes->get('users/export', 'UserController::exportUsers');
+$routes->get('users/import', 'UserController::import');
+$routes->post('users/import-store', 'UserController::importUsers');
+$routes->get('users/download-sample', 'UserController::downloadSampleExcel', ['filter' => 'auth']); // Download Sample Excel (No Parameters)
 
 
 //Routes for Assign Coordinatorship (Superadmin Only)

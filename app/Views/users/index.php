@@ -14,9 +14,21 @@
       <div class="col-12">
         <div class="header d-flex justify-content-between align-items-center">
           <h2> Manage Users</h2>
-          <a href="users/add" class="add-p">
-            <button class="btn btn-primary">Add new</button>
-          </a>
+        
+        
+          <div>
+              <a href="users/add" class="add-p">
+                <button class="btn btn-primary">Add new</button>
+              </a>
+              <a href="<?= site_url('users/import') ?>"
+                                class="btn btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Import Users
+                </a>
+                <a href="<?= site_url('users/export') ?>"
+                                class="btn btn-success">
+                                <i class="bi bi-file-earmark-excel"></i> Export Users
+                </a>
+          </div>
         </div>
       </div>
     </div>

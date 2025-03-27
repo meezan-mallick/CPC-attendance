@@ -290,4 +290,148 @@ class UserController extends Controller
         $writer->save('php://output');
         exit;
     }
+
+    public function import() {
+        return view('users/import');   
+    }
+
+
+     // Download Sample Excel Template
+    public function downloadSampleExcel()
+    {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            	     // Header row
+            $sheet->fromArray([
+            [
+                'Full Name',
+                'Email',
+                'Mobile Number',
+                'Password',
+                'Designation',
+                'Role',
+                'Date Of Birth',
+                'Gender',
+                'Father Name',
+                'Mother Name',
+                'Qualification',
+                'Industry Experience',
+                'Academic Experience',
+                'Date Of Joining',
+                'Achievements',
+                'skillset',
+                'Address',
+                'state',
+                'city',
+                'country',
+                'Status',
+              
+            ]
+            ], NULL, 'A1');
+
+            $writer = new Xlsx($spreadsheet);
+            $highestColumn = $sheet->getHighestColumn(); 
+
+           
+            $sheet->setCellValue('E2', 'Select Designation From this ASSISTANT PROFESSOR, TEACHING ASSISTANT, TECHNICAL ASSISTANT, VISITING FACULTY'); // Add data in E2
+            $sheet->setCellValue('F2', 'Select Role From this Superadmin, Coordinator, Faculty'); // Add data in E2
+            $sheet->setCellValue('U2', 'Select Status From this Active, Inactive'); // Add data in E2
+
+            // Convert column letter to number
+            $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+
+            // Loop through all columns and set auto size
+            for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                $sheet->getColumnDimension(\PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col))->setAutoSize(true);
+            }
+            $filename = 'users_sample.xlsx';
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            $writer->save('php://output');
+            exit;
+    }
+
+    public function importUsers(){
+        $file = $this->request->getFile('user_file');
+
+        if (!$file || !$file->isValid()) {
+          return redirect()->back()->with('error', '❌ Invalid file uploaded. Please try again.');
+        }
+    
+        // Check file type
+        $fileType = $file->getClientMimeType();
+        if ($fileType !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+          return redirect()->back()->with('error', '❌ Please upload a valid Excel (.xlsx) file.');
+        }
+    
+        try {
+          $filePath = $file->getTempName();
+          $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+          $spreadsheet = $reader->load($filePath);
+          $sheetData = $spreadsheet->getActiveSheet()->toArray();
+    
+          if (empty($sheetData) || count($sheetData) < 2) {
+            return redirect()->back()->with('error', '❌ The uploaded file is empty or missing data.');
+          }
+    
+          $userModel = new UserModel();
+          $errors = [];
+    
+         
+          foreach ($sheetData as $index => $row) {
+            if ($index == 0) continue; // Skip header row
+    
+            // Ensure row has at least 23 columns
+            if (count($row) < 2) {
+              return redirect()->back()->with('error', "❌ Error in row $index: Incorrect number of columns.");
+            }
+    
+            $row = array_pad($row, 23, null);
+    
+            $data[] = [
+                'full_name'=> trim($row[0]),
+                'email'=> trim($row[1]),
+                'mobile_number'=> trim($row[2]),
+                'password'=> password_hash(trim($row[3]), PASSWORD_DEFAULT),
+                'designation'=> trim($row[4]),
+                'role'=> trim($row[5]),
+                'dob'=>trim($row[6])?: null,
+                'gender'=>trim($row[7])?: null,
+                'father_name'=>trim($row[8])?: null,
+                'mother_name'=>trim($row[9])?: null,
+                'qualification'=>trim($row[10])?: null,
+                'industry_experience'=>trim($row[11])?: null,
+                'working_experience'=>trim($row[12])?: null,
+                'date_of_joining'=>trim($row[13])?: null,
+                'achievements'=>trim($row[14])?: null,
+                'skillset'=>trim($row[15])?: null,
+                'address'=>trim($row[16])?: null,
+                'state'=>trim($row[17])?: null,
+                'city'=>trim($row[18])?: null,
+                'country'=>trim($row[19])?: null,
+                'status'=>trim($row[20])?: null,
+                'created_at'    => date('Y-m-d H:i:s'),
+                'updated_at'    => date('Y-m-d H:i:s'), 
+            ];
+          }
+    
+          if (empty($data)) {
+            return redirect()->back()->with('error', '❌ No valid user data found in the file.');
+          }
+    
+          if (!$userModel->insertBatch($data)) {
+            $errors = $userModel->errors();
+          }
+    
+          if (!empty($errors)) {
+            return redirect()->back()->with('error_import', implode(', ', $errors));
+          }
+    
+          return redirect()->to('/users')
+            ->with('success', '✅ Users imported successfully!');
+        } catch (\Exception $e) {
+          return redirect()->back()->with('error', '❌ Error processing file: ' . $e->getMessage());
+        }
+    }       
 }
