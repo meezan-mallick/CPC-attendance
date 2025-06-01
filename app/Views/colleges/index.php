@@ -33,8 +33,8 @@
                         <?php
                         foreach ($colleges as $college) {
                             echo "<tr >";
-                            echo "<td>" . $college['id'] . "</td>";
-                            echo "<td>" . $college['college_code'] . "</td>";
+                            echo "<td>" .  esc($college['id']) . "</td>";
+                            echo "<td>" .  esc($college['college_code']) . "</td>";
                             echo "<td style='text-align:left'>" . $college['college_name'] . "</td>";
 
 

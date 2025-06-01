@@ -24,8 +24,8 @@ class CollegeController extends Controller
         $collegeModel = new CollegeModel();
 
         $data = [
-            'college_code' => $this->request->getPost('college_code'),
-            'college_name' => $this->request->getPost('college_name'),
+            'college_code' =>  strip_tags($this->request->getPost('college_code')),
+            'college_name' =>  strip_tags($this->request->getPost('college_name')),
         ];
 
         if (!$collegeModel->insert($data)) {
