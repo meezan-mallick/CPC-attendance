@@ -147,12 +147,12 @@ class StudentController extends Controller
     $studentModel = new StudentModel();
 
     $data = [
-      'full_name' => $this->request->getPost('full_name'),
-      'email' => $this->request->getPost('email'),
-      'mobile_number' => $this->request->getPost('mobile_number'),
-      'program_id' => $this->request->getPost('program_id'),
-      'semester' => $this->request->getPost('semester'),
-      'batch' => (int)$this->request->getGet('batch')==""?0: $this->request->getGet('batch'), // Default batch to 0 if blank
+      'full_name' => strip_tags($this->request->getPost('full_name')),
+      'email' => strip_tags($this->request->getPost('email')),
+      'mobile_number' => strip_tags($this->request->getPost('mobile_number')),
+      'program_id' => strip_tags($this->request->getPost('program_id')),
+      'semester' => strip_tags($this->request->getPost('semester')),
+      'batch' => (int)strip_tags($this->request->getGet('batch'))==""?0: strip_tags($this->request->getGet('batch')), // Default batch to 0 if blank
     ];
 
     if (!$studentModel->insert($data)) {

@@ -99,8 +99,8 @@ class SubjectController extends Controller
     {
         $subjectModel = new SubjectModel();
 
-        $program_id = $this->request->getPost('program_id');
-        $subject_code = $this->request->getPost('subject_code');
+        $program_id = strip_tags($this->request->getPost('program_id'));
+        $subject_code = strip_tags($this->request->getPost('subject_code'));
 
         // ✅ Check if Subject Code Already Exists in the Same Program
         if (!$subjectModel->isUniqueSubjectCode($subject_code, $program_id)) {
@@ -109,13 +109,13 @@ class SubjectController extends Controller
 
         $data = [
             'program_id'      => $program_id,
-            'semester_number' => $this->request->getPost('semester_number'),
+            'semester_number' => strip_tags($this->request->getPost('semester_number')),
             'subject_code'    => $subject_code,
-            'subject_name'    => $this->request->getPost('subject_name'),
-            'credit'          => $this->request->getPost('credit'),
-            'type'            => $this->request->getPost('type'),
-            'internal_marks'  => $this->request->getPost('internal_marks'),
-            'external_marks'  => $this->request->getPost('external_marks'),
+            'subject_name'    => strip_tags($this->request->getPost('subject_name')),
+            'credit'          => strip_tags($this->request->getPost('credit')),
+            'type'            => strip_tags($this->request->getPost('type')),
+            'internal_marks'  => strip_tags($this->request->getPost('internal_marks')),
+            'external_marks'  => strip_tags($this->request->getPost('external_marks')),
         ];
 
         try {
@@ -150,8 +150,8 @@ class SubjectController extends Controller
     {
         $subjectModel = new SubjectModel();
 
-        $program_id = $this->request->getPost('program_id');
-        $subject_code = $this->request->getPost('subject_code');
+        $program_id = strip_tags($this->request->getPost('program_id'));
+        $subject_code = strip_tags($this->request->getPost('subject_code'));
 
         // ✅ Ensure Subject Code is Unique in the Same Program (Excluding Current Record)
         if (!$subjectModel->isUniqueSubjectCode($subject_code, $program_id, $id)) {
@@ -160,13 +160,13 @@ class SubjectController extends Controller
 
         $data = [
             'program_id'      => $program_id,
-            'semester_number' => $this->request->getPost('semester_number'),
+            'semester_number' => strip_tags($this->request->getPost('semester_number')),
             'subject_code'    => $subject_code,
-            'subject_name'    => $this->request->getPost('subject_name'),
-            'credit'          => $this->request->getPost('credit'),
-            'type'            => $this->request->getPost('type'),
-            'internal_marks'  => $this->request->getPost('internal_marks'),
-            'external_marks'  => $this->request->getPost('external_marks'),
+            'subject_name'    => strip_tags($this->request->getPost('subject_name')),
+            'credit'          => strip_tags($this->request->getPost('credit')),
+            'type'            => strip_tags($this->request->getPost('type')),
+            'internal_marks'  => strip_tags($this->request->getPost('internal_marks')),
+            'external_marks'  => strip_tags($this->request->getPost('external_marks')),
         ];
 
         try {
@@ -229,9 +229,9 @@ class SubjectController extends Controller
     public function filterAllocatedSubjects()
     {
         $subjectallocationModel = new SubjectallocationModel();
-        $program = $this->request->getPost('program');
-        $semester = $this->request->getPost('semester');
-        $faculty = $this->request->getPost('faculty');
+        $program = strip_tags($this->request->getPost('program'));
+        $semester = strip_tags($this->request->getPost('semester'));
+        $faculty = strip_tags($this->request->getPost('faculty'));
 
         $userRole = session()->get('role');
         $userId = session()->get('user_id');

@@ -24,8 +24,8 @@ class AuthController extends Controller
             $userModel = new UserModel();
             $coordinatorProgramModel = new CoordinatorProgramModel(); // Load Model for assigned programs
 
-            $email = $this->request->getPost('email');
-            $password = $this->request->getPost('password');
+            $email = strip_tags($this->request->getPost('email'));
+            $password = strip_tags($this->request->getPost('password'));
 
             // ✅ Check if the database connection is working
             $db = \Config\Database::connect();

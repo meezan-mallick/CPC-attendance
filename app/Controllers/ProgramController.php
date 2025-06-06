@@ -29,11 +29,11 @@ class ProgramController extends Controller
 
 
         $data = [
-            'college_code'      => $this->request->getPost('college_code'),
-            'program_name'      => $this->request->getPost('program_name'),
-            'program_duration'  => $this->request->getPost('program_duration'),
-            'program_type'      => $this->request->getPost('program_type'),
-            'total_semesters'   => $this->request->getPost('total_semesters'),
+            'college_code'      => strip_tags($this->request->getPost('college_code')),
+            'program_name'      => strip_tags($this->request->getPost('program_name')),
+            'program_duration'  => strip_tags($this->request->getPost('program_duration')),
+            'program_type'      => strip_tags($this->request->getPost('program_type')),
+            'total_semesters'   => strip_tags($this->request->getPost('total_semesters')),
         ];
 
         if (!$programModel->insert($data)) {
@@ -64,10 +64,10 @@ class ProgramController extends Controller
         $programModel = new ProgramModel();
 
         $data = [
-            'college_code'      => $this->request->getPost('college_code'),
-            'program_name'      => $this->request->getPost('program_name'),
-            'program_duration'  => $this->request->getPost('program_duration'),
-            'program_type'      => $this->request->getPost('program_type'),
+            'college_code'      => strip_tags($this->request->getPost('college_code')),
+            'program_name'      => strip_tags($this->request->getPost('program_name')),
+            'program_duration'  => strip_tags($this->request->getPost('program_duration')),
+            'program_type'      => strip_tags($this->request->getPost('program_type')),
         ];
 
         if (!$programModel->update($id, $data)) {

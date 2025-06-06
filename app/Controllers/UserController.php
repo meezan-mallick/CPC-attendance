@@ -45,26 +45,26 @@ class UserController extends Controller
         $userModel = new UserModel();
 
         $data = [
-            'full_name'     => $this->request->getPost('full_name'),
-            'email'         => $this->request->getPost('email'),
-            'mobile_number' => $this->request->getPost('mobile_number'),
-            'password'      => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'designation'   => $this->request->getPost('designation'),
-            'role'          => $this->request->getPost('role'),
-            'status'        => $this->request->getPost('status'),
-            'dob'           => $this->request->getPost('dob') ?: null,
-            'gender'        => $this->request->getPost('gender') ?: null,
-            'father_name'   => $this->request->getPost('father_name') ?: null,
-            'mother_name'   => $this->request->getPost('mother_name') ?: null,
-            'qualification' => $this->request->getPost('qualification') ?: null,
-            'industry_experience' => $this->request->getPost('industry_experience') ?: null,
-            'working_experience'  => $this->request->getPost('working_experience') ?: null,
-            'achievements'  => $this->request->getPost('achievements') ?: null,
-            'skillset'      => $this->request->getPost('skillset') ?: null,
-            'address_line_1' => $this->request->getPost('address_line_1') ?: null,
-            'state'         => $this->request->getPost('state') ?: null,
-            'city'          => $this->request->getPost('city') ?: null,
-            'country'       => $this->request->getPost('country') ?: null,
+            'full_name'     => strip_tags($this->request->getPost('full_name')),
+            'email'         => strip_tags($this->request->getPost('email')),
+            'mobile_number' => strip_tags($this->request->getPost('mobile_number')),
+            'password'      => password_hash(strip_tags($this->request->getPost('password')), PASSWORD_DEFAULT),
+            'designation'   => strip_tags($this->request->getPost('designation')),
+            'role'          => strip_tags($this->request->getPost('role')),
+            'status'        => strip_tags($this->request->getPost('status')),
+            'dob'           => strip_tags($this->request->getPost('dob') ?: null),
+            'gender'        => strip_tags($this->request->getPost('gender') ?: null),
+            'father_name'   => strip_tags($this->request->getPost('father_name') ?: null),
+            'mother_name'   => strip_tags($this->request->getPost('mother_name') ?: null),
+            'qualification' => strip_tags($this->request->getPost('qualification') ?: null),
+            'industry_experience' => strip_tags($this->request->getPost('industry_experience') ?: null),
+            'working_experience'  => strip_tags($this->request->getPost('working_experience') ?: null),
+            'achievements'  => strip_tags($this->request->getPost('achievements') ?: null),
+            'skillset'      => strip_tags($this->request->getPost('skillset') ?: null),
+            'address_line_1' => strip_tags($this->request->getPost('address_line_1') ?: null),
+            'state'         => strip_tags($this->request->getPost('state') ?: null),
+            'city'          => strip_tags($this->request->getPost('city') ?: null),
+            'country'       => strip_tags($this->request->getPost('country') ?: null),
             'created_at'    => date('Y-m-d H:i:s'),
             'updated_at'    => date('Y-m-d H:i:s'),
         ];
@@ -140,11 +140,11 @@ class UserController extends Controller
 
         $data = [];
         foreach ($fields as $field) {
-            $data[$field] = trim($this->request->getPost($field)) !== '' ? $this->request->getPost($field) : null;
+            $data[$field] = trim(strip_tags($this->request->getPost($field))) !== '' ? strip_tags($this->request->getPost($field)) : null;
         }
 
         // Handle Password Update (Only if provided)
-        $password = $this->request->getPost('password');
+        $password = strip_tags($this->request->getPost('password'));
         if (!empty($password)) {
             $data['password'] = password_hash($password, PASSWORD_DEFAULT);
         }
@@ -401,7 +401,7 @@ class UserController extends Controller
                 'father_name'=>trim($row[8])?: null,
                 'mother_name'=>trim($row[9])?: null,
                 'qualification'=>trim($row[10])?: null,
-                'industry_experience'=>trim($row[11])?: null,
+                'industry_experience'=>trim($row[11])?: null,`
                 'working_experience'=>trim($row[12])?: null,
                 'date_of_joining'=>trim($row[13])?: null,
                 'achievements'=>trim($row[14])?: null,
