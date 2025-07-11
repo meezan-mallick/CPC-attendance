@@ -103,8 +103,7 @@ class ExportAttendanceController extends BaseController
     {
         $allSubjects = explode(',', $this->request->getPost('all_subjects')); // Convert string to array
 
-       
-        
+
 
         $p_id = $this->request->getVar('program_id');
         $semester_number = $this->request->getVar('semester_number');
@@ -334,7 +333,7 @@ class ExportAttendanceController extends BaseController
 
         // Set Headers for Download
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="users.xlsx"');
+        header('Content-Disposition: attachment;filename="'.$ss.'_attendance_export_report_SEM_'.$semester_number.'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');

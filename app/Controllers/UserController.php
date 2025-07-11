@@ -401,7 +401,7 @@ class UserController extends Controller
                 'father_name'=>trim($row[8])?: null,
                 'mother_name'=>trim($row[9])?: null,
                 'qualification'=>trim($row[10])?: null,
-                'industry_experience'=>trim($row[11])?: null,`
+                'industry_experience'=>trim($row[11])?: null,
                 'working_experience'=>trim($row[12])?: null,
                 'date_of_joining'=>trim($row[13])?: null,
                 'achievements'=>trim($row[14])?: null,
