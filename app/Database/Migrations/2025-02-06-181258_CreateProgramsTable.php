@@ -26,19 +26,21 @@ class CreateProgramsTable extends Migration
                 'null'       => false,
             ],
             'program_duration' => [
-                'type'       => 'ENUM',
-                'constraint' => ['2 Years', '5 Years'],
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
                 'null'       => false,
             ],
             'program_type' => [
-                'type'       => 'BOOLEAN',
+                'type'       => 'ENUM',
+                'constraint' => ['integrated', 'masters', 'bachelor', 'honours'],
                 'null'       => false,
-                'comment'    => 'True = Integrated, False = Masters',
+                'comment'    => 'Type of program: integrated (5 yrs), masters (2 yrs), bachelor (3 yrs), honours (4 yrs)',
             ],
-            'total_semesters' => [ // 🔹 New column for storing semester count
+            'total_semesters' => [ 
                 'type'       => 'INT',
                 'constraint' => 2,
                 'null'       => false,
+                'comment'    => 'Typically: 4/6/8/10 semesters based on program',
             ],
             'created_at' => [
                 'type'    => 'DATETIME',

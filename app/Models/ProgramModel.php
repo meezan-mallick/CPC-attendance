@@ -8,22 +8,28 @@ class ProgramModel extends Model
 {
     protected $table      = 'programs';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['college_code', 'program_name', 'program_duration', 'program_type', 'total_semesters'];
+    protected $allowedFields = [
+        'college_code',
+        'program_name',
+        'program_duration',
+        'program_type',
+        'total_semesters',
+    ];
 
     protected $useTimestamps = true;
 
     protected $validationRules = [
         'college_code'      => 'required|checkCollegeCode',
         'program_name'      => 'required|max_length[255]',
-        'program_duration'  => 'required|in_list[2 Years,5 Years]',
-        'program_type'      => 'required|in_list[0,1]', // 0 = Masters, 1 = Integrated
-        'total_semesters'   => 'required|in_list[4,10]', // Ensuring only valid semester counts
+        'program_duration'  => 'required|in_list[2 Years,3 Years,4 Years,5 Years]',
+        'program_type'      => 'required|in_list[integrated,masters,bachelor,honours]',
+        'total_semesters'   => 'required|in_list[4,6,8,10]',
     ];
 
     protected $validationMessages = [
         'college_code' => [
             'checkCollegeCode' => 'The selected college code does not exist.',
-        ]
+        ],
     ];
 
     public function getAssignedProgramsandSubs($id)
@@ -55,7 +61,6 @@ class ProgramModel extends Model
     {
         $db = \Config\Database::connect();
 
-       
         // Get program IDs from allocatedsubjects
         $subQueryAllocated = $db->table('allocatedsubjects')
             ->select('program_id')
@@ -69,5 +74,4 @@ class ProgramModel extends Model
             ->get()
             ->getResultArray();
     }
-
 }

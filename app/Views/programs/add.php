@@ -50,14 +50,19 @@
               <label>Program Duration:</label>
               <select class="form-inputs" name="program_duration" required>
                 <option value="2 Years">2 Years</option>
+                <option value="3 Years">3 Years</option>
+                <option value="4 Years">4 Years</option>
                 <option value="5 Years">5 Years</option>
               </select>
             </div>
             <div class="col-12 col-md-4">
               <label>Program Type:</label>
-              <select class="form-inputs" name="program_type" required onchange="setSemesters()" required>
-                <option value="1">Integrated</option>
-                <option value="0">Masters</option>
+              <select class="form-inputs" name="program_type" required onchange="setSemesters()">
+                <option value="">Select Program Type</option>
+                <option value="integrated">Integrated</option>
+                <option value="masters">Masters</option>
+                <option value="bachelor">Bachelor</option>
+                <option value="honours">Honours</option>
               </select>
             </div>
 
@@ -88,14 +93,28 @@
 <script>
   function setSemesters() {
     let type = document.querySelector("select[name='program_type']").value;
-    let semesterCount = type == "1" ? 10 : 4;
+    let semesterMap = {
+      'integrated': { semesters: 10, duration: '5 Years' },
+      'masters': { semesters: 4, duration: '2 Years' },
+      'bachelor': { semesters: 6, duration: '3 Years' },
+      'honours': { semesters: 8, duration: '4 Years' }
+    };
 
-    // Display in read-only field
-    document.getElementById("total_semesters_display").value = semesterCount;
+    if (semesterMap[type]) {
+      document.getElementById("total_semesters_display").value = semesterMap[type].semesters;
+      document.getElementById("total_semesters").value = semesterMap[type].semesters;
 
-    // Store in hidden input for form submission
-    document.getElementById("total_semesters").value = semesterCount;
+      // Optional: auto-update duration if editable
+      let durationField = document.querySelector("select[name='program_duration'], input[name='program_duration']");
+      if (durationField) {
+        durationField.value = semesterMap[type].duration;
+      }
+    } else {
+      document.getElementById("total_semesters_display").value = "";
+      document.getElementById("total_semesters").value = "";
+    }
   }
 </script>
+
 
 <?= $this->endSection() ?>

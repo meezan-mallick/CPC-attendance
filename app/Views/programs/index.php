@@ -38,11 +38,13 @@
               <tr>
                 <td><?= esc($program['id']) ?></td>
                 <td class="text-center"><?= esc($program['college_code']) ?></td>
-                <td class=" text-left"><?= esc($program['program_name']) ?></td>
-                <td class="text-center"><?= "-" ?></td>
+                <td class="text-left"><?= esc($program['program_name']) ?></td>
+                <td class="text-center"><?= "-" // You can replace this with actual coordinator name if available ?></td>
                 <td class="text-center"><?= esc($program['program_duration']) ?></td>
                 <td class="text-center"><?= esc($program['total_semesters']) ?></td>
-                <td class="text-center"><?= $program['program_type'] ? 'Integrated' : 'Masters' ?></td>
+                <td class="text-center">
+                  <?= ucfirst(esc($program['program_type'])) ?>
+                </td>
                 <td class="text-center">
                   <a class="btn btn-sm btn-warning" href="<?= site_url('programs/edit/' . $program['id']) ?>"><i class="bi bi-pencil-square"></i></a> |
                   <a class="btn btn-sm btn-danger" href="<?= site_url('programs/delete/' . $program['id']) ?>" onclick="return confirm('Are you sure?')"><i class="bi bi-trash-fill"></i></a>
