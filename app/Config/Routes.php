@@ -53,32 +53,32 @@ $routes->post('subjectsallocation/assignstore', 'SubjectController::storeAssignm
 
 
 # Routes for Programs
-$routes->get('programs', 'ProgramController::index');
+$routes->get('programs', 'ProgramController::index', ['filter' => 'auth']);
 $routes->get('programs/add', 'ProgramController::add');
-$routes->post('programs/store', 'ProgramController::store');
-$routes->get('programs/edit/(:num)', 'ProgramController::edit/$1');
-$routes->post('programs/update/(:num)', 'ProgramController::update/$1');
-$routes->get('programs/delete/(:num)', 'ProgramController::delete/$1');
+$routes->post('programs/store', 'ProgramController::store', ['filter' => 'auth']);
+$routes->get('programs/edit/(:num)', 'ProgramController::edit/$1', ['filter' => 'auth']);
+$routes->post('programs/update/(:num)', 'ProgramController::update/$1', ['filter' => 'auth']);
+$routes->get('programs/delete/(:num)', 'ProgramController::delete/$1', ['filter' => 'auth']);
 
 
 //Routes for Subjects
-$routes->get('subjects', 'SubjectController::index');
-$routes->get('subjects/add', 'SubjectController::add');
-$routes->post('subjects/store', 'SubjectController::store');
-$routes->get('subjects/edit/(:num)', 'SubjectController::edit/$1');
-$routes->post('subjects/update/(:num)', 'SubjectController::update/$1');
-$routes->get('subjects/delete/(:num)', 'SubjectController::delete/$1');
-$routes->post('subjectsallocation/filter', 'SubjectController::filterAllocatedSubjects');
+$routes->get('subjects', 'SubjectController::index', ['filter' => 'auth']);
+$routes->get('subjects/add', 'SubjectController::add', ['filter' => 'auth']);
+$routes->post('subjects/store', 'SubjectController::store', ['filter' => 'auth']);
+$routes->get('subjects/edit/(:num)', 'SubjectController::edit/$1', ['filter' => 'auth']);
+$routes->post('subjects/update/(:num)', 'SubjectController::update/$1', ['filter' => 'auth']);
+$routes->get('subjects/delete/(:num)', 'SubjectController::delete/$1', ['filter' => 'auth']);
+$routes->post('subjectsallocation/filter', 'SubjectController::filterAllocatedSubjects', ['filter' => 'auth']);
 
 
 
 //Routes for Colleges
-$routes->get('colleges', 'CollegeController::index');
-$routes->get('colleges/add', 'CollegeController::add');
-$routes->post('colleges/store', 'CollegeController::store');
-$routes->get('colleges/edit/(:num)', 'CollegeController::edit/$1');
-$routes->post('colleges/update/(:num)', 'CollegeController::update/$1');
-$routes->get('colleges/delete/(:num)', 'CollegeController::delete/$1');
+$routes->get('colleges', 'CollegeController::index', ['filter' => 'auth']);
+$routes->get('colleges/add', 'CollegeController::add', ['filter' => 'auth']);
+$routes->post('colleges/store', 'CollegeController::store', ['filter' => 'auth']);
+$routes->get('colleges/edit/(:num)', 'CollegeController::edit/$1', ['filter' => 'auth']);
+$routes->post('colleges/update/(:num)', 'CollegeController::update/$1', ['filter' => 'auth']);
+$routes->get('colleges/delete/(:num)', 'CollegeController::delete/$1', ['filter' => 'auth']);
 
 
 // Routes for coordinators
