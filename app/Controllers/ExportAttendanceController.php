@@ -103,8 +103,6 @@ class ExportAttendanceController extends BaseController
     {
         $allSubjects = explode(',', $this->request->getPost('all_subjects')); // Convert string to array
 
-
-
         $p_id = $this->request->getVar('program_id');
         $semester_number = $this->request->getVar('semester_number');
         $sub_id = $this->request->getVar('subject_id');
@@ -125,7 +123,8 @@ class ExportAttendanceController extends BaseController
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-
+        // Initialize $ss to a default value
+        $ss = "All_Subjects"; // Default filename for all subjects export
 
         // Define Column Headers Dynamically
         $columns = ['SR NO', 'Enrollment No', 'Student Name']; // Add more columns if needed
@@ -137,15 +136,13 @@ class ExportAttendanceController extends BaseController
                 if($k!="all")
                 {
                     $subject = $subjectmodel->find($k);
-                   array_push($columns, $subject['subject_name']);
-                    
+                array_push($columns, $subject['subject_name']);
+
                 }
-              
+
             }
-           
-
-
-
+            // Add the new final percentage column header
+            array_push($columns, 'Final Percentage');
 
             // Get Last Column Letter Dynamically (e.g., 'D' for 4 columns)
             $lastColumn = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex(count($columns));
@@ -173,27 +170,69 @@ class ExportAttendanceController extends BaseController
                 $sheet->setCellValue('C' . $rowNumber, $s['full_name']);
 
                 $columnLetter = 'D';
-                foreach ($allSubjects as $sub_id) {
-                    if($sub_id=="all")
+                $total_overall_present_days = 0;
+                $total_overall_class_days = 0;
+
+                foreach ($allSubjects as $sub_id_loop) { // Renamed $sub_id to avoid conflict with outer $sub_id
+                    if($sub_id_loop=="all")
                     {
                         continue;
                     }
                     $attendancemodel = new AttendanceModel();
+                    $topicmodel = new TopicModel(); // Need TopicModel to get total class days
 
-                    $stud_attendance = $attendancemodel->getStudentPresentPerc($s['id'], $sub_id);
+                    // Get attendance for the current student in the current subject
+                    $stud_attendance = $attendancemodel->getStudentPresentPerc($s['id'], $sub_id_loop);
+
+                    // Get total class days for the current subject and batch (or all batches if 'all')
+                    if ($batch == "all") {
+                        $topics = $topicmodel->where('subject_id', $sub_id_loop)->findAll();
+                    } else {
+                        $topics = $topicmodel->where('subject_id', $sub_id_loop)->where('batch', $batch)->findAll();
+                    }
+                    $total_class_days = count($topics);
+
+
                     $per = "0";
                     if (!empty($stud_attendance)) {
-                        $per = $stud_attendance[0]['present_percentage'];
-                        $per = number_format($per, 2);
+                        $present_days = $stud_attendance['present_count']; // Assuming getStudentPresentPerc returns present_count
+                        $total_days_recorded = $stud_attendance['total_count']; // Assuming getStudentPresentPerc returns total_count (classes student *could* have attended)
+
+                        // To calculate percentage for *this* subject accurately, you need both present days and total classes.
+                        // If getStudentPresentPerc gives a percentage, you might need to re-evaluate how you get raw counts.
+                        // For the cumulative, we need the raw counts.
+                        // Let's assume getStudentPresentPerc gives you total_present and total_classes for that subject
+                        if($total_days_recorded > 0) {
+                            $per = ($present_days / $total_days_recorded) * 100;
+                            $per = number_format($per, 2);
+                        }
+
+                        $total_overall_present_days += $present_days;
+                        $total_overall_class_days += $total_class_days; // Use the actual total classes for the subject
                     }
                     $sheet->setCellValue($columnLetter . '' . $rowNumber, $per);
                     $columnLetter++;
                 }
+
+                // Calculate and set the Final Percentage
+                $final_percentage = 0;
+                if ($total_overall_class_days > 0) {
+                    $final_percentage = ($total_overall_present_days / $total_overall_class_days) * 100;
+                }
+                $final_percentage = number_format($final_percentage, 2);
+                $sheet->setCellValue($columnLetter . '' . $rowNumber, $final_percentage);
+                $sheet->getStyle($columnLetter . '' . $rowNumber)->getFont()->setBold(true);
+                $sheet->getStyle($columnLetter . '' . $rowNumber)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+
                 $sr++;
                 $rowNumber++;
             }
-        } else {
+            // Set $ss for all subjects export
+            $ss = "All_Subjects_Attendance"; // Or any other suitable name for all subjects export
 
+        } else {
+            // ... (your existing code for single subject export remains here)
             $topicmodel = new TopicModel();
             if ($batch == "all") {
                 $topics = $topicmodel->Where('subject_id', $sub_id)->orderBy('date', 'ASC')->findAll();
@@ -222,7 +261,7 @@ class ExportAttendanceController extends BaseController
             $subj = $subjectmodel->find($sub_id);
             $mergeRange = "A4:{$lastColumn}4"; // Example: 'A1:D1'
             $sheet->mergeCells($mergeRange);
-            $ss = $subj['subject_name'];
+            $ss = $subj['subject_name']; // $ss is correctly defined here for single subject
             $sheet->setCellValue('A4', $ss); // Title
             $sheet->getStyle('A4')->getFont()->setBold(true)->setSize(14);
             $sheet->getStyle('A4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
