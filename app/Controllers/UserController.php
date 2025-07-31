@@ -27,14 +27,25 @@ class UserController extends Controller
 
         $validation = \Config\Services::validation();
 
+        // Combined rules from model and controller, with new fields
+        // Note: It's generally better to define all rules in the model for consistency.
+        // If you keep them here, ensure they match the model's.
         $rules = [
             'full_name'     => 'required|max_length[255]',
             'email'         => 'required|valid_email|is_unique[users.email]',
             'mobile_number' => 'required|max_length[15]',
-            'password'      => 'required|min_length[6]',
+            'password'      => 'required|min_length[6]', // Password is required on add
             'designation'   => 'required|in_list[ASSISTANT PROFESSOR,TEACHING ASSISTANT,TECHNICAL ASSISTANT,VISITING FACULTY]',
             'role'          => 'required|in_list[Superadmin,Coordinator,Faculty]',
             'status'        => 'required|in_list[Active,Inactive]',
+            // --- NEW FIELDS VALIDATION ---
+            'name_as_per_bank_account' => 'permit_empty|max_length[255]',
+            'pan_card_no'              => 'permit_empty|exact_length[10]|alpha_numeric', // Basic PAN validation
+            'bank_name'                => 'permit_empty|max_length[255]',
+            'bank_account_no'          => 'permit_empty|max_length[50]|alpha_numeric',
+            'ifsc_code'                => 'permit_empty|exact_length[11]|alpha_numeric', // Basic IFSC validation
+            'aadhaar_no'               => 'permit_empty|exact_length[12]|numeric', // Aadhaar is numeric
+            // --- END NEW FIELDS VALIDATION ---
         ];
 
         if (!$this->validate($rules)) {
@@ -45,36 +56,44 @@ class UserController extends Controller
         $userModel = new UserModel();
 
         $data = [
-            'full_name'     => strip_tags($this->request->getPost('full_name')),
-            'email'         => strip_tags($this->request->getPost('email')),
-            'mobile_number' => strip_tags($this->request->getPost('mobile_number')),
-            'password'      => password_hash(strip_tags($this->request->getPost('password')), PASSWORD_DEFAULT),
-            'designation'   => strip_tags($this->request->getPost('designation')),
-            'role'          => strip_tags($this->request->getPost('role')),
-            'status'        => strip_tags($this->request->getPost('status')),
-            'dob'           => strip_tags($this->request->getPost('dob') ?: null),
-            'gender'        => strip_tags($this->request->getPost('gender') ?: null),
-            'father_name'   => strip_tags($this->request->getPost('father_name') ?: null),
-            'mother_name'   => strip_tags($this->request->getPost('mother_name') ?: null),
-            'qualification' => strip_tags($this->request->getPost('qualification') ?: null),
-            'industry_experience' => strip_tags($this->request->getPost('industry_experience') ?: null),
-            'working_experience'  => strip_tags($this->request->getPost('working_experience') ?: null),
-            'achievements'  => strip_tags($this->request->getPost('achievements') ?: null),
-            'skillset'      => strip_tags($this->request->getPost('skillset') ?: null),
-            'address_line_1' => strip_tags($this->request->getPost('address_line_1') ?: null),
-            'state'         => strip_tags($this->request->getPost('state') ?: null),
-            'city'          => strip_tags($this->request->getPost('city') ?: null),
-            'country'       => strip_tags($this->request->getPost('country') ?: null),
-            'created_at'    => date('Y-m-d H:i:s'),
-            'updated_at'    => date('Y-m-d H:i:s'),
+            'full_name'     => trim(strip_tags($this->request->getPost('full_name'))),
+            'email'         => trim(strip_tags($this->request->getPost('email'))),
+            'mobile_number' => trim(strip_tags($this->request->getPost('mobile_number'))),
+            'password'      => trim(strip_tags($this->request->getPost('password'))), // Password will be hashed by beforeInsert
+            'designation'   => trim(strip_tags($this->request->getPost('designation'))),
+            'role'          => trim(strip_tags($this->request->getPost('role'))),
+            'status'        => trim(strip_tags($this->request->getPost('status'))),
+            'dob'           => trim(strip_tags($this->request->getPost('dob') ?: null)),
+            'gender'        => trim(strip_tags($this->request->getPost('gender') ?: null)),
+            'father_name'   => trim(strip_tags($this->request->getPost('father_name') ?: null)),
+            'mother_name'   => trim(strip_tags($this->request->getPost('mother_name') ?: null)),
+            'qualification' => trim(strip_tags($this->request->getPost('qualification') ?: null)),
+            'industry_experience' => trim(strip_tags($this->request->getPost('industry_experience') ?: null)),
+            'working_experience'  => trim(strip_tags($this->request->getPost('working_experience') ?: null)),
+            'achievements'  => trim(strip_tags($this->request->getPost('achievements') ?: null)),
+            'skillset'      => trim(strip_tags($this->request->getPost('skillset') ?: null)),
+            'address'       => trim(strip_tags($this->request->getPost('address_line_1') ?: null)), // Changed from address_line_1 to address
+            'state'         => trim(strip_tags($this->request->getPost('state') ?: null)),
+            'city'          => trim(strip_tags($this->request->getPost('city') ?: null)),
+            'country'       => trim(strip_tags($this->request->getPost('country') ?: null)),
+            // --- NEW FIELDS DATA ---
+            'name_as_per_bank_account' => trim(strip_tags($this->request->getPost('name_as_per_bank_account') ?: null)),
+            'pan_card_no'              => trim(strip_tags($this->request->getPost('pan_card_no') ?: null)),
+            'bank_name'                => trim(strip_tags($this->request->getPost('bank_name') ?: null)),
+            'bank_account_no'          => trim(strip_tags($this->request->getPost('bank_account_no') ?: null)),
+            'ifsc_code'                => trim(strip_tags($this->request->getPost('ifsc_code') ?: null)),
+            'aadhaar_no'               => trim(strip_tags($this->request->getPost('aadhaar_no') ?: null)),
+            // --- END NEW FIELDS ---
+            // 'created_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
+            // 'updated_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
         ];
 
         try {
+            // Using $userModel->insert() will trigger the beforeInsert callback for password hashing
             if (!$userModel->insert($data)) {
                 $db = \Config\Database::connect();
                 $error = $db->error();
 
-                // Log MySQL error
                 log_message('error', 'Database Error Code: ' . $error['code']);
                 log_message('error', 'Database Error Message: ' . $error['message']);
 
@@ -96,14 +115,22 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        $userModel = new UserModel();
-        $data['user'] = $userModel->find($id);
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($id);
 
-        if (!$data['user']) {
-            return redirect()->to('/users')->with('error', 'User not found.');
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
         }
 
-        return view('users/edit', $data);
+        // Get the role of the currently logged-in user from the session
+        $loggedInUserRole = session()->get('role');
+
+        $data = [
+            'user'             => $user,
+            'loggedInUserRole' => $loggedInUserRole // <-- Pass this to your view
+        ];
+
+        return view('users/edit', $data); 
     }
 
     public function update($id)
@@ -115,58 +142,93 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'User not found.');
         }
 
-        // Prepare Data - Convert empty values to NULL
-        $fields = [
-            'full_name',
-            'email',
-            'mobile_number',
-            'designation',
-            'role',
-            'status',
-            'dob',
-            'gender',
-            'father_name',
-            'mother_name',
-            'qualification',
-            'industry_experience',
-            'working_experience',
-            'achievements',
-            'skillset',
-            'address',
-            'state',
-            'city',
-            'country'
+        // Define rules for update (password is optional)
+        $rules = [
+            'full_name'     => 'required|max_length[255]',
+            'email'         => 'required|valid_email|is_unique[users.email,id,' . $id . ']', // Allows updating without triggering uniqueness error
+            'mobile_number' => 'required|max_length[15]',
+            'password'      => 'permit_empty|min_length[6]', // Password is optional on update
+            'designation'   => 'required|in_list[ASSISTANT PROFESSOR,TEACHING ASSISTANT,TECHNICAL ASSISTANT,VISITING FACULTY]',
+            'role'          => 'required|in_list[Superadmin,Coordinator,Faculty]',
+            'status'        => 'required|in_list[Active,Inactive]',
+            // --- NEW FIELDS VALIDATION ---
+            'name_as_per_bank_account' => 'permit_empty|max_length[255]',
+            'pan_card_no'              => 'permit_empty|exact_length[10]|alpha_numeric',
+            'bank_name'                => 'permit_empty|max_length[255]',
+            'bank_account_no'          => 'permit_empty|max_length[50]|alpha_numeric',
+            'ifsc_code'                => 'permit_empty|exact_length[11]|alpha_numeric',
+            'aadhaar_no'               => 'permit_empty|exact_length[12]|numeric',
+            // --- END NEW FIELDS VALIDATION ---
         ];
 
-        $data = [];
-        foreach ($fields as $field) {
-            $data[$field] = trim(strip_tags($this->request->getPost($field))) !== '' ? strip_tags($this->request->getPost($field)) : null;
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('validation', $this->validator);
         }
 
-        // Handle Password Update (Only if provided)
-        $password = strip_tags($this->request->getPost('password'));
-        if (!empty($password)) {
-            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
-        }
+        // Prepare Data - Convert empty values to NULL using the same approach as store()
+        $data = [
+            'full_name'     => trim(strip_tags($this->request->getPost('full_name'))),
+            'email'         => trim(strip_tags($this->request->getPost('email'))),
+            'mobile_number' => trim(strip_tags($this->request->getPost('mobile_number'))),
+            // Password will be handled by model's beforeUpdate callback if provided
+            'password'      => trim(strip_tags($this->request->getPost('password'))),
+            'designation'   => trim(strip_tags($this->request->getPost('designation'))),
+            'role'          => trim(strip_tags($this->request->getPost('role'))),
+            'status'        => trim(strip_tags($this->request->getPost('status'))),
+            'dob'           => trim(strip_tags($this->request->getPost('dob') ?: null)),
+            'gender'        => trim(strip_tags($this->request->getPost('gender') ?: null)),
+            'father_name'   => trim(strip_tags($this->request->getPost('father_name') ?: null)),
+            'mother_name'   => trim(strip_tags($this->request->getPost('mother_name') ?: null)),
+            'qualification' => trim(strip_tags($this->request->getPost('qualification') ?: null)),
+            'industry_experience' => trim(strip_tags($this->request->getPost('industry_experience') ?: null)),
+            'working_experience'  => trim(strip_tags($this->request->getPost('working_experience') ?: null)),
+            'achievements'  => trim(strip_tags($this->request->getPost('achievements') ?: null)),
+            'skillset'      => trim(strip_tags($this->request->getPost('skillset') ?: null)),
+            'address'       => trim(strip_tags($this->request->getPost('address') ?: null)), // Consistent with model and edit view
+            'state'         => trim(strip_tags($this->request->getPost('state') ?: null)),
+            'city'          => trim(strip_tags($this->request->getPost('city') ?: null)),
+            'country'       => trim(strip_tags($this->request->getPost('country') ?: null)),
+            // --- NEW FIELDS DATA ---
+            'name_as_per_bank_account' => trim(strip_tags($this->request->getPost('name_as_per_bank_account') ?: null)),
+            'pan_card_no'              => trim(strip_tags($this->request->getPost('pan_card_no') ?: null)),
+            'bank_name'                => trim(strip_tags($this->request->getPost('bank_name') ?: null)),
+            'bank_account_no'          => trim(strip_tags($this->request->getPost('bank_account_no') ?: null)),
+            'ifsc_code'                => trim(strip_tags($this->request->getPost('ifsc_code') ?: null)),
+            'aadhaar_no'               => trim(strip_tags($this->request->getPost('aadhaar_no') ?: null)),
+            // --- END NEW FIELDS ---
+        ];
 
         // 🔍 DEBUG: Print the sanitized data before update
         log_message('debug', 'Sanitized Data before update: ' . print_r($data, true));
+        echo "<pre>Data being sent to model:\n";
+        print_r($data);
+        echo "</pre>";
+        
+        try {
+            // ✅ FIX: Use $userModel->update() to trigger the beforeUpdate callback
+            if (!$userModel->update($id, $data)) {
+                $db = \Config\Database::connect(); // Get database instance to retrieve errors
+                $error = $db->error();
 
-        // Attempt to Update User
-        $db = \Config\Database::connect();
-        $builder = $db->table('users');
-        $query = $builder->where('id', $id)->update($data);
+                echo "<pre>Raw Database Error:\n";
+                print_r($error);
+                echo "</pre>";
+                exit(); 
 
-        if (!$query) {
-            $error = $db->error();
-
-            // 🔍 DEBUG: Print and log database error
-            log_message('error', '❌ Database Error: ' . print_r($error, true));
-            echo "<pre>Database Error: ";
-            print_r($error);
+                // 🔍 DEBUG: Print and log database error
+                log_message('error', '❌ Database Error during update: ' . print_r($error, true));
+                return redirect()->back()->withInput()->with('error', 'Failed to update user. Database Error: ' . $error['message']);
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Exception during update: ' . $e->getMessage());
+            // This 'exit()' is here so you can see the database error from the 'try' block first.
+            // If you reach here, it's a PHP exception, not a DB error caught by $db->error().
+            echo "<pre>Exception Caught:\n";
+            print_r($e->getMessage());
             echo "</pre>";
             exit();
         }
+
 
         // ✅ Check if the current logged-in user is a Faculty or Coordinator
         $userRole = session()->get('role'); // Get logged-in user's role
@@ -177,14 +239,6 @@ class UserController extends Controller
         // ✅ Default Redirect for Other Users
         return redirect()->to('/users')->with('message', '✅ User updated successfully!');
     }
-
-
-
-
-
-
-
-
 
 
     public function delete($id)
@@ -205,77 +259,98 @@ class UserController extends Controller
     public function exportUsers()
     {
         $userModel = new UserModel();
-        // Fetch all users except Admin
+        // Fetch all users except Superadmin
         $users = $userModel->where('role !=', 'Superadmin')->findAll();
 
         // Create Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Set Column Headers
+        // Set Column Headers - All existing and NEW fields included
         $sheet->setCellValue('A1', 'Sr no')
             ->setCellValue('B1', 'Full Name')
-            ->setCellValue('C1', 'Email')
-            ->setCellValue('D1', 'Mobile Number')
-            ->setCellValue('E1', 'Role')
-            ->setCellValue('F1', 'Designation')
-            ->setCellValue('G1', 'Date Of Birth')
-            ->setCellValue('H1', 'Gender')
-            ->setCellValue('I1', 'Father Name')
-            ->setCellValue('J1', 'Mother Name')
-            ->setCellValue('K1', 'Qualification')
-            ->setCellValue('L1', 'Industry Experience')
-            ->setCellValue('M1', 'Academic Experience')
-            ->setCellValue('N1', 'Date Of Joining')
-            ->setCellValue('O1', 'Achievements')
-            ->setCellValue('P1', 'skillset')
-            ->setCellValue('Q1', 'Address')
-            ->setCellValue('R1', 'state')
-            ->setCellValue('S1', 'city')
-            ->setCellValue('T1', 'country')
-            ->setCellValue('U1', 'Status')
-            ->setCellValue('V1', 'created_at');
+            ->setCellValue('C1', 'Name as per Bank Account') // NEW FIELD
+            ->setCellValue('D1', 'Email')
+            ->setCellValue('E1', 'Mobile Number')
+            ->setCellValue('F1', 'PAN Card No') // NEW FIELD
+            ->setCellValue('G1', 'Aadhaar No') // NEW FIELD
+            ->setCellValue('H1', 'Bank Name') // NEW FIELD
+            ->setCellValue('I1', 'Bank Account No') // NEW FIELD
+            ->setCellValue('J1', 'IFSC Code') // NEW FIELD
+            ->setCellValue('K1', 'Role')
+            ->setCellValue('L1', 'Designation')
+            ->setCellValue('M1', 'Date Of Birth')
+            ->setCellValue('N1', 'Gender')
+            ->setCellValue('O1', 'Father Name')
+            ->setCellValue('P1', 'Mother Name')
+            ->setCellValue('Q1', 'Qualification')
+            ->setCellValue('R1', 'Industry Experience')
+            ->setCellValue('S1', 'Academic Experience') // Maps to 'working_experience'
+            ->setCellValue('T1', 'Date Of Joining')
+            ->setCellValue('U1', 'Achievements')
+            ->setCellValue('V1', 'Skillset')
+            ->setCellValue('W1', 'Address')
+            ->setCellValue('X1', 'State')
+            ->setCellValue('Y1', 'City')
+            ->setCellValue('Z1', 'Country')
+            ->setCellValue('AA1', 'Status')
+            ->setCellValue('AB1', 'Created At');
 
         // Apply Formatting (Bold Headers)
         $headerStyle = [
             'font' => ['bold' => true],
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
         ];
-        $sheet->getStyle('A1:V1')->applyFromArray($headerStyle);
+        $sheet->getStyle('A1:AB1')->applyFromArray($headerStyle); // Adjusted range for new columns
 
-        // Populate Data
+        // Populate Data - All existing and NEW fields included
         $row = 2;
         $serialNumber = 1;
         foreach ($users as $user) {
             $sheet->setCellValue('A' . $row, $serialNumber)
                 ->setCellValue('B' . $row, $user['full_name'])
-                ->setCellValue('C' . $row, $user['email'])
-                ->setCellValue('D' . $row, $user['mobile_number'])
-                ->setCellValue('E' . $row, $user['role'])
-                ->setCellValue('F' . $row, $user['designation'])
-                ->setCellValue('G' . $row, $user['dob'])
-                ->setCellValue('H' . $row, $user['gender'])
-                ->setCellValue('I' . $row, $user['father_name'])
-                ->setCellValue('J' . $row, $user['mother_name'])
-                ->setCellValue('K' . $row, $user['qualification'])
-                ->setCellValue('L' . $row, $user['industry_experience'])
-                ->setCellValue('M' . $row, $user['working_experience'])
-                ->setCellValue('N' . $row, $user['date_of_joining'])
-                ->setCellValue('O' . $row, $user['achievements'])
-                ->setCellValue('P' . $row, $user['skillset'])
-                ->setCellValue('Q' . $row, $user['address'])
-                ->setCellValue('R' . $row, $user['state'])
-                ->setCellValue('S' . $row, $user['city'])
-                ->setCellValue('T' . $row, $user['country'])
-                ->setCellValue('U' . $row, $user['status'])
-                ->setCellValue('V' . $row, $user['created_at']);
+                ->setCellValue('C' . $row, $user['name_as_per_bank_account']) // NEW FIELD DATA
+                ->setCellValue('D' . $row, $user['email'])
+                ->setCellValue('E' . $row, $user['mobile_number'])
+                ->setCellValue('F' . $row, $user['pan_card_no']) // NEW FIELD DATA
+                ->setCellValue('G' . $row, $user['aadhaar_no']) // NEW FIELD DATA
+                ->setCellValue('H' . $row, $user['bank_name']) // NEW FIELD DATA
+                ->setCellValue('I' . $row, $user['bank_account_no']) // NEW FIELD DATA
+                ->setCellValue('J' . $row, $user['ifsc_code']) // NEW FIELD DATA
+                ->setCellValue('K' . $row, $user['role'])
+                ->setCellValue('L' . $row, $user['designation'])
+                ->setCellValue('M' . $row, $user['dob'])
+                ->setCellValue('N' . $row, $user['gender'])
+                ->setCellValue('O' . $row, $user['father_name'])
+                ->setCellValue('P' . $row, $user['mother_name'])
+                ->setCellValue('Q' . $row, $user['qualification'])
+                ->setCellValue('R' . $row, $user['industry_experience'])
+                ->setCellValue('S' . $row, $user['working_experience'])
+                ->setCellValue('T' . $row, $user['date_of_joining'])
+                ->setCellValue('U' . $row, $user['achievements'])
+                ->setCellValue('V' . $row, $user['skillset'])
+                ->setCellValue('W' . $row, $user['address'])
+                ->setCellValue('X' . $row, $user['state'])
+                ->setCellValue('Y' . $row, $user['city'])
+                ->setCellValue('Z' . $row, $user['country'])
+                ->setCellValue('AA' . $row, $user['status'])
+                ->setCellValue('AB' . $row, $user['created_at']);
             $row++;
             $serialNumber++;
         }
 
         // Auto-Resize Columns
-        foreach (range('A', 'V') as $col) {
-            $sheet->getColumnDimension($col)->setAutoSize(true);
+        $lastColumnNumber = 28; // 'AB' is the 28th column
+
+        for ($i = 1; $i <= $lastColumnNumber; $i++) {
+            $columnLetter = '';
+            $currentColNum = $i;
+            while ($currentColNum > 0) {
+                $modulo = ($currentColNum - 1) % 26;
+                $columnLetter = chr(65 + $modulo) . $columnLetter; // Convert number to letter
+                $currentColNum = floor(($currentColNum - $modulo) / 26);
+            }
+            $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
         }
 
         // Set File Name
@@ -296,18 +371,24 @@ class UserController extends Controller
     }
 
 
-     // Download Sample Excel Template
+     // Download Sample Excel Template - UPDATED
     public function downloadSampleExcel()
     {
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            	     // Header row
+                     // Header row
             $sheet->fromArray([
             [
                 'Full Name',
+                'Name as per Bank Account', // NEW
                 'Email',
                 'Mobile Number',
                 'Password',
+                'PAN Card No', // NEW
+                'Aadhaar No', // NEW
+                'Bank Name', // NEW
+                'Bank Account No', // NEW
+                'IFSC Code', // NEW
                 'Designation',
                 'Role',
                 'Date Of Birth',
@@ -316,16 +397,15 @@ class UserController extends Controller
                 'Mother Name',
                 'Qualification',
                 'Industry Experience',
-                'Academic Experience',
+                'Academic Experience', // This maps to 'working_experience'
                 'Date Of Joining',
                 'Achievements',
-                'skillset',
-                'Address',
-                'state',
-                'city',
-                'country',
+                'Skillset', // Corrected case from 'skillset'
+                'Address', // Consistent 'address'
+                'State',
+                'City',
+                'Country',
                 'Status',
-              
             ]
             ], NULL, 'A1');
 
@@ -333,9 +413,9 @@ class UserController extends Controller
             $highestColumn = $sheet->getHighestColumn(); 
 
            
-            $sheet->setCellValue('E2', 'Select Designation From this ASSISTANT PROFESSOR, TEACHING ASSISTANT, TECHNICAL ASSISTANT, VISITING FACULTY'); // Add data in E2
-            $sheet->setCellValue('F2', 'Select Role From this Superadmin, Coordinator, Faculty'); // Add data in E2
-            $sheet->setCellValue('U2', 'Select Status From this Active, Inactive'); // Add data in E2
+            $sheet->setCellValue('K2', 'Select Designation From this ASSISTANT PROFESSOR, TEACHING ASSISTANT, TECHNICAL ASSISTANT, VISITING FACULTY'); // Adjusted column for Designation
+            $sheet->setCellValue('L2', 'Select Role From this Superadmin, Coordinator, Faculty'); // Adjusted column for Role
+            $sheet->setCellValue('AB2', 'Select Status From this Active, Inactive'); // Adjusted column for Status, will be AB based on new headers
 
             // Convert column letter to number
             $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
@@ -382,37 +462,45 @@ class UserController extends Controller
           foreach ($sheetData as $index => $row) {
             if ($index == 0) continue; // Skip header row
     
-            // Ensure row has at least 23 columns
-            if (count($row) < 2) {
-              return redirect()->back()->with('error', "❌ Error in row $index: Incorrect number of columns.");
+            // Ensure row has at least the correct number of columns (21 + 6 new = 27)
+            // It's safer to check against expected number of columns after padding
+            $expectedColumnCount = 27; // Based on the sample excel template now
+            if (count($row) < $expectedColumnCount) {
+              // Pad the row to ensure all expected columns exist, even if empty
+              $row = array_pad($row, $expectedColumnCount, null);
             }
-    
-            $row = array_pad($row, 23, null);
-    
+
+            // Map data from Excel columns to database fields
             $data[] = [
-                'full_name'=> trim($row[0]),
-                'email'=> trim($row[1]),
-                'mobile_number'=> trim($row[2]),
-                'password'=> password_hash(trim($row[3]), PASSWORD_DEFAULT),
-                'designation'=> trim($row[4]),
-                'role'=> trim($row[5]),
-                'dob'=>trim($row[6])?: null,
-                'gender'=>trim($row[7])?: null,
-                'father_name'=>trim($row[8])?: null,
-                'mother_name'=>trim($row[9])?: null,
-                'qualification'=>trim($row[10])?: null,
-                'industry_experience'=>trim($row[11])?: null,
-                'working_experience'=>trim($row[12])?: null,
-                'date_of_joining'=>trim($row[13])?: null,
-                'achievements'=>trim($row[14])?: null,
-                'skillset'=>trim($row[15])?: null,
-                'address'=>trim($row[16])?: null,
-                'state'=>trim($row[17])?: null,
-                'city'=>trim($row[18])?: null,
-                'country'=>trim($row[19])?: null,
-                'status'=>trim($row[20])?: null,
-                'created_at'    => date('Y-m-d H:i:s'),
-                'updated_at'    => date('Y-m-d H:i:s'), 
+                'full_name'                 => trim($row[0]),
+                'name_as_per_bank_account'  => trim($row[1]), // NEW - Index 1
+                'email'                     => trim($row[2]),
+                'mobile_number'             => trim($row[3]),
+                'password'                  => password_hash(trim($row[4]), PASSWORD_DEFAULT),
+                'pan_card_no'               => trim($row[5]), // NEW - Index 5
+                'aadhaar_no'                => trim($row[6]), // NEW - Index 6
+                'bank_name'                 => trim($row[7]), // NEW - Index 7
+                'bank_account_no'           => trim($row[8]), // NEW - Index 8
+                'ifsc_code'                 => trim($row[9]), // NEW - Index 9
+                'designation'               => trim($row[10]), // Adjusted index
+                'role'                      => trim($row[11]), // Adjusted index
+                'dob'                       => trim($row[12])?: null, // Adjusted index
+                'gender'                    => trim($row[13])?: null, // Adjusted index
+                'father_name'               => trim($row[14])?: null, // Adjusted index
+                'mother_name'               => trim($row[15])?: null, // Adjusted index
+                'qualification'             => trim($row[16])?: null, // Adjusted index
+                'industry_experience'       => trim($row[17])?: null, // Adjusted index
+                'working_experience'        => trim($row[18])?: null, // Adjusted index (Academic Experience in template)
+                'date_of_joining'           => trim($row[19])?: null, // Adjusted index
+                'achievements'              => trim($row[20])?: null, // Adjusted index
+                'skillset'                  => trim($row[21])?: null, // Adjusted index
+                'address'                   => trim($row[22])?: null, // Adjusted index (consistent 'address')
+                'state'                     => trim($row[23])?: null, // Adjusted index
+                'city'                      => trim($row[24])?: null, // Adjusted index
+                'country'                   => trim($row[25])?: null, // Adjusted index
+                'status'                    => trim($row[26])?: null, // Adjusted index
+                // 'created_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
+                // 'updated_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
             ];
           }
     

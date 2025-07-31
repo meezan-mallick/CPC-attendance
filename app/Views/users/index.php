@@ -2,7 +2,6 @@
 
 <?= $this->section('content') ?>
 
-<!-- Page Content -->
 <div id="content">
   <?php if (session()->getFlashdata('message')): ?>
     <div class="alert alert-success"><?= session()->getFlashdata('message') ?></div>
@@ -34,7 +33,6 @@
     </div>
     <hr>
 
-    <!-- Manage Users List -->
     <div class="row">
       <div class="table-responsive">
         <table id="dataTable" class="table table-hover table-striped table-bordered">
@@ -43,6 +41,12 @@
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Bank A/C Name</th>
+              <th>PAN No.</th>
+              <th>Aadhaar No.</th>
+              <th>Bank Name</th>
+              <th>Bank A/C No.</th>
+              <th>IFSC Code</th>
               <th>Role</th>
               <th>Designation</th>
               <th>Actions</th>
@@ -54,24 +58,23 @@
                 <td><?= esc($user['id']) ?></td>
                 <td class="fw-bold"><?= esc($user['full_name']) ?></td>
                 <td><?= esc($user['email']) ?></td>
+                <td><?= esc($user['name_as_per_bank_account'] ?? 'N/A') ?></td>
+                <td><?= esc($user['pan_card_no'] ?? 'N/A') ?></td>
+                <td><?= esc($user['aadhaar_no'] ?? 'N/A') ?></td>
+                <td><?= esc($user['bank_name'] ?? 'N/A') ?></td>
+                <td><?= esc($user['bank_account_no'] ?? 'N/A') ?></td>
+                <td><?= esc($user['ifsc_code'] ?? 'N/A') ?></td>
                 <td >
                   <?= esc($user['role']) ?>
-                  <!-- <?php if ($user['role'] === 'Faculty'): ?>
-                    <a href="<?= site_url('users/assign-coordinator/' . $user['id']) ?>" class="btn btn-sm btn-warning">Make Coordinator</a>
-                  <?php endif; ?> -->
                 </td>
                 <td class="text-center">
                   <?php
-                  // Define colors for different designations
                   $designationColors = [
                     'ASSISTANT PROFESSOR' => 'success',
                     'TEACHING ASSISTANT' => 'primary',
                     'TECHNICAL ASSISTANT' => 'warning',
                     'VISITING FACULTY' => 'danger',
-
                   ];
-
-                  // Get the appropriate badge class
                   $badgeClass = isset($designationColors[$user['designation']]) ? $designationColors[$user['designation']] : 'secondary';
                   ?>
                   <span class="badge p-2 bg-<?= $badgeClass ?>">
