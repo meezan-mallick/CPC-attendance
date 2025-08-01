@@ -117,14 +117,14 @@ class ExportVoucherController extends BaseController
         $html = '
         <table border="1" cellpadding="5" style="width:100%; font-size: 12pt;">
             <tr>
-                <td colspan="2"><strong>Name (As per Bank A/C):</strong> ' . esc($user['name_as_per_bank_account'] ?? 'N/A') . '</td>
+                <td colspan="2"><strong>Name (As per Bank A/C):</strong> ' . strtoupper(esc($user['name_as_per_bank_account'] ?? 'N/A')) . '</td>
             </tr>
             <tr>
                 <td width="50%"><strong>Mobile Number:</strong> ' . esc($user['mobile_number'] ?? 'N/A') . '</td>
                 <td width="50%"><strong>PAN Card No:</strong> ' . esc($user['pan_card_no'] ?? 'N/A') . '</td>
             </tr>
             <tr>
-                <td width="50%"><strong>Bank Name:</strong> ' . esc($user['bank_name'] ?? 'N/A') . '</td>
+                <td width="50%"><strong>Bank Name:</strong> ' . strtoupper(esc($user['bank_name'] ?? 'N/A')) . '</td>
                 <td width="50%"><strong>Bank Account No:</strong> ' . esc($user['bank_account_no'] ?? 'N/A') . '</td>
             </tr>
             <tr>
@@ -138,10 +138,7 @@ class ExportVoucherController extends BaseController
                 <td colspan="2"><strong>Program:</strong> ' . esc($program['program_name'] ?? 'N/A') . '</td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Course:</strong> ' . esc($program['program_name'] ?? 'N/A') . '</td>
-            </tr>
-            <tr>
-                <td width="50%"><strong>Subject:</strong> ' . esc($subject['subject_name'] ?? 'N/A') . '</td>
+                <td width="50%"><strong>Subject:</strong> ' . strtoupper(esc($subject['subject_name'] ?? 'N/A')) . '</td>
                 
             </tr>
             <tr>
