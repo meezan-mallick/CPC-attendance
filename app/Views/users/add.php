@@ -8,6 +8,7 @@
             <div class="table-responsive">
 
                 <form action="<?= site_url('users/store') ?>" method="POST">
+                    <?= csrf_field() ?>
                     <div class="row mt-2 mb-4">
                         <div class="col-12">
                             <div class="header d-flex justify-content-between align-items-center">
@@ -177,7 +178,7 @@
                             <label>Status:<span class="text-danger">*</span></label>
                             <select name="status" class="form-inputs">
                                 <option value="">Select Status</option>
-                                <option value="Active" <?= old('status') == 'Active' ? 'selected' : '' ?>>Active</option>
+                                <option selected value="Active" <?= old('status') == 'Active' ? 'selected' : '' ?>>Active</option>
                                 <option value="Inactive" <?= old('status') == 'Inactive' ? 'selected' : '' ?>>Inactive</option>
                             </select>
                         </div>

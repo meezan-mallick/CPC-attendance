@@ -23,6 +23,7 @@ class UserController extends Controller
 
     public function store()
     {
+        
         log_message('debug', 'Submitted Data: ' . print_r($this->request->getPost(), true));
 
         $validation = \Config\Services::validation();
@@ -72,7 +73,7 @@ class UserController extends Controller
             'working_experience'  => trim(strip_tags($this->request->getPost('working_experience') ?: null)),
             'achievements'  => trim(strip_tags($this->request->getPost('achievements') ?: null)),
             'skillset'      => trim(strip_tags($this->request->getPost('skillset') ?: null)),
-            'address'       => trim(strip_tags($this->request->getPost('address_line_1') ?: null)), // Changed from address_line_1 to address
+            'address'       => trim(strip_tags($this->request->getPost('address ') ?: null)), // Changed from address_line_1 to address
             'state'         => trim(strip_tags($this->request->getPost('state') ?: null)),
             'city'          => trim(strip_tags($this->request->getPost('city') ?: null)),
             'country'       => trim(strip_tags($this->request->getPost('country') ?: null)),
@@ -83,10 +84,14 @@ class UserController extends Controller
             'bank_account_no'          => trim(strip_tags($this->request->getPost('bank_account_no') ?: null)),
             'ifsc_code'                => trim(strip_tags($this->request->getPost('ifsc_code') ?: null)),
             'aadhaar_no'               => trim(strip_tags($this->request->getPost('aadhaar_no') ?: null)),
+            'status'        => trim(strip_tags($this->request->getPost('status') ?: null)),
             // --- END NEW FIELDS ---
             // 'created_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
             // 'updated_at'    => date('Y-m-d H:i:s'), // Model's useTimestamps handles these
         ];
+        if (empty($data['status'])) {
+            $data['status'] = 'Active'; 
+        }
 
         try {
             // Using $userModel->insert() will trigger the beforeInsert callback for password hashing
